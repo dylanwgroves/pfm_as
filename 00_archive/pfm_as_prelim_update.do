@@ -24,7 +24,6 @@ ________________________________________________________________________________
 
 	tempfile temp_attend
 
-	
 /* Load Data ___________________________________________________________________*/	
 
 	/* Attendance Data */
@@ -99,13 +98,6 @@ ________________________________________________________________________________
 				bys id_village_uid : egen vill_`var' = mean(`var')
 				replace `var' = vill_`var' if `var' == . | `var' == .d | `var' == .r
  			}
-			
-/* Generate Community Level Baseline ___________________________________________*/
-
-	foreach var of varlist b_ge_raisekids b_ge_earning b_ge_leadership ///
-							b_ge_noprefboy b_ge_index b_fm_reject {
-		bys id_village_uid : egen v_`var' = mean(`var')
-	}
 
 /* Save ________________________________________________________________________*/
 

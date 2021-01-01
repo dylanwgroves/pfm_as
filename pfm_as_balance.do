@@ -1,7 +1,7 @@
 /* Basics ______________________________________________________________________
 
-Project: Wellspring Tanzania, Natural Experiment
-Purpose: Analysis
+Project: Wellspring Tanzania, Audio Screening
+Purpose: Balance Table
 Author: dylan groves, dylanwgroves@gmail.com
 Date: 2020/12/23
 ________________________________________________________________________________*/
@@ -16,18 +16,16 @@ ________________________________________________________________________________
 	global c_date = c(current_date)
 
 	
-/* Run Prelim File _____________________________________________________________ // Don't have to always re-run this but do have to re-run after an update	
+/* Run Prelim File _____________________________________________________________*/ // Don't have to always re-run this but do have to re-run after an update	
 
 	do "${user}/Documents/pfm_.master/00_setup/pfm_paths_master.do"
 	do "${code}/../pfm_audioscreening/pfm_as_prelim.do"
-*/
-
 
 	
 /* Load Data ___________________________________________________________________*/	
 
 	use "${data_as}/pfm_as_analysis.dta", clear
-			
+stop
 		
 /* Define Globals and Locals ___________________________________________________*/
 	#d ;
@@ -40,12 +38,12 @@ ________________________________________________________________________________
 							;
 		
 		/* Rerandomization count */
-		local rerandcount	1000	
+		local rerandcount	100	
 							;
 
 		/* Covariates */	
 		global cov_always	i.block_as											// Covariates that are always included
-							received_radio
+							i.rd_group
 							;	
 		
 		/* Cluster */
@@ -53,7 +51,7 @@ ________________________________________________________________________________
 							;
 							
 		/* Lasso Covariates */
-		global cov_lasso	resp_female 
+		local cov			resp_female 
 							resp_muslim
 							b_resp_religiosity
 							b_values_likechange 
@@ -65,7 +63,6 @@ ________________________________________________________________________________
 							b_ge_earning 
 							b_ge_leadership 
 							b_ge_noprefboy 
-							b_em_comreject_pct 
 							b_media_tv_any 
 							b_media_news_never 
 							b_media_news_daily 
@@ -79,28 +76,17 @@ ________________________________________________________________________________
 							b_resp_numkid
 							;
 
-	
 		/* Statitistics of interest */
-		local stats_list 	coefficient											//1
-							se													//2
-							ripval												//3
-							pval												//4
-							controls_num										//5
-							r2													//6
-							N 													//7
-							basic_coefficient									
-							basic_se
-							basic_ripval
-							basic_pval											//11
-							basic_r2
-							basic_N
-							ctl_mean
-							ctl_sd
-							treat_mean											//16
+		local stats_list 	treat_mean
 							treat_sd
-							vill_sd												
-							min		
+							treat_N
+							control_mean
+							control_sd
+							contro_N
+							min
 							max
+							ri_pval
+							pval
 							;
 	#d cr
 
@@ -134,7 +120,7 @@ stop
 	This section prepares an empty matrix to hold results
 */
 
-	local var_list `dv'
+	local var_list `cov'
 	local varnames ""   
 	local varlabs ""   
 	local mat_length `: word count `var_list'' 
@@ -155,79 +141,72 @@ foreach dv of local var_list  {
 		local varnames `varnames' `varname'   
 		*local varlabs `varlabs' `varlab' 
 
+/* Balance Check  ______________________________________________________________*/	
 	
-/* Basic Regression  ___________________________________________________________*/
-
 	/* Run basic regression */
-	qui xi: reg `dv' treat ${cov_always}, cluster(${cluster})					// This is the core regression
-		
+	qui xi: regress `dv' treat ${cov_always}									// This is the basic regression
+	
 		/* Save Coefficient */
 		matrix table = r(table)
 		local coef = table[1,1]
 		
-		/* Save beta on treat, se, R, N, means (save space for pval!) */
-		mat R[`i',1]= table[1,1]    											//beta
-		mat R[`i',2]= table[2,1]   												//se	
-		local basic_pval = table[4,1]											//pval
-		mat R[`i',5]= `e(r2_a)' 												//r-squared
-		mat R[`i',6]= e(N) 													//N
+		/* Save pval  */
+		local basic_pval = table[4,1]   										//p-val
 		
-		/* Calculate RI p-value */
+		/* Calculate RI p-value 		*/
 		local rip_count = 0
 		forval j = 1 / `rerandcount' {
-			qui xi: reg `dv' treat_`j' ${cov_always}, cluster(${cluster})
+			qui xi: reg `dv' treat_`j' ${cov_always}
 				matrix RIP = r(table)
 				local coef_ri = RIP[1,1]
-				if abs(`coef') < abs(`coef_ri') { 	  						// If coefficient is in expected direction
+					if abs(`coef') < abs(`coef_ri') { 	  
 						local rip_count = `rip_count' + 1	
 					}
-				}
-		mat R[`i',3] = `rip_count' / `rerandcount'								//ri pval	
-		mat R[`i',4]= 	`basic_pval'   												//p-val
+		}
+		mat R[`i',9] = `rip_count' / `rerandcount'	
+		mat R[`i',10] = `basic_pval'
+		di "*** Variable is `dv' "
 		di "*** Basic coef is `coef'"
 		di "*** Basic pval is `basic_pval'"
 		di "*** Basic ripval is `rip_count' / `rerandcount'	"
 		di "****************************************"
-
 		
-/* Gather Summary Statistics ___________________________________________________*/
+/* Summary Statistics __________________________________________________________*/
 	
 	/* Treat/Control Mean */
 	qui sum `dv' if treat == 0 
 		local control_mean `r(mean)'
 		local control_sd `r(sd)'
+		local control_n `r(N)'
+		
 	qui sum `dv' if treat == 1 
 		local treat_mean `r(mean)'
 		local treat_sd `r(sd)'
+		local treat_n `r(N)'
 
 	/* Variable Range */
 	qui sum `dv' 
 		local min = r(min)
 		local max = r(max)
-				
-	/* Village SD */
-		preserve
-		qui collapse (mean) `dv' treat, by(${cluster})
-	qui sum `dv' if treat == 0
-		local sd `r(sd)'
-		restore
 	
 	/* Save variable summaries */
-		mat R[`i',14]= `treat_mean'    											// treat mean
-		mat R[`i',15]= `treat_sd'    											// treat sd		
-		mat R[`i',16]= `control_mean'    										// control mean
-		mat R[`i',17]= `control_sd'    											// control sd
-		mat R[`i',18]= `sd'   													// village-sd
-		mat R[`i',19]= `min'  													// min
-		mat R[`i',20]= `max'  													// max
+		mat R[`i',1]= `treat_mean'    											// treat mean
+		mat R[`i',2]= `treat_sd'    											// treat sd		
+		mat R[`i',3]= `treat_n'    												// treat N
+		mat R[`i',4]= `control_mean'    										// control mean
+		mat R[`i',5]= `control_sd'    											// control sd
+		mat R[`i',6]= `control_n'    											// control N	
+		mat R[`i',7]= `min'  													// min
+		mat R[`i',8]= `max'  													// max
 
 	/* Reset Locals */
-		local pval = 0
-		local basic_pval = 0
-		
-local i = `i' + 1 
-}
+		capture macro drop pval
+		capture macro drop basic_pval
+		capture macro drop lassovars_num == 0
 
+local rip_count = 0
+local i = `i' + 1
+}
 	
 /* Export Matrix _______________________________________________________________*/ 
 
@@ -249,10 +228,10 @@ local i = `i' + 1
 
 	/* Label regression statistics variables */
 	local i 1 
-	foreach index in `stats_list' { 
+	foreach col in `stats_list' { 
 		cap confirm variable name`i' 
 		if _rc==0 {
-			rename name`i' `index'
+			rename name`i' `col'
 			local ++i
 		} 
 	}  
@@ -260,10 +239,10 @@ local i = `i' + 1
 	/* Export */
 	
 	if `partner' > 0 {
-		export excel using "${as_tables}/pfm_as_rawresults_partner", sheetreplace firstrow(variables)
+		export excel using "${as_tables}/pfm_as_balance", sheetreplace firstrow(variables)
 	}
 	if `partner' < 1 {
-		export excel using "${as_tables}/pfm_as_rawresults", sheetreplace firstrow(variables)
+		export excel using "${as_tables}/pfm_as_balance", sheetreplace firstrow(variables)
 	}
 
 

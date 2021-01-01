@@ -63,6 +63,8 @@ ________________________________________________________________________________
 		replace rd_group = 0 if rd_treat == .
 	encode id_ward_uid, gen(block_as)
 	
+	gen radio_received = (rd_treat == 1)
+	
 /* Fill missing baseline values ________________________________________________*/
 
 		#d ;
