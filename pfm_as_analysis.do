@@ -76,6 +76,7 @@ ________________________________________________________________________________
 							ptixpref_efm_first 
 							ptixpref_efm_topthree 
 							ptixpref_efm_notlast 
+							ptixpref_partner_efm
 							;
 		local wpp 			wpp_attitude_dum 
 							wpp_behavior

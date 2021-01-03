@@ -27,20 +27,8 @@ ________________________________________________________________________________
 	
 /* Load Data ___________________________________________________________________*/	
 
-	/* Attendance Data */
-	import excel "${data_as}\pfm_as_attendance.xlsx", sheet("Sheet1") firstrow clear
-		replace comply_true = 1 if m_comply_attend == "Yes" & comply_true == .
-			replace comply_true = 0 if m_comply_attend == "No" & comply_true == .
-		drop fm_reject resp_female m_comply_attend treat Diff id_resp_n id_village_n
-	save `temp_attend', replace
-
 	use "${data}/03_final_data/pfm_appended_prefix.dta", clear
 
-	
-/* Merge  ______________________________________________________________________*/	
-
-	merge 1:1 id_resp_uid using `temp_attend'
-	
 /* Subset Data _________________________________________________________________*/	
 	
 	/* Get correct sample */
@@ -49,8 +37,38 @@ ________________________________________________________________________________
 	rename as_* *																// Get rid of prefix
 	
 	
+/* Keep Certain Variables ______________________________________________________*/
+
+	keep id_* resp_name comsample* s33q2_oth_r endline_as svy_enum s33q3_b_oth svy_enum rd_treat sample_rd_pull m_resp_phone1 m_resp_phone2 resp_female resp_age resp_muslim s20q1b
+	
+
+/* Select Closes Friend (Remove if Family Member) ______________________________*/
+
+	gen community_n = comsample_1_name if comsample_1_fam == 0 
+	gen community_rltn = comsample_1_rltn if comsample_1_fam == 0 
+
+		replace community_n = comsample_2_name if comsample_1_fam == 1 | comsample_1_name == "" | comsample_1_fam == 2
+		replace community_rltn = comsample_2_rltn if comsample_1_fam == 1 | comsample_1_name == "" | comsample_1_fam == 2
+		gen community_second = 1 if comsample_1_fam == 1
+		
+	lab val community_rltn s33q2_r
+	
+	gen community_rltn_fam = 1 if 	community_rltn == 1 | community_rltn == 2 | ///
+									community_rltn == 3 | community_rltn == 4 | ///
+									community_rltn == 5 
+	
+	order id_village_uid id_resp_uid resp_name community_n community_rltn community_rltn_fam 
+	sort id_village_uid id_resp_uid 
+	keep id_village_uid id_resp_uid resp_name community_n community_rltn community_rltn_fam 
+	
+	save "${data_as}/pfm_community_sample.dta", replace
+
+		
+stop
+	
+stop	
+	
 	/* Primary Analysis is only with people who own a radio */					
-	keep if  endline_as == 1
 	keep if  comply_true == 1
 	
 /* Import this stuff ___________________________________________________________*/
