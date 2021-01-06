@@ -16,10 +16,11 @@ ________________________________________________________________________________
 	global c_date = c(current_date)
 
 	
-/* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
+/* Run Prelim File _____________________________________________________________ // comment out if you dont need to rerun prelim cleaning	
 
 	*do "${user}/Documents/pfm_.master/00_setup/pfm_paths_master.do"
 	do "${code}/../pfm_audioscreening/pfm_as_prelim.do"
+*/
 
 /* Load Data ___________________________________________________________________*/	
 
@@ -30,7 +31,7 @@ ________________________________________________________________________________
 	#d ;
 		
 		/* Parnter Survey or No? */
-		local partner 		1													// set to 1 for partner survey
+		local partner 		0													// set to 1 for partner survey
 							;
 		
 		
@@ -50,7 +51,7 @@ ________________________________________________________________________________
 							
 			
 		/* Indices */		
-		local index_list	pref
+		local index_list	fm
 							;
 							
 		/* Outcomes */
@@ -59,17 +60,22 @@ ________________________________________________________________________________
 							fm_partner_reject
 							fm_norm_reject
 							;
-		local em 			em_reject_index
+		local em_attitude	em_reject_index
 							em_reject_religion 
 							em_reject_noschool 
 							em_reject_pregnant 
 							em_reject_money 
 							em_reject_needhusband
-							em_norm_reject_bean
-							em_report
+							;
+		local em_norm 		em_norm_reject_bean
+							em_norm_reject_dum
+							;
+		local em_report  	em_report
 							em_report_norm
-							em_record_reject
+							;
+		local em_record 	em_record_reject
 							em_record_shareany
+							em_record_shareany_name
 							;
 		local pref 			em_elect
 							ptixpref_efm 
@@ -154,47 +160,21 @@ ________________________________________________________________________________
 
 if `sandbox' > 0 {
 
-	/*
+
 	estimates clear
 
 	foreach index of local index_list {
 
 		foreach var of local `index' {
-			xi : regress `var' treat##.resp_ ${cov_always}, cluster(id_village_n)
-			*estimates store sb_`var'
+			xi : regress `var' treat ${cov_always}, cluster(id_village_n)
+			estimates store sb_`var'
 		}
 		
-	*estimates table sb_*, keep(treat) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) varw(20)
+	estimates table sb_*, keep(treat) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)
 
 	
-	
-	xi : reg fm_reject_long treat#b_radio_any block_as, cluster(id_village_uid)
-	stop
-	*/
-	
-	/* Individual Level Interactions */
-	foreach var of varlist fm_reject {
-		cap drop interact
-		gen interact = b_`var' * treat
-		xi: regress m_s10q2_fm_accept interact treat b_`var' i.block_as, cluster(id_village_uid)
-	}
-
-	stop
-	
-	/* Village-Level Interactions */	
-	preserve
-	collapse (mean) fm_reject fm_reject_long fm_partner_reject v_b_fm_reject v_b_ge_*, by(id_village_uid treat block_as)
-	
-	gen interact = v_b_fm_reject * treat
-	
-	xi : regress fm_reject interact treat v_b_fm_reject i.block_as
-	restore
-	stop
-	
-
-	stop
-	}
-
+}
+}
 
 
 /* Run for Each Index __________________________________________________________*/

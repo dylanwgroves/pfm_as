@@ -106,6 +106,12 @@ ________________________________________________________________________________
 							b_ge_noprefboy b_ge_index b_fm_reject {
 		bys id_village_uid : egen v_`var' = mean(`var')
 	}
+	
+	
+	/* Some norm reject information is missing - bring in from norm-bean 		*/	// We could also just drop this observations
+	replace em_norm_reject_dum = 1 if em_norm_reject_bean >=5 & em_norm_reject_bean < 11 & em_norm_reject_dum == .
+		replace em_norm_reject_dum = 0 if em_norm_reject_bean < 5 & em_norm_reject_bean > -1 & em_norm_reject_dum == .
+		
 
 /* Save ________________________________________________________________________*/
 
