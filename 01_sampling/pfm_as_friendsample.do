@@ -61,70 +61,10 @@ ________________________________________________________________________________
 	sort id_village_uid id_resp_uid 
 	keep id_village_uid id_resp_uid resp_name community_n community_rltn community_rltn_fam 
 	
-	save "${data_as}/pfm_community_sample.dta", replace
+	/* Save */
+	save "${data_as}/pfm_friends_sample.dta", replace
+	save "X:\Box Sync\19_Community Media Endlines\04_Research Design\04 Randomization & Sampling\08_Friends\pfm_friends_sample.dta", replace
+	export delimited using "X:\Box Sync\19_Community Media Endlines\04_Research Design\04 Randomization & Sampling\08_Friends\pfm_friends_sample.csv", nolabel replace
 
-		
-stop
-	
-stop	
-	
-	/* Primary Analysis is only with people who own a radio */					
-	keep if  comply_true == 1
-	
-/* Import this stuff ___________________________________________________________*/
 
 	
-/* Generate any necessary variables ____________________________________________*/
-
-	/* Create "radio group" */
-	gen rd_group = 2 if rd_treat == 1
-		replace rd_group = 1 if rd_treat == 0
-		replace rd_group = 0 if rd_treat == .
-	encode id_ward_uid, gen(block_as)
-	
-	gen radio_received = (rd_treat == 1)
-	
-/* Fill missing baseline values ________________________________________________*/
-
-		#d ;
-		/* Lasso Covariates */
-		global cov_lasso	resp_female 
-							resp_muslim
-							b_resp_religiosity
-							b_values_likechange 
-							b_values_techgood 
-							b_values_respectauthority 
-							b_values_trustelders 
-							b_fm_reject
-							b_ge_raisekids 
-							b_ge_earning 
-							b_ge_leadership 
-							b_ge_noprefboy 
-							b_media_tv_any 
-							b_media_news_never 
-							b_radio_any 
-							b_resp_lang_swahili 
-							b_resp_literate 
-							b_resp_standard7 
-							b_resp_nevervisitcity 
-							b_resp_married 
-							b_resp_hhh 
-							b_resp_numkid
-							;
-		#d cr
-		
-			foreach var of global cov_lasso {
-				bys id_village_uid : egen vill_`var' = mean(`var')
-				replace `var' = vill_`var' if `var' == . | `var' == .d | `var' == .r
- 			}
-			
-/* Generate Community Level Baseline ___________________________________________*/
-
-	foreach var of varlist b_ge_raisekids b_ge_earning b_ge_leadership ///
-							b_ge_noprefboy b_ge_index b_fm_reject {
-		bys id_village_uid : egen v_`var' = mean(`var')
-	}
-
-/* Save ________________________________________________________________________*/
-
-	save "${data_as}/pfm_as_analysis.dta", replace
