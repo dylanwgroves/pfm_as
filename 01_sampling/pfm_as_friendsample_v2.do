@@ -71,9 +71,9 @@ ________________________________________________________________________________
 	replace relationship2 = . if relationship2_family == 1 
 	lab val relationship2 s33q2_r
 
-	order id_village_uid id_village_n id_resp_uid id_resp_n name1 relationship1 comsample_1_rltn relationship1_family  name2  relationship2 comsample_2_rltn relationship2_family 
-	sort id_village_uid id_resp_uid 
-	keep id_village_uid id_village_n id_resp_uid id_resp_n name1 relationship1 comsample_1_rltn relationship1_family  name2  relationship2 comsample_2_rltn relationship2_family 
+	order id_district_n id_village_uid id_village_n id_resp_uid id_resp_n name1 relationship1 comsample_1_rltn relationship1_family  name2  relationship2 comsample_2_rltn relationship2_family 
+	sort id_district_n id_village_n id_resp_uid 
+	keep id_district_n id_village_uid id_village_n id_resp_uid id_resp_n name1 relationship1 comsample_1_rltn relationship1_family  name2  relationship2 comsample_2_rltn relationship2_family 
 
 		replace name1 = name2 if name1=="" & name2!=""
 		replace relationship1 = relationship2 if name1 == name2
@@ -87,6 +87,11 @@ ________________________________________________________________________________
 	gen name4 = ""	
 	gen relationship4 = ""
 	
+	gen age1 = ""
+	gen age2 = ""
+	gen age3 = ""
+	gen age4 = ""
+	
 	decode relationship1, gen(relationship_1)
 	decode relationship2, gen(relationship_2)
 
@@ -99,11 +104,17 @@ ________________________________________________________________________________
 	local fmt: subinstr local fmt "%" "%-"
 	format `var' `fmt'
 	}
-	order id_village_uid id_village_n id_resp_uid id_resp_n name1 relationship_1  name2  relationship_2 name3 relationship3 name4 relationship4
-	keep id_village_uid id_village_n id_resp_uid id_resp_n name1 relationship_1  name2  relationship_2 name3 relationship3 name4 relationship4
+	order  id_district_n id_village_n id_resp_uid id_resp_n name1 age1 relationship_1  name2 age2 relationship_2 name3 age3 relationship3 name4 age4 relationship4
+	keep  id_district_n id_village_n id_resp_uid id_resp_n name1 age1 relationship_1  name2 age2 relationship_2 name3 age3 relationship3 name4 age4 relationship4
 	
 	rename relationship_1 relationship1
 	rename relationship_2 relationship2
+	rename id_district_n districtName
+	rename id_village_n villageName
+	rename id_resp_uid respondentID
+	rename id_resp_n respondentName
+	
+	sort districtName villageName respondentName 
 	
 	/* Save */
 	save "${data_as}/pfm_friends_sample_v2.dta", replace
