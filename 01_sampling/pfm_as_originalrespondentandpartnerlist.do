@@ -40,13 +40,16 @@ ________________________________________________________________________________
 	
 /* Keep Certain Variables ______________________________________________________*/
 
-	keep id_* resp_name p_id_resp_uid p_resp_name_new
+	keep id_* resp_name resp_female p_id_resp_uid p_resp_name_new p_resp_female
 	
 
+/* Identify who to ask makes money question ______________________________*/
+	
+	gen     makesmoney1 = "-" if resp_female == 0
+	gen     partner_makesmoney = "-" if p_resp_female == 0
+	
 /* Formatting XLS for export ______________________________*/
 			
-	gen     profession1 = ""
-	gen     partner_profession = ""
 	gen		partner_education = ""
 	
 	
@@ -56,8 +59,8 @@ ________________________________________________________________________________
 	local fmt: subinstr local fmt "%" "%-"
 	format `var' `fmt'
 	}
-	order id_district_n id_village_n id_resp_uid id_resp_n profession1  p_id_resp_uid p_resp_name_new partner_education partner_profession
-	keep id_district_n id_village_n id_resp_uid id_resp_n profession1 p_id_resp_uid p_resp_name_new partner_education partner_profession
+	order id_district_n id_village_n id_resp_uid id_resp_n makesmoney1  p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
+	keep id_district_n id_village_n id_resp_uid id_resp_n makesmoney1 p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
 	
 	rename id_district_n districtName
 	rename id_village_n villageName
@@ -67,9 +70,10 @@ ________________________________________________________________________________
 	rename p_resp_name_new partnerName
 	
 	sort districtName villageName   respondentName 
+	drop districtName
 	
 	/* Excel export */
-	export excel using "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/pfm_originalandpartner.xls", firstrow(var) replace
+	*export excel using "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/pfm_originalandpartner.xls", firstrow(var) replace
 
 
 	

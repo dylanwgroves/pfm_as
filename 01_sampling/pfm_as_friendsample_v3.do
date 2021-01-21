@@ -2,14 +2,10 @@
 /* Overview ______________________________________________________________________
 
 Project: Wellspring Tanzania, Audio Screening
-Purpose: Analysis Prelimenary Work
-Author: dylan groves, dylanwgroves@gmail.com; 
-		beatrice montano, bm2955@columbia.edu
-Date: 2020/12/23l
+Purpose: Sampling Sheets for Mobilizers to mobilize friends
+Author: beatrice montano, bm2955@columbia.edu
+Date: 2020/01/21
 
-
-	This mostly just subsets the data and does anything else necessary before
-	running the analysis
 ________________________________________________________________________________*/
 
 
@@ -40,7 +36,8 @@ ________________________________________________________________________________
 	
 /* Keep Certain Variables ______________________________________________________*/
 
-	keep id_* resp_name comsample* s33q2_oth_r endline_as svy_enum s33q3_b_oth svy_enum rd_treat sample_rd_pull m_resp_phone1 m_resp_phone2 resp_female resp_age resp_muslim s20q1b
+	keep id_* resp_name comsample* ///
+		 p_id_resp_uid p_resp_name_new
 	
 
 /* Select Closes Friend (Remove if Family Member) ______________________________*/
@@ -71,14 +68,21 @@ ________________________________________________________________________________
 	replace relationship2 = . if relationship2_family == 1 
 	lab val relationship2 s33q2_r
 
-	order id_district_n id_village_uid id_village_n id_resp_uid id_resp_n name1 relationship1 comsample_1_rltn relationship1_family  name2  relationship2 comsample_2_rltn relationship2_family 
-	sort id_district_n id_village_n id_resp_uid 
-	keep id_district_n id_village_uid id_village_n id_resp_uid id_resp_n name1 relationship1 comsample_1_rltn relationship1_family  name2  relationship2 comsample_2_rltn relationship2_family 
+	replace name1 = name2 if name1=="" & name2!=""
+	replace relationship1 = relationship2 if name1 == name2
+	replace name2 = "" if name1 == name2
+	replace relationship2 = . if name2==""
 
-		replace name1 = name2 if name1=="" & name2!=""
-		replace relationship1 = relationship2 if name1 == name2
-		replace name2 = "" if name1 == name2
-		replace relationship2 = . if name2==""
+/* Generate list of Original + Partner + Friends (maybe eligible) _______________*/
+	
+	order id_district_n id_village_uid id_village_n id_resp_uid id_resp_n p_id_resp_uid p_resp_name_new name1 relationship1 name2 relationship2
+	
+	sort id_district_n id_village_uid id_village_n id_resp_uid id_resp_n
+	
+	keep id_district_n id_village_uid id_village_n id_resp_uid id_resp_n p_id_resp_uid p_resp_name_new name1 relationship1 name2 relationship2
+	
+	
+
 	
 	* Formatting XLS for export
 	gen name3 = ""
