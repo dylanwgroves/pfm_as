@@ -37,6 +37,8 @@ ________________________________________________________________________________
 
 	keep id_* resp_name comsample*
 	
+	gen p_resp_name_new = ""
+
 
 /* Select Closes Friend (Remove if Family Member) ______________________________*/
 			
@@ -71,7 +73,86 @@ ________________________________________________________________________________
 	replace name2 = "" if name1 == name2
 	replace relationship2 = . if name2==""
 
-/* Generate list of Original + Partner + Friends (maybe eligible) _______________*/
+/* Generate list of Original + Partner + Friends (maybe eligible) ______________*/
 	
-br id_resp_uid name1 relationship1 name2 relationship2 
+	decode relationship1, gen(relationship_1)
+	decode relationship2, gen(relationship_2)
 
+	replace relationship_1 = "A person who lives nearby" if relationship_1 == "A person who lives nearbye"
+	replace relationship_2 = "A person who lives nearby" if relationship_2 == "A person who lives nearbye"
+
+	local myvar id_village_n id_resp_n name1 relationship_1  name2  relationship_2
+	foreach var of local myvar {
+	local fmt: format `var'
+	local fmt: subinstr local fmt "%" "%-"
+	format `var' `fmt'
+	}
+
+	drop relationship1
+	rename relationship_1 relationship1
+	drop relationship2
+	rename relationship_2 relationship2
+	rename id_district_n districtName
+	rename id_village_n villageName
+	rename id_resp_uid respondentID
+	rename id_resp_n respondentName
+	rename p_resp_name_new partnerName
+
+	replace relationship1 = "Friends" if relationship1 == "A friend you spend your free time with"
+	replace relationship2 = "Friends" if relationship2 == "A friend you spend your free time with"
+	
+	replace relationship1 = "Neighbor" if relationship1 == "A person who lives nearby"
+	replace relationship2 = "Neighbor" if relationship2 == "A person who lives nearby"
+
+	replace relationship1 = "Friend of prayer" if relationship1 == "A friend you go to church/mosque with"	
+	replace relationship2 = "Friend of prayer" if relationship2 == "A friend you go to church/mosque with"
+	
+	replace relationship1 = "Community leader" if relationship1 == "Your community leader"	
+	replace relationship2 = "Community leader" if relationship2 == "Your community leader"	
+	
+	sort districtName villageName respondentID respondentName 
+
+	/* Save overall list */
+	preserve
+	
+	order districtName villageName respondentID respondentName partnerName name1 relationship1 name2 relationship2
+	keep  villageName respondentID respondentName partnerName name1 relationship1 name2 relationship2
+	
+	rename name1 friend1 
+	rename name2 friend2
+	
+	export excel using ///
+				"${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_list1_pilot.xls" ///
+				, firstrow(var) replace
+	
+	restore
+	
+/* Generate list of Respondents + empty columns for eligibility criteria _______*/
+	
+	replace name1 = ""
+	rename name1 name
+	
+	gen age = ""
+
+	replace relationship1 = ""
+	rename relationship1 relationship
+	
+	gen talk = ""
+
+	order  districtName villageName respondentID respondentName name age relationship talk
+	keep   districtName villageName respondentID respondentName name age relationship talk
+	
+	sort districtName villageName respondentID respondentName 
+	expand 3
+	sort districtName villageName respondentID respondentName 
+	
+	drop districtName
+	gen note = ""
+	
+	/* Save conditions list */
+	export excel using ///
+			     "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_list2_pilot.xls" ///
+				 , firstrow(var) replace
+
+
+	
