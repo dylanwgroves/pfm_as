@@ -73,7 +73,8 @@ ________________________________________________________________________________
 	drop districtName
 	
 	/* Excel export */
-	*export excel using "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/pfm_originalandpartner.xls", firstrow(var) replace
+	export excel using "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_originalandpartner.xls" ////
+				, firstrow(var) replace
 
 
 	
