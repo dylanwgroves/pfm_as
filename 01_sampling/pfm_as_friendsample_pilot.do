@@ -37,6 +37,7 @@ ________________________________________________________________________________
 
 	keep id_* resp_name comsample*
 	
+	gen id_district_n = ""
 	gen p_resp_name_new = ""
 
 
