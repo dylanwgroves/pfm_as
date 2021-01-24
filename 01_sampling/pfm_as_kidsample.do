@@ -58,7 +58,7 @@ ________________________________________________________________________________
 	/* Drop Kids Too Young */
 	drop if kidssample_age < 13 | kidssample_age > 18
 	drop if kidssample_age == .
-	
+stop
 	/* Subvillage Name and Code */
 	rename b_s1q9_subvillage id_subvillage_n 
 

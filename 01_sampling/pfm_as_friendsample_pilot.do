@@ -24,13 +24,14 @@ ________________________________________________________________________________
 	
 /* Load Data ___________________________________________________________________*/	
 
-	use "X:\Box Sync\19_Community Media Endlines\07_Questionnaires & Data\07_AS\05_data_encrypted\02_survey\03_clean\audio_screening_survey_pilot_output.dta", clear
+	use "X:\Box Sync\19_Community Media Endlines\07_Questionnaires & Data\07_AS\05_data_encrypted\02_survey\03_clean\audio_screening_survey_pilot_master.dta", clear
 
 
 /* Extract Data ________________________________________________________________*/
 
-	gen id_village_id = substr(id,1,6)
-
+	gen id_village_n = substr(id,1,6)
+	gen id_resp_n = resp_name 
+	
 
 /* Keep Certain Variables ______________________________________________________*/
 
