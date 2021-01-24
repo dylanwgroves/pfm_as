@@ -59,21 +59,20 @@ ________________________________________________________________________________
 	local fmt: subinstr local fmt "%" "%-"
 	format `var' `fmt'
 	}
-	order id_district_n id_village_n id_resp_uid id_resp_n makesmoney1  p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
-	keep id_district_n id_village_n id_resp_uid id_resp_n makesmoney1 p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
+	order id_district_n id_village_n id_resp_uid id_resp_n makesmoney1 p_resp_name_new partner_education partner_makesmoney
+	keep id_district_n id_village_n id_resp_uid id_resp_n makesmoney1 p_resp_name_new partner_education partner_makesmoney
 	
 	rename id_district_n districtName
 	rename id_village_n villageName
 	rename id_resp_uid respondentID
 	rename id_resp_n respondentName
-	rename p_id_resp_uid partnerID
 	rename p_resp_name_new partnerName
 	
 	sort districtName villageName   respondentName 
 	drop districtName
 	
 	/* Excel export */
-	export excel using "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_originalandpartner.xls" ////
+	export excel using "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_background.xls" ////
 				, firstrow(var) replace
 
 

@@ -1,3 +1,4 @@
+	
 /* Overview ______________________________________________________________________
 
 Project: Wellspring Tanzania, Audio Screening
@@ -33,7 +34,7 @@ ________________________________________________________________________________
 	set seed 1956
 	
 /* Subset Data _________________________________________________________________*/	
-
+	
 	/* Get correct sample */
 	keep if sample == "as"
 	drop ne_*
@@ -42,7 +43,7 @@ ________________________________________________________________________________
 	
 /* Keep Certain Variables ______________________________________________________*/
 
-	keep id_* kidssample* endline_as svy_enum rd_treat sample_rd_pull resp_female resp_age resp_muslim s20q1b id_village_uid id_village_n id_village_c id_ward_c id_ward_n id_ward_uid id_district_c id_district_n b_cases_subvillage_name b_s1q9_subvillage b_resp_hhh
+	keep id_* kidssample* endline_as svy_enum rd_treat sample_rd_pull resp_female resp_age resp_muslim s20q1b id_village_uid id_village_n id_village_c id_ward_c id_ward_n id_ward_uid id_district_c id_district_n b_cases_subvillage_name b_s1q9_subvillage
 	order id_* kidssample* endline_as svy_enum 
 	
 /* Select Closes Friend (Remove if Family Member) ______________________________*/
@@ -57,7 +58,7 @@ ________________________________________________________________________________
 	/* Drop Kids Too Young */
 	drop if kidssample_age < 13 | kidssample_age > 18
 	drop if kidssample_age == .
-	
+stop
 	/* Subvillage Name and Code */
 	rename b_s1q9_subvillage id_subvillage_n 
 
@@ -89,28 +90,11 @@ ________________________________________________________________________________
 	rename kidssample_*_ kidssample_* 
 	drop id_object id_pull id_re 
 	order id_village_uid id_village_n id_resp_uid id_resp_n kidssample_consent id_* kidnum
-	keep  id_kidresp_uid id_village_uid id_village_n id_resp_uid id_resp_n kidssample_consent kidssample_fullname* kidssample_gender* kidssample_age* kid_num id* kidnum rd_treat rd_sample b_resp_hhh
+	keep  id_kidresp_uid id_village_uid id_village_n id_resp_uid id_resp_n kidssample_consent kidssample_fullname* kidssample_gender* kidssample_age* kid_num id* kidnum rd_treat rd_sample
 	
 	/* Save */
 	save "${data_as}/pfm_kids_sample.dta", replace
 	save "X:\Box Sync\19_Community Media Endlines\04_Research Design\04 Randomization & Sampling\09_Kids\pfm_kids_sample.dta", replace
 	export delimited using "X:\Box Sync\19_Community Media Endlines\04_Research Design\04 Randomization & Sampling\09_Kids\pfm_kids_sample.csv", nolabel replace
-	
-/* Generate kids mobilization form */
-keep id_village_n id_resp_uid id_resp_n b_resp_hhh kidssample_fullname id_kidresp_uid kidssample_age kidssample_gender kidssample_consent
-	order id_village_n id_resp_uid id_resp_n b_resp_hhh id_kidresp_uid kidssample_fullname kidssample_age kidssample_gender kidssample_consent
-	label variable id_village_n "Village"
-	label variable id_resp_uid "Original Resp ID"
-	label variable id_resp_n "Original Resp Name"
-	label variable b_resp_hhh "HHH?"
-	label variable id_kidresp_uid "Kid ID"
-	label variable kidssample_fullname "Kid Name"
-	label variable kidssample_age "Age"
-	label variable kidssample_gender "Gender"
-	label variable kidssample_consent "Consent"
-	
-	/* Save */
-	export excel using "/Users/Bardia/Box/19_Community Media Endlines/04_Research Design/04 Randomization & Sampling/09_Kids/pfm_kids_sample_mobilizerform.xlsx", firstrow(varlabels) replace
-
 
 		

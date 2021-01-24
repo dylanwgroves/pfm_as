@@ -115,14 +115,14 @@ ________________________________________________________________________________
 	/* Save overall list */
 	preserve
 	
-	order districtName villageName respondentID respondentName partnerName name1 relationship1 name2 relationship2
-	keep  villageName respondentID respondentName partnerName name1 relationship1 name2 relationship2
+	order districtName villageName respondentID respondentName partnerName name1 name2
+	keep  villageName respondentID respondentName partnerName name1 name2 
 	
 	rename name1 friend1 
 	rename name2 friend2
 	
 	export excel using ///
-				"${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_list1.xls" ///
+				"${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_helper.xls" ///
 				, firstrow(var) replace
 	
 	restore
@@ -151,7 +151,7 @@ ________________________________________________________________________________
 	
 	/* Save conditions list */
 	export excel using ///
-			     "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_list2.xls" ///
+			     "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_master.xls" ///
 				 , firstrow(var) replace
 
 
