@@ -61,10 +61,9 @@ ________________________________________________________________________________
 	local fmt: subinstr local fmt "%" "%-"
 	format `var' `fmt'
 	}
-	order id_district_n id_village_n id_resp_uid id_resp_n makesmoney1  p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
-	keep id_district_n id_village_n id_resp_uid id_resp_n makesmoney1 p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
+	order  id_village_n id_resp_uid id_resp_n makesmoney1  p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
+	keep  id_village_n id_resp_uid id_resp_n makesmoney1 p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
 	
-	rename id_district_n districtName
 	rename id_village_n villageName
 	rename id_resp_uid respondentID
 	rename id_resp_n respondentName
