@@ -65,7 +65,9 @@ stop
 	local fmt: subinstr local fmt "%" "%-"
 	format `var' `fmt'
 	}
+
 	order id_village_n id_resp_uid id_resp_n makesmoney1  p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
+
 	keep  id_village_n id_resp_uid id_resp_n makesmoney1 p_id_resp_uid p_resp_name_new partner_education partner_makesmoney
 	
 	rename id_village_n villageName
