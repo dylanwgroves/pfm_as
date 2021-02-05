@@ -36,18 +36,18 @@ ________________________________________________________________________________
 /* Keep Certain Variables ______________________________________________________*/
 
 
-	keep id_* resp_name comsample*
+	*keep id_* resp_name comsample*
 	
 	gen id_district_n = ""
 	gen p_resp_name_new = ""
 
 
-/* Select Closes Friend (Remove if Family Member) ______________________________*/
+/* Select Closes Friend (Remove if Family Member) ______________________________
 			
 	gen     relationship1_family = 0
 	replace relationship1_family = 1 if 	comsample_1_rltn == 1  | comsample_1_rltn == 2  | ///
 											comsample_1_rltn == 3  |  ///
-											  comsample_1_rltn == 12 | ///
+											 comsample_1_rltn == 12 | ///
 											comsample_1_rltn == 16 | comsample_1_rltn == 17 | comsample_1_rltn == 18
 	
 	gen relationship2_family = 0 
@@ -120,6 +120,7 @@ ________________________________________________________________________________
 	order districtName villageName respondentID respondentName partnerName name1 relationship1 name2 relationship2
 	keep  villageName respondentID respondentName partnerName name1 relationship1 name2 relationship2
 	
+	stop
 	rename name1 friend1 
 	rename name2 friend2
 	
@@ -128,32 +129,23 @@ ________________________________________________________________________________
 				, firstrow(var) replace
 	
 	restore
-	
+*/	
 /* Generate list of Respondents + empty columns for eligibility criteria _______*/
 	
-	replace name1 = ""
-	rename name1 name
-	
-	gen age = ""
+	replace village_id = subinstr(village_id, "-", "_",.)
 
-	replace relationship1 = ""
-	rename relationship1 relationship
-	
-	gen talk = ""
 
-	order  districtName villageName respondentID respondentName name age relationship talk
-	keep   districtName villageName respondentID respondentName name age relationship talk
+	order  village_id resp_id id_resp_n
+	keep   village_id resp_id id_resp_n
 	
-	sort districtName villageName respondentID respondentName 
-	expand 3
-	sort districtName villageName respondentID respondentName 
+	sort village_id resp_id id_resp_n
+	sort village_id resp_id id_resp_n
 	
-	drop districtName
 	gen note = ""
 	
 	/* Save conditions list */
 	export excel using ///
-			     "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_list2_pilot.xls" ///
+			     "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_list2_pilot2.xls" ///
 				 , firstrow(var) replace
 
 

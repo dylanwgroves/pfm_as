@@ -33,12 +33,14 @@ ________________________________________________________________________________
 	drop ne_*
 	rename as_* *																// Get rid of prefix
 	
-	
+
 /* Keep Certain Variables ______________________________________________________*/
 
 	keep id_* resp_name comsample* ///
-		 p_id_resp_uid p_resp_name_new
-	
+		 p_id_resp_uid p_resp_name_new ///
+		 rd_treat emreject_pull emcount_pull ///
+		 svy_phone svy_phone2
+		 
 
 /* Select Closes Friend (Remove if Family Member) ______________________________*/
 			
@@ -89,14 +91,14 @@ ________________________________________________________________________________
 	}
 
 	drop relationship1
-	rename relationship_1 relationship1
+	gen relationship1 = relationship_1 
 	drop relationship2
-	rename relationship_2 relationship2
-	rename id_district_n districtName
-	rename id_village_n villageName
-	rename id_resp_uid respondentID
-	rename id_resp_n respondentName
-	rename p_resp_name_new partnerName
+	gen relationship2 = relationship_2 
+	gen districtName = id_district_n 
+	gen villageName = id_village_n 
+	gen respondentID = id_resp_uid 
+	gen respondentName = id_resp_n 
+	gen partnerName = p_resp_name_new 
 
 	replace relationship1 = "Friends" if relationship1 == "A friend you spend your free time with"
 	replace relationship2 = "Friends" if relationship2 == "A friend you spend your free time with"
@@ -116,18 +118,19 @@ ________________________________________________________________________________
 	preserve
 	
 	order districtName villageName respondentID respondentName partnerName name1 name2
-	keep  villageName respondentID respondentName partnerName name1 name2 
+	keep  villageName respondentID respondentName svy_phone svy_phone2 partnerName name1 name2
 	
 	rename name1 friend1 
 	rename name2 friend2
 	
 	export excel using ///
-				"${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_helper.xls" ///
-				, firstrow(var) replace
+				"${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_helper.xls", ///
+				firstrow(var) replace
 	
 	restore
-	
+	stop
 /* Generate list of Respondents + empty columns for eligibility criteria _______*/
+	preserve 
 	
 	replace name1 = ""
 	rename name1 name
@@ -154,5 +157,25 @@ ________________________________________________________________________________
 			     "${user}/Box Sync/19_Community Media Endlines/02_Project and Survey Management/02 Planning/Training Plan/Training Manual/Spillover/01_Friends/pfm_friends_master.xls" ///
 				 , firstrow(var) replace
 
+	restore
+	*/
+	
+/* Generate Cases ______________________________________________________________*/
 
+
+	** Generate Variables
+	gen id_friend_uid = id_resp_uid + "_F"
+	rename name1 friend1 
+	rename name2 friend2
+	gen rd_sample = (rd_treat == 1 | rd_treat == 2)
+	encode id_ward_uid, gen(id_ward_uid_c)
+	encode id_village_uid, gen(id_village_uid_c)
+	
+	
+order id_village_uid id_resp_uid id_resp_n id_friend_uid friend1 friend2 id_region_c id_region_n id_district_c id_district_n id_ward_c id_ward_n id_village_c id_village_n rd_treat id_resp_c id_ward_uid id_objectid rd_sample id_pull id_re id_district_c id_ward_uid_c id_village_uid_c 
+
+export delimited using "X:\Box Sync\19_Community Media Endlines\04_Research Design\04 Randomization & Sampling\08_Friends\pfm_friends_cases.csv", nolabel replace
+
+
+	
 	

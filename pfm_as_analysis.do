@@ -26,12 +26,13 @@ ________________________________________________________________________________
 
 	use "${data_as}/pfm_as_analysis.dta", clear
 
+keep if comply_true == 1 | comply_true == .
 
 /* Define Globals and Locals ___________________________________________________*/
 	#d ;
 		
 		/* Parnter Survey or No? */
-		local partner 		0													// set to 1 for partner survey
+		local partner 		1													// set to 1 for partner survey
 							;
 		
 		
@@ -41,7 +42,7 @@ ________________________________________________________________________________
 		
 		
 		/* Rerandomization count */
-		local rerandcount	500
+		local rerandcount	10
 							;
 			
 			
@@ -52,13 +53,20 @@ ________________________________________________________________________________
 			
 		/* Indices */		
 		local index_list	fm
+							em_attitude
+							em_norm 
+							em_report 
+							em_record 
+							pref 
+							wpp 
+							gender 
+							ipv
 							;
 							
 		/* Outcomes */
 		local fm			fm_reject
 							fm_reject_long 
 							fm_partner_reject
-							fm_norm_reject
 							;
 		local em_attitude	em_reject_index
 							em_reject_religion 
@@ -132,6 +140,39 @@ ________________________________________________________________________________
 							b_fm_reject
 							;
 							
+		/* Lasso Covariates - Partner */
+		global cov_lasso_partner	p_resp_age 
+							p_resp_urbanvisit 
+							p_resp_religiousschool 
+							p_resp_religiosity 
+							p_resp_female 
+							p_resp_muslim
+							resp_female 
+							resp_muslim
+							b_resp_religiosity
+							b_values_likechange 
+							b_values_techgood 
+							b_values_respectauthority 
+							b_values_trustelders
+							b_fm_reject
+							b_ge_raisekids 
+							b_ge_earning 
+							b_ge_leadership 
+							b_ge_noprefboy 
+							b_media_tv_any 
+							b_media_news_never 
+							b_media_news_daily 
+							b_radio_any 
+							b_resp_lang_swahili 
+							b_resp_literate 
+							b_resp_standard7 
+							b_resp_nevervisitcity 
+							b_resp_married 
+							b_resp_hhh 
+							b_resp_numkid
+							b_fm_reject
+							;
+							
 		/* Statitistics of interest */
 		local stats_list 	coefficient											//1
 							se													//2
@@ -165,15 +206,29 @@ if `sandbox' > 0 {
 
 	foreach index of local index_list {
 
+		** Main Effect
 		foreach var of local `index' {
 			xi : regress `var' treat ${cov_always}, cluster(id_village_n)
 			estimates store sb_`var'
 		}
 		
+		
 	estimates table sb_*, keep(treat) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)
-
 	
-}
+	estimates clear
+	
+		** Interaction Effect
+		gen interact = treat*resp_muslim
+		
+		foreach var of local `index' {
+			xi : regress `var' treat resp_muslim interact ${cov_always}, cluster(id_village_n)
+			estimates store sb_`var'
+		}
+	
+	estimates table sb_*, keep(treat resp_muslim interact) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)
+	
+	estimates clear
+	}
 }
 
 
@@ -223,7 +278,13 @@ foreach index of local index_list {
 
 	/* Lasso Regression  _______________________________________________________*/
 
-		qui lasso linear `dv' ${cov_lasso}
+		if `partner' > 0 {
+			qui lasso linear `dv' ${cov_lasso_partner}
+		}
+		if `partner' < 1 {
+			qui lasso linear `dv' ${cov_lasso}
+		}
+		
 			local lassovars = e(allvars_sel)
 			local lassovars_num  = e(k_nonzero_sel)
 
@@ -398,12 +459,12 @@ foreach index of local index_list {
 
 		/* Export */
 		if `partner' > 0 {
-			save "${data_rd}/`index'_partner", replace
-			export excel using "${as_tables}/pfm_as_rawresults_partner", sheet(`index') sheetreplace firstrow(variables)
+			save "${data_as}/`index'_partner", replace
+			export excel using "${as_tables}/pfm_as_rawresults_partner", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 		}
 		if `partner' < 1 {
-			save "${data_rd}/`index'", replace
-			export excel using "${as_tables}/pfm_as_rawresults", sheet(new) sheetreplace firstrow(variables)
+			save "${data_as}/`index'", replace
+			export excel using "${as_tables}/pfm_as_rawresults", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 		}
 		restore
 

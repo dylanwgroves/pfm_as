@@ -47,12 +47,8 @@ ________________________________________________________________________________
 	keep if sample == "as"
 	drop ne_*
 	rename as_* *																// Get rid of prefix
-	
-	
-	/* Primary Analysis is only with people who own a radio */					
-	keep if  endline_as == 1
-	keep if  comply_true == 1
-	
+																
+
 /* Import this stuff ___________________________________________________________*/
 
 	
@@ -116,3 +112,9 @@ ________________________________________________________________________________
 /* Save ________________________________________________________________________*/
 
 	save "${data_as}/pfm_as_analysis.dta", replace
+	
+	
+	keep id_* comply_true endline_as sample_rd rd_treat treat 
+	rename treat as_treat
+	save "X:/Box Sync/19_Community Media Endlines/07_Questionnaires & Data/08_Spillover/05_data_encrypted/02_survey/03_clean/as_master.dta", replace
+

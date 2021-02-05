@@ -38,28 +38,29 @@ ________________________________________________________________________________
 	keep if sample == "as"
 	drop ne_*
 	rename as_* *																// Get rid of prefix
-	
-	
+
 /* Keep Certain Variables ______________________________________________________*/
 
-	keep id_* kidssample* endline_as svy_enum rd_treat sample_rd_pull resp_female resp_age resp_muslim s20q1b id_village_uid id_village_n id_village_c id_ward_c id_ward_n id_ward_uid id_district_c id_district_n b_cases_subvillage_name b_s1q9_subvillage b_resp_hhh
+	keep id_* kidssample* endline_as svy_enum rd_treat sample_rd_pull resp_female resp_age resp_muslim	 id_village_uid id_village_n id_village_c id_ward_c id_ward_n id_ward_uid id_district_c id_district_n b_cases_subvillage_name b_s1q9_subvillage b_resp_hhh treat
 	order id_* kidssample* endline_as svy_enum 
 	
 /* Select Closes Friend (Remove if Family Member) ______________________________*/
 	keep if endline_as == 1
-	keep if kidssample_kidnum > 0 & kidssample_kidnum != .	
+	*keep if kidssample_kidnum > 0 & kidssample_kidnum != .	
 
 	reshape long kidssample_fullname_ kidssample_gender_ kidssample_age_, j(kidnum) i(id_resp_uid)
 
 	egen id_kidresp_uid = concat(id_resp_uid kidnum), punct("_")
 
-	
 	/* Drop Kids Too Young */
-	drop if kidssample_age < 13 | kidssample_age > 18
-	drop if kidssample_age == .
+	replace kidssample_gender = . if kidssample_age < 13 | (kidssample_age > 18 & kidssample_age != .) 
+	replace kidssample_fullname = "" if kidssample_age < 13 | (kidssample_age > 18 & kidssample_age != .) 
+	replace kidssample_age = . if kidssample_age < 13 | (kidssample_age > 18 & kidssample_age != .) 
+
+	*drop if kidssample_age == .
 	
 	/* Subvillage Name and Code */
-	rename b_s1q9_subvillage id_subvillage_n 
+	rename b_s1q9_subvillage id_subvillage_n 	
 
 	/* Create Unique Numeric Indicator */
 	encode id_district_n, gen(id_district_uid_c)
@@ -89,13 +90,14 @@ ________________________________________________________________________________
 	rename kidssample_*_ kidssample_* 
 	drop id_object id_pull id_re 
 	order id_village_uid id_village_n id_resp_uid id_resp_n kidssample_consent id_* kidnum
-	keep  id_kidresp_uid id_village_uid id_village_n id_resp_uid id_resp_n kidssample_consent kidssample_fullname* kidssample_gender* kidssample_age* kid_num id* kidnum rd_treat rd_sample b_resp_hhh
+	keep  id_kidresp_uid id_village_uid id_village_n id_resp_uid id_resp_n kidssample_consent kidssample_fullname* kidssample_gender* kidssample_age* kid_num id* kidnum rd_treat rd_sample b_resp_hhh treat
 	
 	/* Save */
 	save "${data_as}/pfm_kids_sample.dta", replace
 	save "X:\Box Sync\19_Community Media Endlines\04_Research Design\04 Randomization & Sampling\09_Kids\pfm_kids_sample.dta", replace
-	export delimited using "X:\Box Sync\19_Community Media Endlines\04_Research Design\04 Randomization & Sampling\09_Kids\pfm_kids_sample.csv", nolabel replace
+	export delimited using "X:\Box Sync\19_Community Media Endlines\04_Research Design\04 Randomization & Sampling\09_Kids\pfm_kids_cases_2.csv", nolabel replace
 	
+	stop
 /* Generate kids mobilization form */
 keep id_village_n id_resp_uid id_resp_n b_resp_hhh kidssample_fullname id_kidresp_uid kidssample_age kidssample_gender kidssample_consent
 	order id_village_n id_resp_uid id_resp_n b_resp_hhh id_kidresp_uid kidssample_fullname kidssample_age kidssample_gender kidssample_consent
@@ -110,7 +112,7 @@ keep id_village_n id_resp_uid id_resp_n b_resp_hhh kidssample_fullname id_kidres
 	label variable kidssample_consent "Consent"
 	
 	/* Save */
-	export excel using "/Users/Bardia/Box/19_Community Media Endlines/04_Research Design/04 Randomization & Sampling/09_Kids/pfm_kids_sample_mobilizerform.xlsx", firstrow(varlabels) replace
+	export excel using "X:\Box Sync\19_Community Media Endlines\04_Research Design\04 Randomization & Sampling\09_Kids\pfm_listing_kids_master.xlsx", firstrow(varlabels) replace
 
 
 		
