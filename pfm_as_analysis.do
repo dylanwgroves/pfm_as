@@ -37,7 +37,7 @@ keep if comply_true == 1 | comply_true == .
 		
 		
 		/* Sandbox */															// Set if you just want to see the immediate results without export
-		local sandbox		0
+		local sandbox		1
 							;
 		
 		
@@ -52,8 +52,9 @@ keep if comply_true == 1 | comply_true == .
 							
 			
 		/* Indices */		
-		local index_list	fm
+		local index_list	/*fm*/
 							em_attitude
+							/*)
 							em_norm 
 							em_report 
 							em_record 
@@ -61,6 +62,7 @@ keep if comply_true == 1 | comply_true == .
 							wpp 
 							gender 
 							ipv
+							*/
 							;
 							
 		/* Outcomes */
@@ -208,7 +210,7 @@ if `sandbox' > 0 {
 
 		** Main Effect
 		foreach var of local `index' {
-			xi : regress `var' treat ${cov_always}, cluster(id_village_n)
+			xi : regress p_`var' treat ${cov_always} i.svy_enum, cluster(id_village_n)
 			estimates store sb_`var'
 		}
 		
@@ -218,19 +220,19 @@ if `sandbox' > 0 {
 	estimates clear
 	
 		** Interaction Effect
-		gen interact = treat*resp_muslim
+		gen interact = treat*resp_female
 		
 		foreach var of local `index' {
-			xi : regress `var' treat resp_muslim interact ${cov_always}, cluster(id_village_n)
+			xi : regress p_`var' treat resp_female interact ${cov_always}, cluster(id_village_n)
 			estimates store sb_`var'
 		}
 	
-	estimates table sb_*, keep(treat resp_muslim interact) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)
+	estimates table sb_*, keep(treat resp_female interact) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)
 	
 	estimates clear
 	}
 }
-
+stop	
 
 /* Run for Each Index __________________________________________________________*/
 
