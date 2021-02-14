@@ -26,18 +26,23 @@ ________________________________________________________________________________
 
 	use "${data_as}/pfm_as_analysis.dta", clear
 
-keep if comply_true == 1 | comply_true == .
+	keep if comply_true == 1 | comply_true == .
+	rename em_reject_needhusband_dum em_reject_needhus_dum						// Move this to master cleanign
+	rename p_em_reject_needhusband_dum p_em_reject_needhus_dum					// Move this to master cleanign
+
+	*keep if p_resp_age != .														// People with partner
+	keep if p_resp_age == .														// People with no partner
 
 /* Define Globals and Locals ___________________________________________________*/
 	#d ;
 		
 		/* Parnter Survey or No? */
-		local partner 		1													// set to 1 for partner survey
+		local partner 		0													// set to 1 for partner survey
 							;
 		
 		
 		/* Sandbox */															// Set if you just want to see the immediate results without export
-		local sandbox		1
+		local sandbox		0
 							;
 		
 		
@@ -52,9 +57,18 @@ keep if comply_true == 1 | comply_true == .
 							
 			
 		/* Indices */		
-		local index_list	/*fm*/
+		local index_list	fm
 							em_attitude
-							/*)
+							em_norm 
+							em_report 
+							em_record 
+							pref 
+							wpp 
+							gender 
+							ipv
+							/*Index Options
+							fm
+							em_attitude
 							em_norm 
 							em_report 
 							em_record 
@@ -71,11 +85,11 @@ keep if comply_true == 1 | comply_true == .
 							fm_partner_reject
 							;
 		local em_attitude	em_reject_index
-							em_reject_religion 
-							em_reject_noschool 
-							em_reject_pregnant 
-							em_reject_money 
-							em_reject_needhusband
+							em_reject_religion_dum 
+							em_reject_noschool_dum
+							em_reject_pregnant_dum
+							em_reject_money_dum
+							em_reject_needhus_dum
 							;
 		local em_norm 		em_norm_reject_bean
 							em_norm_reject_dum
@@ -105,6 +119,8 @@ keep if comply_true == 1 | comply_true == .
 							ge_business
 							;
 		local ipv 			ipv_rej_disobey	
+							ipv_rej_hithard
+							ipv_rej_persists
 							ipv_norm_rej	
 							ipv_report
 							;	
@@ -133,7 +149,7 @@ keep if comply_true == 1 | comply_true == .
 							b_media_news_daily 
 							b_radio_any 
 							b_resp_lang_swahili 
-							b_resp_literate 
+							b_resp_literate 	
 							b_resp_standard7 
 							b_resp_nevervisitcity 
 							b_resp_married 
@@ -144,37 +160,29 @@ keep if comply_true == 1 | comply_true == .
 							
 		/* Lasso Covariates - Partner */
 		global cov_lasso_partner	p_resp_age 
-							p_resp_urbanvisit 
-							p_resp_religiousschool 
-							p_resp_religiosity 
-							p_resp_female 
-							p_resp_muslim
-							resp_female 
-							resp_muslim
-							b_resp_religiosity
-							b_values_likechange 
-							b_values_techgood 
-							b_values_respectauthority 
-							b_values_trustelders
-							b_fm_reject
-							b_ge_raisekids 
-							b_ge_earning 
-							b_ge_leadership 
-							b_ge_noprefboy 
-							b_media_tv_any 
-							b_media_news_never 
-							b_media_news_daily 
-							b_radio_any 
-							b_resp_lang_swahili 
-							b_resp_literate 
-							b_resp_standard7 
-							b_resp_nevervisitcity 
-							b_resp_married 
-							b_resp_hhh 
-							b_resp_numkid
-							b_fm_reject
-							;
-							
+									b_resp_religiosity
+									b_values_likechange 
+									b_values_techgood 
+									b_values_respectauthority 
+									b_values_trustelders
+									b_fm_reject
+									b_ge_raisekids 
+									b_ge_earning 
+									b_ge_leadership 
+									b_ge_noprefboy 
+									b_media_tv_any 
+									b_media_news_never 
+									b_media_news_daily 
+									b_radio_any 
+									b_resp_lang_swahili 
+									b_resp_literate 	
+									b_resp_standard7 
+									b_resp_nevervisitcity 
+									b_resp_married 
+									b_resp_hhh 
+									b_resp_numkid
+									;
+		
 		/* Statitistics of interest */
 		local stats_list 	coefficient											//1
 							se													//2
@@ -203,36 +211,35 @@ keep if comply_true == 1 | comply_true == .
 
 if `sandbox' > 0 {
 
-
 	estimates clear
 
 	foreach index of local index_list {
-
+/**/
 		** Main Effect
 		foreach var of local `index' {
-			xi : regress p_`var' treat ${cov_always} i.svy_enum, cluster(id_village_n)
+			xi : regress `var' treat ${cov_always} i.svy_enum, cluster(id_village_n)
 			estimates store sb_`var'
 		}
 		
 		
-	estimates table sb_*, keep(treat) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)
-	
+	estimates table sb_*, keep(treat) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)	
 	estimates clear
 	
 		** Interaction Effect
-		gen interact = treat*resp_female
+		gen interact = treat*rd_treat
 		
 		foreach var of local `index' {
-			xi : regress p_`var' treat resp_female interact ${cov_always}, cluster(id_village_n)
+			xi : regress `var' treat rd_treat interact ${cov_always}, cluster(id_village_n)
 			estimates store sb_`var'
 		}
 	
-	estimates table sb_*, keep(treat resp_female interact) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)
+	estimates table sb_*, keep(treat rd_treat interact) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)
 	
 	estimates clear
+	drop interact
 	}
 }
-stop	
+
 
 /* Run for Each Index __________________________________________________________*/
 
@@ -289,6 +296,7 @@ foreach index of local index_list {
 		
 			local lassovars = e(allvars_sel)
 			local lassovars_num  = e(k_nonzero_sel)
+
 
 		if `lassovars_num' != 0 {	
 			reg `dv' treat `lassovars' ${cov_always}, cluster(${cluster})
@@ -413,10 +421,10 @@ foreach index of local index_list {
 			restore
 		
 		/* Save variable summaries */
-			mat R[`i',14]= `treat_mean'    											// treat mean
-			mat R[`i',15]= `treat_sd'    											// treat sd		
-			mat R[`i',16]= `control_mean'    										// control mean
-			mat R[`i',17]= `control_sd'    											// control sd
+			mat R[`i',14]= `control_mean'    											// treat mean
+			mat R[`i',15]= `control_sd'    											// treat sd		
+			mat R[`i',16]= `treat_mean'    										// control mean
+			mat R[`i',17]= `treat_sd'    											// control sd
 			mat R[`i',18]= `sd'   													// village-sd
 			mat R[`i',19]= `min'  													// min
 			mat R[`i',20]= `max'  													// max
@@ -466,7 +474,9 @@ foreach index of local index_list {
 		}
 		if `partner' < 1 {
 			save "${data_as}/`index'", replace
-			export excel using "${as_tables}/pfm_as_rawresults", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
+			export excel using "${as_tables}/pfm_as_rawresults_pplwNOpartners", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
+			*export excel using "${as_tables}/pfm_as_rawresults_pplwpartners", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
+			*export excel using "${as_tables}/pfm_as_rawresults", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 		}
 		restore
 
