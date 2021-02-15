@@ -1,6 +1,6 @@
 /* Basics ______________________________________________________________________
 
-Project: Wellspring Tanzania, Audio Screening
+Project: Wellspring Tanzania, Audio Screening (Kids)
 Purpose: Analysis
 Author: dylan groves, dylanwgroves@gmail.com
 Date: 2020/12/23
@@ -16,25 +16,23 @@ ________________________________________________________________________________
 	global c_date = c(current_date)
 
 	
-/* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
+/* Run Prelim File _____________________________________________________________ // comment out if you dont need to rerun prelim cleaning	
 
 	*do "${user}/Documents/pfm_.master/00_setup/pfm_paths_master.do"
 	do "${code}/../pfm_audioscreening/pfm_as_prelim.do"
-
+*/
 
 /* Load Data ___________________________________________________________________*/	
 
-	use "${data_as}/pfm_as_analysis.dta", clear
-stop
-	keep if comply_true == 1 | comply_true == .
-	rename em_reject_needhusband_dum em_reject_needhus_dum						// Move this to master cleanign
-	rename p_em_reject_needhusband_dum p_em_reject_needhus_dum					// Move this to master cleanign
+	use "${data_as}/pfm_as_analysis_kids.dta", clear							// Only use for Kids							
+	*use "${data_as}/pfm_as_analysis.dta", clear								// Use for all non-kids analysis
 
-	
-	*keep if p_resp_age != .														// People with partner
-	*keep if p_resp_age == .														// People with no partner
-stop
+	keep if comply_true == 1 | comply_true == .
+	*keep if p_resp_age != .													// People with partner
+	*keep if p_resp_age == .													// People with no partner
+
 /* Define Globals and Locals ___________________________________________________*/
+
 	#d ;
 		
 		/* Parnter Survey or No? */
@@ -42,7 +40,11 @@ stop
 							;
 		
 		/* Friends Survey or No? */
-		local partner 		0													// set to 1 for partner survey
+		local friend 		0													// set to 1 for friend survey
+							;
+		
+		/* Kid Survey or No? */
+		local kid 			1													// set to 1 for kid survey
 							;
 		
 		
@@ -62,7 +64,11 @@ stop
 							
 			
 		/* Indices */		
-		local index_list	fm
+		local index_list	
+							fm_kid
+							ge_kid
+							em_att_kid
+							pref_kid
 							/*Index Options
 							fm
 							em_attitude
@@ -73,24 +79,29 @@ stop
 							wpp 
 							gender 
 							ipv
+							fm_kid
+							ge_kid
+							em_att_kid
+							pref_kid
 							*/
 							;
-							
+
 		/* Outcomes */
 		local fm			fm_reject
 							fm_reject_long 
-							fm_partner_reject									// Not in friend
-							fm_
+							/*fm_partner_reject									// Not in friend
+							fm_friend_reject*/
 							;
 		local em_attitude	em_reject_index
 							em_reject_religion_dum 
-							em_reject_noschool_dum
-							em_reject_pregnant_dum
 							em_reject_money_dum
-							em_reject_needhus_dum
+							/*
+							em_reject_noschool_dum								// Not in friend
+							em_reject_pregnant_dum								// Not in friend
+							em_reject_needhus_dum								// Not in friend
+							*/
 							;
-		local em_norm 		em_norm_reject_bean
-							em_norm_reject_dum
+		local em_norm 		em_norm_reject_dum
 							;
 		local em_report  	em_report
 							em_report_norm
@@ -100,17 +111,19 @@ stop
 							em_record_shareany_name
 							;
 		local pref 			em_elect
+							/*
 							ptixpref_efm 
 							ptixpref_efm_first 
 							ptixpref_efm_topthree 
 							ptixpref_efm_notlast 
-							ptixpref_partner_efm
+							ptixpref_partner_efm*/							// Original and partner only
 							;
 		local wpp 			wpp_attitude_dum 
 							wpp_behavior
 							wpp_partner
 							;
 		local gender		ge_index
+							/*ge_earning*/										// Friends only
 							ge_school 
 							ge_work 
 							ge_leadership 
@@ -122,7 +135,22 @@ stop
 							ipv_norm_rej	
 							ipv_report
 							;	
+		local ge_kid		ge_index
+							ge_wep_dum 
+							ge_earning 
+							ge_school
+							;
+		local fm_kid		fm_reject
+							fm_reject_long 
+							fm_parent_reject
+							;
 							
+		local em_att_kid	em_reject_index
+							em_reject_religion_dum 
+							em_reject_money_dum
+							;
+		local pref_kid		em_elect
+							;
 		/* Covariates */	
 		global cov_always	i.block_as											// Covariates that are always included
 							i.rd_group
@@ -133,7 +161,8 @@ stop
 							;	
 							
 		/* Lasso Covariates */
-		global cov_lasso	resp_female 
+		global cov_lasso	
+							resp_female 
 							resp_muslim
 							p_resp_age
 							b_resp_religiosity
@@ -158,6 +187,27 @@ stop
 							b_resp_hhh 
 							b_resp_numkid
 							b_fm_reject
+							;
+							
+		/* Friend Lasso Covariates */
+		global cov_lasso_friend	
+							f_resp_female
+							f_resp_age
+							f_resp_earnmoney
+							f_resp_muslim
+							f_resp_edu
+							f_resp_readandwrite
+							f_resp_evercity
+							f_resp_yrsinvill
+							;
+							
+		/* Kid Lasso Covariates */
+		global cov_lasso_kid	
+							k_resp_female 
+							k_resp_age 
+							k_resp_readandwrite 
+							k_resp_muslim 
+							k_resp_religiousschool
 							;
 							
 		
@@ -238,11 +288,22 @@ foreach index of local index_list {
 	/* Adjust for Friend Survey ________________________________________________*/
 
 		if `friend' > 0 {														// Need to change variable titles if partner survey
-			local dv_p
+			local dv_f
 			foreach var of local `index' {
 				local dv_f `dv_f' f_`var'
 				}
-			local newindex `dv_p'
+			local newindex `dv_f'
+			local var_list `newindex'
+		}
+		
+	/* Adjust for Kid Survey ________________________________________________*/
+
+		if `kid' > 0 {															// Need to change variable titles if partner survey
+			local dv_k
+			foreach var of local `index' {
+				local dv_k `dv_k' k_`var'
+				}
+			local newindex `dv_k'
 			local var_list `newindex'
 		}
 
@@ -251,10 +312,8 @@ foreach index of local index_list {
 
 		This section prepares an empty matrix to hold results
 	*/
-		if `partner' < 1 {
-			if `friend' < 1 {
+		if `partner' < 1 & `friend' < 1 & `kid' < 1 {
 				local var_list ``index''
-			}
 		}
 		
 		local varnames ""   
@@ -279,17 +338,25 @@ foreach index of local index_list {
 
 	/* Lasso Regression  _______________________________________________________*/
 
+		/* Run Lasso on Appropriate Variables */
 		if `partner' > 0 {
-			qui lasso linear `dv' ${cov_lasso}									// Place holder if we want to create separate covariates
+			qui lasso linear `dv' ${cov_lasso_partner}							// Place holder if we want to create separate covariates
 		}
-		if `partner' < 1 {
+		if `friend' > 0 {
+			qui lasso linear `dv' ${cov_lasso_friend}
+		}
+		if `kid' > 0 {
+			qui lasso linear `dv' ${cov_lasso_kid}
+		}		
+		if `partner' < 1 & `friend' < 1 & `kid' < 1 {
 			qui lasso linear `dv' ${cov_lasso}
 		}
 
+			/* Collect Lassos from Variables */
 			local lassovars = e(allvars_sel)
 			local lassovars_num  = e(k_nonzero_sel)
 
-
+		/* Run Lasso Regressions */
 		if `lassovars_num' != 0 {	
 			reg `dv' treat `lassovars' ${cov_always}, cluster(${cluster})
 				matrix table = r(table)
@@ -341,6 +408,7 @@ foreach index of local index_list {
 			
 			di "****************************************"
 			di "*** Variable is `dv'"
+			di "*** N is `e(N)'"
 			di "*** coef is `lasso_coef'"
 			di "*** pval is `pval'"
 			di "*** ripval is `lasso_rip_count' / `rerandcount'	"
@@ -432,6 +500,7 @@ foreach index of local index_list {
 		
 	/* Export Matrix _______________________________________________________________*/ 
 		preserve 
+		
 		/* Row Names */
 		mat rownames R = `varnames'  
 
@@ -461,25 +530,30 @@ foreach index of local index_list {
 
 		/* Export */
 			
-			** Partner
+			/* Partner */
 			if `partner' > 0 {
 				save "${data_as}/`index'_partner", replace
 				export excel using "${as_tables}/pfm_as_rawresults_partner", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 			}
 			
-			** Friend
+			/* Friend */
 			if `friend' > 0 {
 				save "${data_as}/`index'_friend", replace
 				export excel using "${as_tables}/pfm_as_rawresults_friend", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
+			}
+			
+			/* Kid */
+			if `kid' > 0 {
+				save "${data_as}/`index'_kid", replace
+				export excel using "${as_tables}/pfm_as_rawresults_kid", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 			}		
 			
-			** Main
-			if `partner' < 1 & `friend' < 0 {
+			/* Main */
+			if `partner' < 1 & `friend' < 1 & `kid' < 1 {
 				save "${data_as}/`index'", replace
 				*export excel using "${as_tables}/pfm_as_rawresults_pplwNOpartners", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 				*export excel using "${as_tables}/pfm_as_rawresults_pplwpartners", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 				export excel using "${as_tables}/pfm_as_rawresults", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
-				}
 			}
 			restore
 

@@ -48,7 +48,7 @@ ________________________________________________________________________________
 	keep if sample == "as"
 	drop ne_*
 	rename as_* *																// Get rid of prefix
-																
+	drop k_*														
 
 /* Import this stuff ___________________________________________________________*/
 
@@ -105,26 +105,11 @@ ________________________________________________________________________________
 				bys id_village_uid : egen vill_`var' = mean(`var')
 				replace `var' = vill_`var' if `var' == . | `var' == .d | `var' == .r
  			}
-			
-/* Generate Community Level Baseline ___________________________________________*/
-
-	foreach var of varlist b_ge_raisekids b_ge_earning b_ge_leadership ///
-							b_ge_noprefboy b_ge_index b_fm_reject {
-		bys id_village_uid : egen v_`var' = mean(`var')
-	}
-	
-	
-	/* Some norm reject information is missing - bring in from norm-bean 		*/	// We could also just drop this observations
-	replace em_norm_reject_dum = 1 if em_norm_reject_bean >=5 & em_norm_reject_bean < 11 & em_norm_reject_dum == .
-		replace em_norm_reject_dum = 0 if em_norm_reject_bean < 5 & em_norm_reject_bean > -1 & em_norm_reject_dum == .
 		
-
-/* Save ________________________________________________________________________*/
-
-	save "${data_as}/pfm_as_analysis.dta", replace
+	/* Save */
 	save `temp_all', replace
-	
 
+	
 /* Reshape Long ________________________________________________________________*/
 
 	use "${data}/01_raw_data/pfm_as_endline_clean_kid_long.dta", clear
@@ -132,6 +117,9 @@ ________________________________________________________________________________
 	rename k_id_resp_uid id_resp_uid 
 	merge n:1 id_resp_uid using `temp_all', gen(_merge_kids)
 	keep if _merge_kids == 3
+
+
+/* Save ________________________________________________________________________*/
+
 	save "${data_as}/pfm_as_analysis_kids.dta", replace
-
-
+	
