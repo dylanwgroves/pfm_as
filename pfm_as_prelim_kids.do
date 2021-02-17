@@ -1,14 +1,11 @@
 	
 /* Overview ______________________________________________________________________
 
-Project: Wellspring Tanzania, Audio Screening
-Purpose: Analysis Prelimenary Work
-Author: dylan groves, dylanwgroves@gmail.com
-Date: 2020/12/23l
+Project: Wellspring Tanzania, Audio Screening (Kids)
+Purpose: Spillover Analysis Preliminary Work
+Author: Dylan Groves, dylanwgroves@gmail.com
+Date: 2021
 
-
-	This mostly just subsets the data and does anything else necessary before
-	running the analysis
 ________________________________________________________________________________*/
 
 
@@ -29,7 +26,7 @@ ________________________________________________________________________________
 /* Load Data ___________________________________________________________________*/	
 
 	/* Attendance Data */
-	import excel "${data_as}\pfm_as_attendance.xlsx", sheet("Sheet1") firstrow clear
+	import excel "${data_as}/pfm_as_attendance.xlsx", sheet("Sheet1") firstrow clear
 		replace comply_true = 1 if m_comply_attend == "Yes" & comply_true == .
 			replace comply_true = 0 if m_comply_attend == "No" & comply_true == .
 		drop fm_reject resp_female m_comply_attend treat Diff id_resp_n id_village_n

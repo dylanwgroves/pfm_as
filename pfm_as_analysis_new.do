@@ -1,9 +1,9 @@
 /* Basics ______________________________________________________________________
 
-Project: Wellspring Tanzania, Audio Screening (Kids)
+Project: Wellspring Tanzania, Audio Screening Spillover (Partner + Friend + Kids)
 Purpose: Analysis
 Author: dylan groves, dylanwgroves@gmail.com
-Date: 2020/12/23
+Date: 2021
 ________________________________________________________________________________*/
 
 
@@ -18,8 +18,8 @@ ________________________________________________________________________________
 	
 /* Run Prelim File _____________________________________________________________ // comment out if you dont need to rerun prelim cleaning	
 
-	*do "${user}/Documents/pfm_.master/00_setup/pfm_paths_master.do"
-	do "${code}/../pfm_audioscreening/pfm_as_prelim.do"
+	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
+	do "${code}/pfm_audioscreening/pfm_as_prelim.do"
 */
 
 /* Load Data ___________________________________________________________________*/	

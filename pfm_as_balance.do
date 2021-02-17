@@ -18,8 +18,8 @@ ________________________________________________________________________________
 	
 /* Run Prelim File _____________________________________________________________*/ // Don't have to always re-run this but do have to re-run after an update	
 
-	do "${user}/Documents/pfm_.master/00_setup/pfm_paths_master.do"
-	do "${code}/../pfm_audioscreening/pfm_as_prelim.do"
+	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
+	do "${code}/pfm_audioscreening/pfm_as_prelim.do"
 
 	
 /* Load Data ___________________________________________________________________*/	
