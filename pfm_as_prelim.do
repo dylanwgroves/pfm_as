@@ -47,7 +47,8 @@ ________________________________________________________________________________
 	/* Get correct sample */
 	keep if sample == "as"
 	drop ne_*
-	rename as_* *																// Get rid of prefix
+	rename as_* *	// Get rid of prefix
+	drop k_*
 																
 
 /* Import this stuff ___________________________________________________________*/

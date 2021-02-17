@@ -237,6 +237,9 @@ ________________________________________________________________________________
 
 /* Sandbox _____________________________________________________________________*/
 
+recode treat (0=1)(1=0)
+reg k_hivknow_arv_survive treat##c.parent_currentevents ${cov_always}, cluster(id_village_n)
+stop
 if `sandbox' > 0 {
 
 	estimates clear
