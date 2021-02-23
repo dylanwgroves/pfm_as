@@ -26,8 +26,8 @@ ________________________________________________________________________________
 
 	use "${data_as}/pfm_as_analysis.dta", clear
 	
-	keep if comply_attend == 1
-
+	keep if comply_true == 1
+	
 	
 /* Define Globals and Locals ___________________________________________________*/
 	#d ;
