@@ -1,9 +1,9 @@
 /* Basics ______________________________________________________________________
 
-Project: Wellspring Tanzania, Audio Screening
-Purpose: Analysis
-Author: dylan groves, dylanwgroves@gmail.com
-Date: 2020/12/23
+	Project: Wellspring Tanzania, Audio Screening
+	Purpose: Analysis
+	Author: dylan groves, dylanwgroves@gmail.com
+	Date: 2020/12/23
 ________________________________________________________________________________*/
 
 
@@ -25,15 +25,15 @@ ________________________________________________________________________________
 /* Load Data ___________________________________________________________________*/	
 
 	use "${data_as}/pfm_as_analysis.dta", clear
-stop
+	drop if sample == "ne"
+
 	keep if comply_true == 1 | comply_true == .
-	rename em_reject_needhusband_dum em_reject_needhus_dum						// Move this to master cleanign
-	rename p_em_reject_needhusband_dum p_em_reject_needhus_dum					// Move this to master cleanign
+	*keep if m_comply_attend == 1
 
 	
 	*keep if p_resp_age != .														// People with partner
 	*keep if p_resp_age == .														// People with no partner
-stop
+
 /* Define Globals and Locals ___________________________________________________*/
 	#d ;
 		
@@ -42,7 +42,7 @@ stop
 							;
 		
 		/* Friends Survey or No? */
-		local partner 		0													// set to 1 for partner survey
+		local friend		0													// set to 1 for partner survey
 							;
 		
 		
@@ -52,7 +52,7 @@ stop
 		
 		
 		/* Rerandomization count */
-		local rerandcount	10
+		local rerandcount	500
 							;
 			
 			
@@ -62,14 +62,15 @@ stop
 							
 			
 		/* Indices */		
-		local index_list	fm
+		local index_list	gender 
+							ipv
 							/*Index Options
 							fm
 							em_attitude
 							em_norm 
 							em_report 
 							em_record 
-							pref 
+							pref anyw
 							wpp 
 							gender 
 							ipv
@@ -80,14 +81,10 @@ stop
 		local fm			fm_reject
 							fm_reject_long 
 							fm_partner_reject									// Not in friend
-							fm_
 							;
-		local em_attitude	em_reject_index
-							em_reject_religion_dum 
-							em_reject_noschool_dum
-							em_reject_pregnant_dum
-							em_reject_money_dum
-							em_reject_needhus_dum
+		local em_attitude	em_reject_religion_dum em_reject_noschool_dum 
+							em_reject_pregnant_dum em_reject_money_dum 
+							em_reject_needhus_dum em_reject_index
 							;
 		local em_norm 		em_norm_reject_bean
 							em_norm_reject_dum
@@ -102,13 +99,9 @@ stop
 		local pref 			em_elect
 							ptixpref_efm 
 							ptixpref_efm_first 
-							ptixpref_efm_topthree 
+							ptixpref_efm_topthree 	
 							ptixpref_efm_notlast 
 							ptixpref_partner_efm
-							;
-		local wpp 			wpp_attitude_dum 
-							wpp_behavior
-							wpp_partner
 							;
 		local gender		ge_index
 							ge_school 
@@ -116,7 +109,7 @@ stop
 							ge_leadership 
 							ge_business
 							;
-		local ipv 			ipv_rej_disobey	
+		local ipv 			ipv_rej_disobey
 							ipv_rej_hithard
 							ipv_rej_persists
 							ipv_norm_rej	
@@ -135,7 +128,6 @@ stop
 		/* Lasso Covariates */
 		global cov_lasso	resp_female 
 							resp_muslim
-							p_resp_age
 							b_resp_religiosity
 							b_values_likechange 
 							b_values_techgood 
@@ -203,7 +195,7 @@ if `sandbox' > 0 {
 	estimates table sb_*, keep(treat) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a) model(20)	
 	estimates clear
 	
-		** Interaction Effect
+		/* Interaction Effect
 		gen interact = treat*rd_treat
 		
 		foreach var of local `index' {
@@ -215,6 +207,7 @@ if `sandbox' > 0 {
 	
 	estimates clear
 	drop interact
+	*/
 	}
 }
 
@@ -343,7 +336,7 @@ foreach index of local index_list {
 			di "*** Variable is `dv'"
 			di "*** coef is `lasso_coef'"
 			di "*** pval is `pval'"
-			di "*** ripval is `lasso_rip_count' / `rerandcount'	"
+			di "*** ripval is `lasso_rip_count' / `rerandcount'"
 			di "*** Lasso vars are `lassovars' "
 		
 	/* Basic Regression  _______________________________________________________*/
@@ -474,15 +467,14 @@ foreach index of local index_list {
 			}		
 			
 			** Main
-			if `partner' < 1 & `friend' < 0 {
+			if `partner' < 1 & `friend' < 1 {
 				save "${data_as}/`index'", replace
 				*export excel using "${as_tables}/pfm_as_rawresults_pplwNOpartners", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 				*export excel using "${as_tables}/pfm_as_rawresults_pplwpartners", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 				export excel using "${as_tables}/pfm_as_rawresults", sheet(`index') sheetreplace firstrow(variables) keepcellfmt
 				}
-			}
+			
 			restore
-
 	}
 
 	

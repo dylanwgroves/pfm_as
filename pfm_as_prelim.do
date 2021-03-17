@@ -33,11 +33,13 @@ ________________________________________________________________________________
 	save `temp_attend', replace
 
 	use "${data}/03_final_data/pfm_appended_prefix.dta", clear
+	drop if sample == "ne"
 
 	
 /* Merge  ______________________________________________________________________*/	
 
-	merge 1:1 id_resp_uid using `temp_attend'
+	merge 1:1 id_resp_uid using `temp_attend', gen(_merge_attendance)
+
 	
 /* Subset Data _________________________________________________________________*/	
 	
@@ -123,7 +125,7 @@ ________________________________________________________________________________
 	save `temp_all', replace
 	
 
-/* Reshape Long ________________________________________________________________*/
+/* Reshape Long ________________________________________________________________
 
 	use "${data}/01_raw_data/pfm_as_endline_clean_kid_long.dta", clear
 	rename * k_*
@@ -132,4 +134,4 @@ ________________________________________________________________________________
 	keep if _merge_kids == 3
 	save "${data_as}/pfm_as_analysis_kids.dta", replace
 
-
+*/
