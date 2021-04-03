@@ -16,18 +16,18 @@ ________________________________________________________________________________
 	global c_date = c(current_date)
 
 	
-/* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
+/* Run Prelim File _____________________________________________________________ // comment out if you dont need to rerun prelim cleaning	
 
 	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
 	do "${code}/pfm_audioscreening/pfm_as_prelim.do"
-
+*/
 
 /* Load Data ___________________________________________________________________*/	
 
 	use "${data_as}/pfm_as_analysis.dta", clear
 	drop if sample == "ne"
 
-	keep if comply_true == 1 | comply_true == .
+	keep if comply_true == 1
 	*keep if m_comply_attend == 1
 
 	
@@ -46,11 +46,6 @@ ________________________________________________________________________________
 							;
 		
 		
-		/* Sandbox */															// Set if you just want to see the immediate results without export
-		local sandbox		0
-							;
-		
-		
 		/* Rerandomization count */
 		local rerandcount	500
 							;
@@ -62,8 +57,8 @@ ________________________________________________________________________________
 							
 			
 		/* Indices */		
-		local index_list	gender 
-							ipv
+		local index_list	
+							gender
 							/*Index Options
 							fm
 							em_attitude
@@ -179,15 +174,13 @@ ________________________________________________________________________________
 
 /* Sandbox _____________________________________________________________________*/
 
-if `sandbox' > 0 {
-
 	estimates clear
 
 	foreach index of local index_list {
 /**/
 		** Main Effect
 		foreach var of local `index' {
-			xi : regress `var' treat ${cov_always} i.svy_enum, cluster(id_village_n)
+			xi : regress `var' treat ${cov_always} b_fm_reject, cluster(id_village_n)
 			estimates store sb_`var'
 		}
 		
@@ -208,8 +201,9 @@ if `sandbox' > 0 {
 	estimates clear
 	drop interact
 	*/
+	
+	stop
 	}
-}
 
 
 /* Run for Each Index __________________________________________________________*/
