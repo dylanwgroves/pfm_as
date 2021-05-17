@@ -16,21 +16,19 @@ ________________________________________________________________________________
 	global c_date = c(current_date)
 
 	
-/* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
+/* Run Prelim File _____________________________________________________________ // comment out if you dont need to rerun prelim cleaning	
 
 	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
 	do "${code}/pfm_audioscreening/pfm_as_prelim.do"
-
+*/
 
 /* Load Data ___________________________________________________________________*/	
 
 	use "${data_as}/pfm_as_analysis.dta", clear
 	drop if sample == "ne"
 
-	keep if comply_true == 1 | comply_true == .
-	*keep if m_comply_attend == 1
+	keep if m_comply_attend == 1
 
-	
 	*keep if p_resp_age != .														// People with partner
 	*keep if p_resp_age == .														// People with no partner
 
@@ -46,11 +44,6 @@ ________________________________________________________________________________
 							;
 		
 		
-		/* Sandbox */															// Set if you just want to see the immediate results without export
-		local sandbox		0
-							;
-		
-		
 		/* Rerandomization count */
 		local rerandcount	500
 							;
@@ -62,8 +55,8 @@ ________________________________________________________________________________
 							
 			
 		/* Indices */		
-		local index_list	gender 
-							ipv
+		local index_list	
+							fm
 							/*Index Options
 							fm
 							em_attitude
@@ -77,80 +70,7 @@ ________________________________________________________________________________
 							*/
 							;
 							
-		/* Outcomes */
-		local fm			fm_reject
-							fm_reject_long 
-							fm_partner_reject									// Not in friend
-							;
-		local em_attitude	em_reject_religion_dum em_reject_noschool_dum 
-							em_reject_pregnant_dum em_reject_money_dum 
-							em_reject_needhus_dum em_reject_index
-							;
-		local em_norm 		em_norm_reject_bean
-							em_norm_reject_dum
-							;
-		local em_report  	em_report
-							em_report_norm
-							;
-		local em_record 	em_record_reject
-							em_record_shareany
-							em_record_shareany_name
-							;
-		local pref 			em_elect
-							ptixpref_efm 
-							ptixpref_efm_first 
-							ptixpref_efm_topthree 	
-							ptixpref_efm_notlast 
-							ptixpref_partner_efm
-							;
-		local gender		ge_index
-							ge_school 
-							ge_work 
-							ge_leadership 
-							ge_business
-							;
-		local ipv 			ipv_rej_disobey
-							ipv_rej_hithard
-							ipv_rej_persists
-							ipv_norm_rej	
-							ipv_report
-							;	
-							
-		/* Covariates */	
-		global cov_always	i.block_as											// Covariates that are always included
-							i.rd_group
-							;	
-							
-		/* Cluster */
-		global cluster		id_village_n
-							;	
-							
-		/* Lasso Covariates */
-		global cov_lasso	resp_female 
-							resp_muslim
-							b_resp_religiosity
-							b_values_likechange 
-							b_values_techgood 
-							b_values_respectauthority 
-							b_values_trustelders
-							b_fm_reject
-							b_ge_raisekids 
-							b_ge_earning 
-							b_ge_leadership 
-							b_ge_noprefboy 
-							b_media_tv_any 
-							b_media_news_never 
-							b_media_news_daily 
-							b_radio_any 
-							b_resp_lang_swahili 
-							b_resp_literate 	
-							b_resp_standard7 
-							b_resp_nevervisitcity 
-							b_resp_married 
-							b_resp_hhh 
-							b_resp_numkid
-							b_fm_reject
-							;
+		
 							
 		
 		/* Statitistics of interest */
@@ -179,7 +99,16 @@ ________________________________________________________________________________
 
 /* Sandbox _____________________________________________________________________*/
 
-if `sandbox' > 0 {
+	reg hivdisclose_index treat ${cov_always}, cluster(id_village_n)
+	reg fm_reject_long i.treat##c.v_b_ge_index b_fm_reject ${cov_always}, cluster(id_village_n)
+	reg fm_reject treat b_fm_reject ${cov_always}, cluster(id_village_n)
+	reg em_reject_money_dum treat b_fm_reject ${cov_always}, cluster(id_village_n)
+	reg em_reject_religion_dum treat b_fm_reject i.block_as, cluster(id_village_n)
+	reg em_reject_index treat b_fm_reject, cluster(id_village_n)
+
+
+	stop
+
 
 	estimates clear
 
@@ -187,7 +116,7 @@ if `sandbox' > 0 {
 /**/
 		** Main Effect
 		foreach var of local `index' {
-			xi : regress `var' treat ${cov_always} i.svy_enum, cluster(id_village_n)
+			xi : regress `var' treat ${cov_always} b_fm_reject, cluster(id_village_n)
 			estimates store sb_`var'
 		}
 		
@@ -208,8 +137,9 @@ if `sandbox' > 0 {
 	estimates clear
 	drop interact
 	*/
+	
+	stop
 	}
-}
 
 
 /* Run for Each Index __________________________________________________________*/
