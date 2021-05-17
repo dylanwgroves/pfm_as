@@ -26,16 +26,16 @@ ________________________________________________________________________________
 
 /* Load Data ___________________________________________________________________*/	
 
-	import excel "${as_tables}/pfm_as_analysis_villhetfx_main.xlsx", sheet("fm") firstrow clear
+	import excel "${as_tables}/pfm_as_analysis_villhetfx_main.xlsx", sheet("mid_fm") firstrow clear
 	save `dta_main', replace
-stop
+
 	
 /* Sort Data ___________________________________________________________________*/
 
 	/* Individual Data */
 	sort pval
 	destring 	variable variablelabel coef se pval r2 N ///
-				variable	variablelabel	coef	se	pval	coef_cov	se_cov	pval_cov	coef_hetfx	se_hetfx	pval_hetfx	ripval_hetfx	r2	N	lasso_coef /// 
+				variable 	variablelabel	coef	se	pval	coef_cov	se_cov	pval_cov	coef_hetfx	se_hetfx	pval_hetfx	ripval_hetfx	r2	N	lasso_coef /// 
 				lasso_se	lasso_pval	lasso_coef_cov	lasso_se_cov	lasso_pval_cov	lasso_coef_hetfx	lasso_se_hetfx	lasso_pval_hetfx	lasso_ripval_hetfx ///
 				lasso_r2	lasso_N treat_mean	treat_sd	ctl_mean	ctl_sd	min	max	lasso_ctls	lasso_ctls_num, replace
 	save `dta_main', replace
@@ -46,8 +46,7 @@ stop
 	/* Individual Data */
 	# d ;
 	local sumstat_vars 	
-						fm_reject
-						p_fm_reject
+						m_fm_reject
 						;
 	#d cr 					
 
@@ -61,10 +60,9 @@ stop
 
 	drop if rank == .
 	gsort rank
-	
-		replace variablelabel = "Reject Forced Labor" if variablelabel == "(mean) fm_reject"
-		replace variablelabel = "Partners' Perception" if variablelabel == "(mean) p_fm_reject"
-stop
+
+	replace variablelabel = "Reject Forced Labor" if variablelabel == "(mean) m_fm_reject"
+
 /* Create variables ____________________________________________________________*/
 
 	count
@@ -81,11 +79,11 @@ stop
 		global b`i' = strofreal(coef[`i'], "%6.3f")
 		global se`i' = strofreal(se[`i'], "%6.3f")
 		
-		global b2`i' = strofreal(coef_covar[`i'], "%6.3f")
-		global se2`i' = strofreal(se_covar[`i'], "%6.3f")
+		global b2`i' = strofreal(coef_cov[`i'], "%6.3f")
+		global se2`i' = strofreal(se_cov[`i'], "%6.3f")
 		
 		global bfx`i' = strofreal(coef_hetfx[`i'], "%6.3f")
-		global sefx`i' = strofreal(coef_hetfx[`i'], "%6.3f")
+		global sefx`i' = strofreal(se_hetfx[`i'], "%6.3f")
 		global pfx`i' = strofreal(pval_hetfx[`i'], "%6.3f")
 
 		global r`i' = strofreal(r2[`i'], "%6.2f")
@@ -93,18 +91,18 @@ stop
 		global ctl`i' = "No"
 		
 		/* Lasso */
-		global b`i'c = strofreal(lasso_coef[`i'c], "%6.3f")
-		global se`i'c = strofreal(lasso_se[`i'c], "%6.3f")
+		global b`i'c = strofreal(lasso_coef[`i'], "%6.3f")
+		global se`i'c = strofreal(lasso_se[`i'], "%6.3f")
 		
-		global b2`i'c = strofreal(lasso_coef_covar[`i'c], "%6.3f")
-		global se2`i'c = strofreal(lasso_se_covar[`i'c], "%6.3f")
+		global b2`i'c = strofreal(lasso_coef_cov[`i'], "%6.3f")
+		global se2`i'c = strofreal(lasso_se_cov[`i'], "%6.3f")
 		
-		global bfx`i'c = strofreal(lasso_coef_hetfx[`i'c], "%6.3f")
-		global sefx`i'c = strofreal(lasso_coef_hetfx[`i'c], "%6.3f")
-		global pfx`i'c = strofreal(lasso_pval_hetfx[`i'c], "%6.3f")
+		global bfx`i'c = strofreal(lasso_coef_hetfx[`i'], "%6.3f")
+		global sefx`i'c = strofreal(lasso_se_hetfx[`i'], "%6.3f")
+		global pfx`i'c = strofreal(lasso_pval_hetfx[`i'], "%6.3f")
 
-		global r`i'c = strofreal(lasso_r2[`i'c], "%6.2f")
-		global n`i'c = strofreal(lasso_N[`i'c], "%6.0fc")
+		global r`i'c = strofreal(lasso_r2[`i'], "%6.2f")
+		global n`i'c = strofreal(lasso_N[`i'], "%6.0fc")
 		global ctl`i'c = strofreal(lasso_ctls_num[`i'], "%6.0fc")
 		
 		/* Summary stats */
@@ -117,39 +115,39 @@ stop
 	
 	
 	/* Assign stars and set p-value to <0.001 instead of 0.000 */
-	do "${code}/pfm_audioscreening/01_helpers/pfm_helper_stars.do"	
+	*do "${code}/pfm_audioscreening/01_helpers/pfm_helper_stars.do"	
 	
-
+	
 /* Make Table __________________________________________________________________*/
 
-texdoc init "${as_clean_tables}/pfm_as_tables_results_hetfx.tex", replace nolog
+texdoc init "${as_clean_tables}/pfm_as_tables_results_hetfx_mid.tex", replace nolog
 
 texdoc write 	{
 texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
-texdoc write 	\begin{tabular}{l*{12}{c}}
+texdoc write 	\begin{tabular}{l*{3}{c}}
 texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	
 
-texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} 	\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} 
+texdoc write    &\multicolumn{2}{c}{$var1} 	\tstrut \bstrut \\ \cmidrule(r){2-3} 
 
-texdoc write    												& (1)				& (2)				& (3)				& (4)							\\
+texdoc write    												& (1)				& (2)						\\
 
-texdoc write 	Radio Treat * Baseline Rejection of FM       	& $bfx1\sym{$sfx}  	& $bfx1c\sym{$s1c} 	& $bfx2\sym{$sfx2} 	& $bfx2c\sym{$sfx2c} 			 	\\
-texdoc write    Standard Error 									& $sefx				& $sefx1c			& $sefx2    		& $sefx2c  						\\
-texdoc write 	RI \$p\$-value 									& $pfx1				& $pfx1c 			& $pfx2				& $pfx2c							\\
+texdoc write 	Radio Treat * Baseline Rejection of FM       	& $bfx1\sym{$sfx}  	& $bfx1c\sym{$s1c} 		 	\\
+texdoc write    Standard Error 									& $sefx1			& $sefx1c					\\
+texdoc write 	RI \$p\$-value 									& $pfx1				& $pfx1c 					\\
 texdoc write 	\hline
-texdoc write 	Radio Treat								      	& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 		& $b2c\sym{$s2c} 			 	\\
-texdoc write    Standard Error 									& $se1				& $se1c				& $se2    			& $se2c  						\\
+texdoc write 	Radio Treat								      	& $b1\sym{$s1}  	& $b1c\sym{$s1c} 			\\
+texdoc write    Standard Error 									& $se1				& $se1c						\\
 texdoc write 	\hline
-texdoc write 	Baseline Rejection of FM						& $b21				& $p1c 				& $p22				& $p22c							\\
-texdoc write 	Standard Error									& $se21				& $se21c			& $se22    			& $se22c  						\\
+texdoc write 	Baseline Rejection of FM						& $b21				& $b1c 						\\
+texdoc write 	Standard Error									& $se21				& $se21c					\\
 texdoc write 	\hline
-texdoc write 	Control Mean      								& $c1				& $c1				& $c2				& $c2							\\
-texdoc write 	Control SD 										& $sd1				& $sd1				& $sd2				& $sd2							\\
-texdoc write 	Blocked FE 										& Yes 				& Yes 				&  Yes   			& Yes  							\\
-texdoc write	DV Range										& [$mn1-$mx1]		& [$mn1-$mx1]		& [$mn2-$mx2]		& [$mn2-$mx2]					\\	
-texdoc write 	Controls 										& $ctl1 			& $ctl1c 			& $ctl2   			& $ctl2c  						\\
-texdoc write 	Adj-\$ R^2\$									& $r1 				& $r1c 				& $r2   			& $r2c 							\\
-texdoc write 	Observations      								& $n1 				& $n1c 				& $n2   			& $n2c 						\\
+texdoc write 	Control Mean      								& $c1				& $c1						\\
+texdoc write 	Control SD 										& $sd1				& $sd1						\\
+texdoc write 	Blocked FE 										& Yes 				& Yes 						\\
+texdoc write	DV Range										& [$mn1-$mx1]		& [$mn1-$mx1]				\\	
+texdoc write 	Controls 										& $ctl1 			& $ctl1c 					\\
+texdoc write 	Adj-\$ R^2\$									& $r1 				& $r1c 						\\
+texdoc write 	Observations      								& $n1 				& $n1c 						\\
 texdoc write 	\Xhline{2\arrayrulewidth}
 texdoc write 	\end{tabular}
 texdoc write 	}

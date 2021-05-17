@@ -67,9 +67,6 @@ ________________________________________________________________________________
 		/* Indices */			
 		local index_list	
 							fm
-							mid_fm 
-							em_attitude 
-							mid_em
 							/*
 							attrition
 							attendance
@@ -135,7 +132,7 @@ foreach index of local index_list {
 		qui putexcel F1 = ("coef_cov")
 		qui putexcel G1 = ("se_cov")
 		qui putexcel H1 = ("pval_cov")
-		qui putexcel I1 = ("ceof_hetfx")
+		qui putexcel I1 = ("coef_hetfx")
 		qui putexcel J1 = ("se_hetfx")
 		qui putexcel K1 = ("pval_hetfx")
 		qui putexcel L1 = ("ripval_hetfx")
@@ -147,7 +144,7 @@ foreach index of local index_list {
 		qui putexcel R1 = ("lasso_coef_cov")
 		qui putexcel S1 = ("lasso_se_cov")
 		qui putexcel T1 = ("lasso_pval_cov")
-		qui putexcel U1 = ("lasso_ceof_hetfx")
+		qui putexcel U1 = ("lasso_coef_hetfx")
 		qui putexcel V1 = ("lasso_se_hetfx")
 		qui putexcel W1 = ("lasso_pval_hetfx")
 		qui putexcel X1 = ("lasso_ripval_hetfx")
@@ -290,7 +287,7 @@ foreach index of local index_list {
 		qui putexcel K`row' = ("${pval_hetfx}")
 		qui putexcel L`row' = ("${ripval_hetfx}")
 		qui putexcel M`row' = ("${r2}")
-		qui putexcel N`row' = ("${N}")
+		qui putexcel N`row' = ("${n}")
 		qui putexcel O`row' = ("${lasso_coef}")
 		qui putexcel P`row' = ("${lasso_se}")
 		qui putexcel Q`row' = ("${lasso_pval}")
@@ -302,7 +299,7 @@ foreach index of local index_list {
 		qui putexcel W`row' = ("${lasso_pval_hetfx}")
 		qui putexcel X`row' = ("${lasso_pval_ripval_hetfx}")
 		qui putexcel Y`row' = ("${lasso_r2}")
-		qui putexcel Z`row' = ("${lasso_N}")
+		qui putexcel Z`row' = ("${lasso_n}")
 		qui putexcel AA`row' = ("${treat_mean}")
 		qui putexcel AB`row' = ("${treat_sd}")
 		qui putexcel AC`row' = ("${ctl_mean}")

@@ -62,6 +62,10 @@ ________________________________________________________________________________
 	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_ipv.texdoc"
 	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_ipv_mid.texdoc"
 	
+	/* HetFX */
+	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_hetfx_fm_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_hetfx.texdoc"
+	
 
 
 
