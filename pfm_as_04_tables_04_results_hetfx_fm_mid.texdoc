@@ -131,14 +131,14 @@ texdoc write    &\multicolumn{2}{c}{$var1} 	\tstrut \bstrut \\ \cmidrule(r){2-3}
 
 texdoc write    												& (1)				& (2)						\\
 
-texdoc write 	Radio Treat * Baseline Rejection of FM       	& $bfx1\sym{$sfx}  	& $bfx1c\sym{$s1c} 		 	\\
+texdoc write 	Anti-EFM Drama * Proportion Baseline Rejection of FM  & $bfx1\sym{$sfx}  	& $bfx1c\sym{$s1c} 		 	\\
 texdoc write    Standard Error 									& $sefx1			& $sefx1c					\\
 texdoc write 	RI \$p\$-value 									& $pfx1				& $pfx1c 					\\
 texdoc write 	\hline
-texdoc write 	Radio Treat								      	& $b1\sym{$s1}  	& $b1c\sym{$s1c} 			\\
+texdoc write 	Anti-EFM Drama							      	& $b1\sym{$s1}  	& $b1c\sym{$s1c} 			\\
 texdoc write    Standard Error 									& $se1				& $se1c						\\
 texdoc write 	\hline
-texdoc write 	Baseline Rejection of FM						& $b21				& $b1c 						\\
+texdoc write 	Proportion Baseline Rejection of FM						& $b21				& $b1c 						\\
 texdoc write 	Standard Error									& $se21				& $se21c					\\
 texdoc write 	\hline
 texdoc write 	Control Mean      								& $c1				& $c1						\\

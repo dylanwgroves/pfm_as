@@ -64,7 +64,7 @@ ________________________________________________________________________________
 	
 	/* HetFX */
 	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_hetfx_fm_mid.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_hetfx.texdoc"
+	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_hetfx_fm.texdoc"
 	
 
 
