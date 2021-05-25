@@ -61,7 +61,7 @@ ________________________________________________________________________________
 	drop if rank == .
 	gsort rank
 
-	replace variablelabel = "Reject Forced Labor" if variablelabel == "(mean) m_fm_reject"
+	replace variablelabel = "Reject Forced Marriage" if variable == "fm_reject"
 
 /* Create variables ____________________________________________________________*/
 
@@ -113,7 +113,7 @@ ________________________________________________________________________________
 	
 	}
 	
-	
+
 	/* Assign stars and set p-value to <0.001 instead of 0.000 */
 	*do "${code}/pfm_audioscreening/01_helpers/pfm_helper_stars.do"	
 	

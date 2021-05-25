@@ -67,6 +67,7 @@ ________________________________________________________________________________
 		/* Indices */			
 		local index_list	
 							fm
+							mid_fm
 							/*
 							attrition
 							attendance
@@ -137,7 +138,7 @@ foreach index of local index_list {
 		qui putexcel K1 = ("pval_hetfx")
 		qui putexcel L1 = ("ripval_hetfx")
 		qui putexcel M1 = ("r2")
-		qui putexcel N1 = ("N")
+		qui putexcel N1 = ("n")
 		qui putexcel O1 = ("lasso_coef")
 		qui putexcel P1 = ("lasso_se")
 		qui putexcel Q1 = ("lasso_pval")
@@ -149,7 +150,7 @@ foreach index of local index_list {
 		qui putexcel W1 = ("lasso_pval_hetfx")
 		qui putexcel X1 = ("lasso_ripval_hetfx")
 		qui putexcel Y1 = ("lasso_r2")
-		qui putexcel Z1 = ("lasso_N")
+		qui putexcel Z1 = ("lasso_n")
 		qui putexcel AA1 = ("treat_mean")
 		qui putexcel AB1 = ("treat_sd")
 		qui putexcel AC1 = ("ctl_mean")
@@ -257,7 +258,7 @@ foreach index of local index_list {
 			global lasso_se_hetfx		= table[2,5]
 			global lasso_pval_hetfx		= table[4,5]
 			
-			global lasso_r2 	= `e(r2_a)' 		//r-squared
+			global lasso_r2 = `e(r2_a)' 		//r-squared
 			global lasso_n 	= e(N) 				//N
 
 			/* Calculate one-sided pvalue 				
