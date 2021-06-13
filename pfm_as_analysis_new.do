@@ -17,17 +17,17 @@ ________________________________________________________________________________
 	global c_date = c(current_date)
 
 	
-/* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
+/* Run Prelim File _____________________________________________________________ // comment out if you dont need to rerun prelim cleaning	
 
 	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
 	do "${code}/pfm_audioscreening/pfm_as_prelim.do"
-
+*/
 
 /* Load Data ___________________________________________________________________*/	
 
 	use "${data_as}/pfm_as_analysis.dta", clear
 
-	*keep if comply_true == 1													// For compliance and attendance, don't want to leave this out
+	keep if m_comply_attend == 1													// For compliance and attendance, don't want to leave this out
 
 /* Define Parameters ___________________________________________________*/
 
@@ -53,7 +53,25 @@ ________________________________________________________________________________
 					
 		/* Indices */			
 		local index_list	
+							attrition
+							attendance
+							uptake
 							fm
+							em_attitude
+							norm
+							em_report 
+							em_record 
+							priority
+							wpp 
+							gender 
+							ipv
+							mid_fm
+							mid_em
+							mid_norm
+							mid_report
+							mid_priority
+							mid_ipv
+							mid_gender
 							/*
 							attrition
 							attendance
@@ -202,7 +220,7 @@ foreach index of local index_list {
 			/* Calculate pvalue */
 			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval.do"
 			global pval = ${helper_pval}
-			
+
 			/* Calculate RI-pvalue */
 			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval_ri.do"
 			global ripval = ${helper_ripval}
