@@ -25,7 +25,7 @@ ________________________________________________________________________________
 
 /* Load Data ___________________________________________________________________*/	
 
-	import excel "${as_tables}/pfm_as_analysis_main.xlsx", sheet("mid_report") firstrow clear
+	import excel "${as_tables}/pfm_as_analysis_main.xlsx", sheet("uptake") firstrow clear
 	save `dta_main', replace
 	
 	
@@ -44,8 +44,10 @@ ________________________________________________________________________________
 	/* Individual Data */
 	# d ;
 	local sumstat_vars 	
-						m_fm_reject_norm
-						m_em_reject_norm_under18
+						comply_attend_efm
+						m_comply_topic_correct
+						m_comply_discuss_correct
+						comply_topic_correct
 						;
 	#d cr 
 						
@@ -78,7 +80,7 @@ ________________________________________________________________________________
 		/* Normal */
 		global b`i' = strofreal(coef[`i'], "%6.3f")
 		global se`i' = strofreal(se[`i'], "%6.3f")
-		global p`i' = strofreal(ripval[`i'], "%6.3f")
+		global p`i' = strofreal(pval[`i'], "%6.3f")
 		global r`i' = strofreal(r2[`i'], "%6.2f")
 		global n`i' = strofreal(N[`i'], "%6.0fc")
 		global ctl`i' = "No"
@@ -86,14 +88,14 @@ ________________________________________________________________________________
 		/* Lasso */
 		global b`i'c = strofreal(lasso_coef[`i'], "%6.3f")
 		global se`i'c = strofreal(lasso_se[`i'], "%6.3f")
-		global p`i'c = strofreal(lasso_ripval[`i'], "%6.3f")
+		global p`i'c = strofreal(lasso_pval[`i'], "%6.3f")
 		global r`i'c = strofreal(lasso_r2[`i'], "%6.2f")
 		global n`i'c = strofreal(lasso_N[`i'], "%6.0fc")
 		global ctl`i'c = strofreal(lasso_ctls_num[`i'], "%6.0fc")
 		
 		/* Summary stats */
 		global c`i' = strofreal(ctl_mean[`i'], "%6.2f")
-		global sd`i' = strofreal(ctl_sd[`i'], "%6.2f")
+		global sd`i' = strofreal(vill_sd[`i'], "%6.2f")
 		global mn`i' = strofreal(min[`i'], "%6.0f")
 		global mx`i' = strofreal(max[`i'], "%6.0f")
 	
@@ -107,30 +109,31 @@ ________________________________________________________________________________
 	
 /* Make Table __________________________________________________________________*/
 
-texdoc init "${as_clean_tables}/pfm_as_tables_results_norm_mid.tex", replace nolog
+texdoc init "${as_clean_tables}/pfm_as_tables_results_uptake.tex", replace nolog
 
 texdoc write 	{
 texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
-texdoc write 	\begin{tabular}{l*{4}{c}}
+texdoc write 	\begin{tabular}{l*{11}{c}}
 texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	
 
-texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2}	\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} 
+texdoc write    &\multicolumn{2}{c}{Intervention (2019)} &\multicolumn{4}{c}{Midline (2019)} &\multicolumn{2}{c}{Endline (2020)}  \tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-7} \cmidrule(r){8-9}
 
-texdoc write    							& (1)				& (2)				& (3)			& (4)					\\
+texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} &\multicolumn{2}{c}{$var3}  	&\multicolumn{2}{c}{$var4} \tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} \cmidrule(r){6-7} \cmidrule(r){8-9} 
 
-  
-texdoc write 	Anti-EFM Drama      		& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} 		\\
-texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  				\\
+texdoc write    							& (1)				& (2)				& (3)			& (4)			& (5)			& (6)				& (7)			& (8)			\\
+
+texdoc write 	Radio Treat      			& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}	& $b4\sym{$s4}	& $b4c\sym{$s4c} \\
+texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  		& $se3 			& $se3c				& $se4 			& $se4c			\\
 texdoc write 	\hline
-texdoc write 	RI \$p\$-value 				& $p1				& $p1c 				& $p2			& $p2c					\\
-texdoc write 	Hypothesis					& +					& + 				& +				& + 					\\
-texdoc write 	Control Mean      			& $c1				& $c1				& $c2			& $c2					\\
-texdoc write 	Control SD					& $sd1				& $sd1				& $sd2			& $sd2					\\
-texdoc write	DV Range					& [$mn1-$mx1]		& [$mn1-$mx1]		& [$mn2-$mx2]	& [$mn2-$mx2]			\\	
-texdoc write 	Blocked FE 					& Yes 				& Yes 				&  Yes   		& Yes  					\\
-texdoc write 	Controls 					& $ctl1 			& $ctl1c 			&  $ctl2   		& $ctl2c  				\\
-texdoc write 	Adj-\$ R^2\$				& $r1 				& $r1c 				& $r2   		& $r2c 					\\
-texdoc write 	Observations      			& $n1 				& $n1c 				& $n2   		& $n2c 			   		\\
+texdoc write 	\$ p\$-value 				& $p1				& $p1c 				& $p2			& $p2c			& $p3  			& $p3c				& $p4			& $p4c				\\
+texdoc write 	Hypothesis					& +					& + 				& +				& + 			& +				& +					& +				& +						\\
+texdoc write 	Control Mean      			& $c1				& $c1				& $c2			& $c2			& $c3  			& $c3				& $c4			& $c4					\\
+texdoc write 	Control SD					& $sd1				& $sd1				& $sd2			& $sd2			& $sd3 			& $sd3				& $sd4			& $sd4					\\
+texdoc write	DV Range					& [$mn1-$mx1]		& [$mn1-$mx1]		& [$mn2-$mx2]	& [$mn2-$mx2]	& [$mn3-$mx3] 	& [$mn3-$mx3]		& [$mn4-$mx4]	& [$mn4-$mx4]		\\	
+texdoc write 	Blocked FE 					& Yes 				& Yes 				&  Yes   		& Yes  			& Yes			& Yes				& Yes			& Yes					\\
+texdoc write 	Controls 					& $ctl1 			& $ctl1c 			&  $ctl2   		& $ctl2c  		& $ctl3			& $ctl3c 			& $ctl4			& $ctl4c				\\
+texdoc write 	Adj-\$ R^2\$				& $r1 				& $r1c 				& $r2   		& $r2c 			& $r3			& $r3c				& $r4			& $r4c						\\
+texdoc write 	Observations      			& $n1 				& $n1c 				& $n2   		& $n2c 			& $n3			& $n3c				& $n4			& $n4c			     		\\
 texdoc write 	\Xhline{2\arrayrulewidth}
 texdoc write 	\end{tabular}
 texdoc write 	}

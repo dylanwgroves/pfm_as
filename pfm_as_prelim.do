@@ -48,12 +48,13 @@ ________________________________________________________________________________
 	rename as_* *	// Get rid of prefix
 	drop k_*
 																
-
+																
 /* Import this stuff ___________________________________________________________*/
 
 	
 /* Generate any necessary variables ____________________________________________*/	
 
+	
 	/* Generate attrition */
 	gen attrition_midline = 1 if m_consent_confirm == 0 | m_consent_confirm == .
 		replace attrition_midline = 0 if m_consent_confirm == 1
@@ -69,9 +70,14 @@ ________________________________________________________________________________
 	gen rd_group = 2 if rd_treat == 1
 		replace rd_group = 1 if rd_treat == 0
 		replace rd_group = 0 if rd_treat == .
-	encode id_ward_uid, gen(block_as)
 	
 	gen radio_received = (rd_treat == 1)
+	
+	/* Create block */	
+	encode id_ward_uid, gen(block_as)
+
+	/* Create cluster */
+	encode id_village_uid, gen(cluster_as)
 	
 	/* Norms */
 	
@@ -86,7 +92,7 @@ ________________________________________________________________________________
 	gen m_fm_reject_norm = m_em_reject_norm if m_treat_efmvig_age > 17
 	gen m_em_reject_norm_under18 = m_em_reject_norm if m_treat_efmvig_age < 18
 		
-	/* Create forced vs early marriage and divide up by story */
+	/* Create forced vs early marriage and divide up by story features */
 	gen m_fm_reject_story = m_em_reject_story if m_treat_efmvig_age > 17
 	gen m_fm_reject_story_money = m_fm_reject_story if m_treat_efmvig_scen == 1
 	gen m_fm_reject_story_daught = m_fm_reject_story if m_treat_efmvig_scen == 0
@@ -95,19 +101,28 @@ ________________________________________________________________________________
 	gen m_em_reject_story_money = m_em_reject_story if m_treat_efmvig_scen == 1
 	gen m_em_reject_story_daught = m_em_reject_story if m_treat_efmvig_scen == 0
 
+	/* Remove missing values from survey enumerator */
+	replace svy_enum = 0 if svy_enum == .
 	
-	/* Generate endline compliance */
-	gen comply_attend_efm = 1 if comply_true == 1 & treat == 1
-		replace comply_attend_efm = 0 if comply_true == 0
-		replace comply_attend_efm = 0 if treat == 0 
+	/* Generate endline uptake */
+	gen comply_attend_any = 1 if m_comply_attend == 1
+		replace comply_attend_any = 1 if (m_comply_attend != 1 & comply_true == 1)
+		replace comply_attend_any = 0 if m_comply_attend != 1 & comply_true != 1
+		replace comply_attend_any = 0 if comply_attend == 1 & comply_true != 1
+		
+	gen comply_attend_efm = 1 if m_comply_attend == 1
+		replace comply_attend_efm = 1 if (m_comply_attend != 1 & comply_true == 1)
+		replace comply_attend_efm = 0 if m_comply_attend != 1 & comply_true != 1
+		replace comply_attend_efm = 0 if comply_attend_efm == 1 & comply_true != 1
+		replace comply_attend_efm = 0 if comply_attend_efm == 1 & treat == 0 
 
 	gen m_comply_topic_correct = 1 if (m_comply_topic == 1 | m_comply_topic == 2) 
 		replace m_comply_topic_correct = 0 if (m_comply_topic == .d | m_comply_topic == .o | m_comply_topic == 3 | m_comply_topic == .) 
-		replace m_comply_topic_correct = . if attrition_midline == 1
+		replace m_comply_topic_correct = 0 if attrition_midline == 1
 
 	gen comply_topic_correct = 1 if (comply_topic == 1 | comply_topic == 2) 
 		replace comply_topic_correct = 0 if (comply_topic == .d | comply_topic == .o | comply_topic == 3 | comply_topic == .)
-		replace comply_topic_correct = . if attrition_endline == 1
+		replace comply_topic_correct = 0 if attrition_endline == 1
 		
 	gen comply_discuss_correct = 1 if comply_discuss == 1 & comply_topic_correct == 1 
 		replace comply_discuss_correct = 0 if comply_discuss == 0
@@ -139,6 +154,10 @@ ________________________________________________________________________________
 		replace em_priority_list = 1 if ptixpref_rank_efm == 7 & ptixpref_rank_health < 7
 		
 		replace em_priority_list = 0 if ptixpref_rank_efm < 7
+			
+	/* mix partner perception and self-report */
+	gen fm_reject_mixed = (fm_reject + p_fm_partner_reject)/2
+		*replace fm_reject_mixed = fm_reject if fm_reject_mixed == .
 		
 
 

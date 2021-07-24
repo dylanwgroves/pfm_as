@@ -31,7 +31,7 @@ ________________________________________________________________________________
 	import excel "${as_tables}/pfm_as_analysis_main.xlsx", sheet("em_attitude") firstrow clear
 	append using `dta_main'
 
-	
+
 /* Sort Data ___________________________________________________________________*/
 
 	/* Individual Data */
@@ -70,6 +70,11 @@ ________________________________________________________________________________
 	gsort rank
 
 
+/* Any Labelling Changes _______________________________________________________*/
+
+	replace variablelabel = "Reject FM (branched)" if variable == "fm_reject_long"
+	
+
 /* Create variables ____________________________________________________________*/
 
 	count
@@ -100,7 +105,7 @@ ________________________________________________________________________________
 		
 		/* Summary stats */
 		global c`i' = strofreal(ctl_mean[`i'], "%6.2f")
-		global sd`i' = strofreal(ctl_sd[`i'], "%6.2f")
+		global sd`i' = strofreal(vill_sd[`i'], "%6.2f")
 		global mn`i' = strofreal(min[`i'], "%6.0f")
 		global mx`i' = strofreal(max[`i'], "%6.0f")
 	
@@ -127,7 +132,7 @@ texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} &\multicol
 
 texdoc write    							& (1)				& (2)				& (3)			& (4)			& (5)			& (6)				& (7)			& (8)			& (9)			& (10)				& (11)			& (12)						\\
 
-texdoc write 	Radio Treat       			& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}	& $b4\sym{$s4}	& $b4c\sym{$s4c} & $b5\sym{$s5}	& $b5c\sym{$s5c}	& $b6\sym{$s6}	& $b6c\sym{$s6c} 	\\
+texdoc write 	EFM Treat      			& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}	& $b4\sym{$s4}	& $b4c\sym{$s4c} & $b5\sym{$s5}	& $b5c\sym{$s5c}	& $b6\sym{$s6}	& $b6c\sym{$s6c} 	\\
 texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  		& $se3 			& $se3c				& $se4 			& $se4c			& $se5			& $se5c				& $se6			& $se6c				\\
 texdoc write 	\hline
 texdoc write 	RI \$p\$-value 				& $p1				& $p1c 				& $p2			& $p2c			& $p3  			& $p3c				& $p4			& $p4c			& $p5			& $p5c				& $p6			& $p6c				\\

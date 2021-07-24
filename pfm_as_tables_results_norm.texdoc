@@ -25,13 +25,9 @@ ________________________________________________________________________________
 
 /* Load Data ___________________________________________________________________*/	
 
-	import excel "${as_tables}/pfm_as_analysis_main.xlsx", sheet("attrition") firstrow clear
+	import excel "${as_tables}/pfm_as_analysis_main.xlsx", sheet("norm") firstrow clear
 	save `dta_main', replace
-	
-	import excel "${as_tables}/pfm_as_analysis_main.xlsx", sheet("attendance") firstrow clear
-	append using `dta_main'
 
-	
 /* Sort Data ___________________________________________________________________*/
 
 	/* Individual Data */
@@ -47,15 +43,14 @@ ________________________________________________________________________________
 	/* Individual Data */
 	# d ;
 	local sumstat_vars 	
-						comply_true
-						attrition_midline
-						attrition_endline
- 
+						fm_norm_reject
+						fm_partner_reject
+						em_norm_reject_dum
+
 						;
 	#d cr 
 						
 						
-
 	gen rank = .
 	local i = 1
 	
@@ -83,7 +78,7 @@ ________________________________________________________________________________
 		/* Normal */
 		global b`i' = strofreal(coef[`i'], "%6.3f")
 		global se`i' = strofreal(se[`i'], "%6.3f")
-		global p`i' = strofreal(pval[`i'], "%6.3f")
+		global p`i' = strofreal(ripval[`i'], "%6.3f")
 		global r`i' = strofreal(r2[`i'], "%6.2f")
 		global n`i' = strofreal(N[`i'], "%6.0fc")
 		global ctl`i' = "No"
@@ -91,40 +86,41 @@ ________________________________________________________________________________
 		/* Lasso */
 		global b`i'c = strofreal(lasso_coef[`i'], "%6.3f")
 		global se`i'c = strofreal(lasso_se[`i'], "%6.3f")
-		global p`i'c = strofreal(lasso_pval[`i'], "%6.3f")
+		global p`i'c = strofreal(lasso_ripval[`i'], "%6.3f")
 		global r`i'c = strofreal(lasso_r2[`i'], "%6.2f")
 		global n`i'c = strofreal(lasso_N[`i'], "%6.0fc")
 		global ctl`i'c = strofreal(lasso_ctls_num[`i'], "%6.0fc")
 		
 		/* Summary stats */
 		global c`i' = strofreal(ctl_mean[`i'], "%6.2f")
-		global sd`i' = strofreal(ctl_sd[`i'], "%6.2f")
+		global sd`i' = strofreal(vill_sd[`i'], "%6.2f")
 		global mn`i' = strofreal(min[`i'], "%6.0f")
 		global mx`i' = strofreal(max[`i'], "%6.0f")
 	
 	}
 	
-	
 
 	/* Assign stars and set p-value to <0.001 instead of 0.000 */
-	do "${code}/pfm_radiodistribution/01_helpers/pfm_rd_helper_stars.do"	
+	do "${code}/pfm_audioscreening/01_helpers/pfm_helper_stars.do"	
 	
 	
 	
 /* Make Table __________________________________________________________________*/
 
-texdoc init "${as_clean_tables}/pfm_as_tables_compliance.tex", replace nolog
+texdoc init "${as_clean_tables}/pfm_as_tables_results_norm.tex", replace nolog
 
 texdoc write 	{
 texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
-texdoc write 	\begin{tabular}{l*{11}{c}}
+texdoc write 	\begin{tabular}{l*{6}{c}}
 texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	
 
-texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} &\multicolumn{2}{c}{$var3}  		\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} \cmidrule(r){6-7}  
+texdoc write    &\multicolumn{4}{c}{Forced Marriage} &\multicolumn{2}{c}{Early Marriage} \tstrut \bstrut \\ \cmidrule(r){2-5} \cmidrule(r){6-7} 
 
-texdoc write    							& (1)				& (2)				& (3)			& (4)			& (5)			& (6)						\\
-		
-texdoc write 	Anti-EFM Screening  		& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}		\\
+texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} &\multicolumn{2}{c}{$var3}  		\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} \cmidrule(r){6-7} 
+
+texdoc write    							& (1)				& (2)				& (3)			& (4)			& (5)			& (6)				\\
+ 
+texdoc write 	EFM Treat    			& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}		\\
 texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  		& $se3 			& $se3c				\\
 texdoc write 	\hline
 texdoc write 	RI \$p\$-value 				& $p1				& $p1c 				& $p2			& $p2c			& $p3  			& $p3c				\\

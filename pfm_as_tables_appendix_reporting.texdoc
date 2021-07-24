@@ -1,0 +1,64 @@
+*-------------------------------------------------------------------------------
+* Project: Pangani FM 2
+* File: Analaysis of FM Outcomes
+* Date: 9/19/2019
+* Author: Dylan Groves, dgroves@poverty-action.org
+* Overview: Initial Check for balance
+*-------------------------------------------------------------------------------
+
+*ssc install texdoc, replace
+
+/* Introduction ________________________________________________________________*/
+
+	clear all
+	set maxvar 30000
+	set more off
+	set seed 1956
+
+	* Set Dylans Global
+	gl stata "C:\Users\dylan\Dropbox\Wellspring Tanzania - Audio Screening\"
+	gl raw "C:\Users\dylan\Dropbox\Wellspring Tanzania - Audio Screening\03 Tables and Figures\01 Raw\"
+
+
+/* Set Variables _______________________________________________________________*/
+
+
+* EFM Midline Reporting
+local q_report_attitude 		"Imagine in your village, a father is going to marry their 13 year-old daughter off. Is that something you would report to the village leader, or would you prefer to keep out of it because it is outside your own family?"
+local a_report_attitude			"1 = Yes, report to the village leader \newline 0 = No, keep out of it because it is outside the family"
+
+local q_report_norm 			"Imagine in your village, a father is going to marry their 13 year-old daughter off. Is that something that people in your community would report to the village leader, or would they prefer to keep out of it because it is outside their own family?"
+local a_report_norm				"1 = Yes, report to the village leader \newline 0 = No, keep out of it because it is outside the family"
+
+
+* EFM endline Reporting
+local q_report_attitude_end 	"Imagine in your village, a father is going to marry their 16 year-old daughter off. Is that something you would report to the village leader, or would you prefer to keep out of it because it is outside your own family?"
+local a_report_attitude_end		"1 = Yes, report to the village leader \newline 0 = No, keep out of it because it is outside the family"
+
+local q_report_norm_end			"[After asking attitude question] What do you think others in your community think about this issue?"
+local a_report_norm_end			"1 = Yes, report to the village leader \newline 0 = No, keep out of it because it is outside the family"
+
+/* Norm Table ________________________________________________________________*/
+
+texdoc init "${as_clean_tables}/appendix_variables_reporting.tex", replace nolog
+
+texdoc write 	{
+texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+texdoc write 	\begin{tabular}{p{3cm} p{8cm} p{8cm}}
+texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]
+texdoc write   \multicolumn{1}{c}{Variable Name}       &  \multicolumn{1}{c}{Survey Question}                  		& \multicolumn{1}{c}{Variable Construction}  \\[0.15cm]
+texdoc write    \hline\addlinespace[5pt]
+texdoc write 	\multicolumn{3}{c}{\textbf{Midline}} 										\\\addlinespace[5pt]
+texdoc write	\hline\addlinespace[5pt]																		
+texdoc write 	Report (Columns 1/2) 					& `q_report_attitude'        		& `a_report_attitude' 	\\\addlinespace[5pt]
+texdoc write	Report Norm (Columns 3/4)				& `q_report_norm' 					& `a_report_norm' 		\\\addlinespace[5pt]
+texdoc write    \hline\addlinespace[5pt]
+texdoc write 	\multicolumn{3}{c}{\textbf{Endline}} 																\\\addlinespace[5pt]
+texdoc write	\hline\addlinespace[5pt]
+texdoc write 	Report (Columns 1/2) 					& `q_report_attitude_end'        	&	`a_report_attitude_end'	\\\addlinespace[5pt]
+texdoc write	Report Norm (Columns 3/4) 				& `q_report_norm_end' 				&	`a_report_norm_end' 	\\\addlinespace[5pt]
+texdoc write 	\Xhline{2\arrayrulewidth}
+texdoc write  	\end{tabular}
+texdoc write 	}
+
+texdoc close

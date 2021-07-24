@@ -1,9 +1,9 @@
 /* Basics ______________________________________________________________________
 
-Project: Wellspring Tanzania, Audio Screening
-Purpose: Balance Table
+Project: Wellspring Tanzania, Radio Distribution Experiment
+Purpose: Balance
 Author: dylan groves, dylanwgroves@gmail.com
-Date: 2020/12/23
+Date: 2021/04/01
 ________________________________________________________________________________*/
 
 
@@ -15,239 +15,138 @@ ________________________________________________________________________________
 	set more off
 	global c_date = c(current_date)
 
-	
-/* Run Prelim File _____________________________________________________________*/ // Don't have to always re-run this but do have to re-run after an update	
 
-	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
-	do "${code}/pfm_audioscreening/pfm_as_prelim.do"
-
-	
 /* Load Data ___________________________________________________________________*/	
 
 	use "${data_as}/pfm_as_analysis.dta", clear
-stop
-		
-/* Define Globals and Locals ___________________________________________________*/
+
+	
+/* Run Prelim Do File __________________________________________________________*/
+
+	do "${code}/pfm_audioscreening/02_indices/pfm_as_indices_${survey}.do"
+	do "${code}/pfm_audioscreening/02_indices/pfm_as_labels.do"
+	do "${code}/pfm_audioscreening/02_indices/pfm_as_twosided.do"
+
+
+	
+/* Define Globals and Locals ____________________________________________________*/
+
+	/* Set seed */
+	set seed 			1956
+	
+	/* Set seed */
+	global rerandcount 	10
+
+	/* Outcomes */
 	#d ;
-		/* Set seed */
-		set seed 			1956
-							;
-		
-		/* Parnter Survey or No? */
-		local partner 		0													// SET TO 1 IF YOU WANT TO RUN FOR PARTNER SURVEY
-							;
-		
-		/* Rerandomization count */
-		local rerandcount	100	
-							;
-
-		/* Covariates */	
-		global cov_always	i.block_as											// Covariates that are always included
-							i.rd_group
-							;	
-		
-		/* Cluster */
-		global cluster		id_village_n
-							;
-							
-		/* Lasso Covariates */
-		local cov			resp_female 
-							resp_muslim
-							b_resp_religiosity
-							b_values_likechange 
-							b_values_techgood 
-							b_values_respectauthority 
-							b_values_trustelders 
-							b_fm_reject
-							b_ge_raisekids 
-							b_ge_earning 
-							b_ge_leadership 
-							b_ge_noprefboy 
-							b_media_tv_any 
-							b_media_news_never 
-							b_media_news_daily 
-							b_radio_any 
-							b_resp_lang_swahili 
-							b_resp_literate 
-							b_resp_standard7 
-							b_resp_nevervisitcity 
-							b_resp_married 
-							b_resp_hhh 
-							b_resp_numkid
-							;
-
-		/* Statitistics of interest */
-		local stats_list 	treat_mean
-							treat_sd
-							treat_N
-							control_mean
-							control_sd
-							contro_N
-							min
-							max
-							ri_pval
-							pval
-							;
+	local base_vars		resp_age resp_female resp_muslim b_resp_standard7 b_resp_married 
+						b_resp_religiosity b_resp_literate b_resp_lang_swahili 
+						b_resp_yrsvill 
+						b_resp_numhh b_resp_numkid b_resp_numolder b_resp_numyounger b_resp_numadult 
+						b_ge_index b_ge_raisekids b_ge_earning b_ge_leadership b_ge_noprefboy 
+						b_fm_reject 
+						b_radio_any
+						b_values_likechange b_values_techgood 
+						b_values_respectauthority
+						b_asset_cell b_asset_tv b_asset_radio_num
+						;
 	#d cr
-
-/* Sandbox _____________________________________________________________________
-
-estimates clear
-
-	foreach var of local dv {
-		qui xi : regress `var' b_fm_reject treat ${cov_always}, cluster(id_village_n)
-		estimates store sb_`var'
-	}	
+	
+/* Define Matrix _______________________________________________________________*/
 		
-estimates table sb_*, keep(treat) b(%7.4f) se(%7.4f)  p(%7.4f) stats(N r2_a)
-
-stop
-*/
-
-/* Adjust for Partner Survey ___________________________________________________*/
-
-	if `partner' > 0	 {														// Need to change variable titles if partner survey
-		local dv_p
-		foreach var of local dv {
-			local dv_p `dv_p' p_`var'
-			}
-		local dv `dv_p'
-	}
-
-
-/* Define Matrix _______________________________________________________________
-
-	This section prepares an empty matrix to hold results
-*/
-
-	local var_list `cov'
-	local varnames ""   
-	local varlabs ""   
-	local mat_length `: word count `var_list'' 
-	local mat_width `: word count `stats_list'' 
-	mat R =  J(`mat_length', `mat_width', .)
+	/* Set Put Excel File Name */
+	putexcel clear
+	putexcel set "${as_tables}/pfm_as_balance.xlsx", replace 
+	
+	putexcel A1 = ("variable")
+	putexcel B1 = ("variablelabel")
+	putexcel C1 = ("treatmean")
+	putexcel D1 = ("treatsd")
+	putexcel E1 = ("controlmean")
+	putexcel F1 = ("controlsd")
+	putexcel G1 = ("coef")
+	putexcel H1 = ("pval")
+	putexcel I1 = ("ripval")
+	putexcel J1 = ("N")
+	putexcel K1 = ("min")
+	putexcel L1 = ("max")
+	putexcel M1 = ("samplemean")
 
 	
 /* Export Regression ___________________________________________________________*/
 
-local i = 1
+	/* Set locals */
+	local i = 1
+	local row = 2
 
-foreach dv of local var_list  {
-
-	/* Variable Name */
-	qui ds `dv'
-		local varname = "`r(varlist)'"  
-		*local varlab: var label `var'  										// Could capture variable label in future	
-		local varnames `varnames' `varname'   
-		*local varlabs `varlabs' `varlab' 
-
-/* Balance Check  ______________________________________________________________*/	
+	/* Run and save for each variable */
+	foreach dv of local base_vars  {
 	
-	/* Run basic regression */
-	qui xi: regress `dv' treat ${cov_always}									// This is the basic regression
-	
-		/* Save Coefficient */
-		matrix table = r(table)
-		local coef = table[1,1]
+		/* Set global */
+		global dv `dv'
+
+		/* Variable Name */
+		qui ds `dv'
+			global varname = "`r(varlist)'"  
+			
+		/* Variable Label */
+		global varlabel : var label `dv'
+			
+		/* Treatment / Control Mean */
+		qui sum `dv' if treat == 0 
+			global control_mean `r(mean)'
+			global control_sd `r(sd)'
+
+		qui sum `dv' if treat == 1 
+			global treat_mean `r(mean)'
+			global treat_sd `r(sd)'
+			
+		qui sum `dv'
+			global sample_mean `r(mean)'
+
+		/* Variable Range */	
+		qui sum `dv' 
+			global min = r(min)
+			global max = r(max)
+
+		/* Regression  */
+		qui xi: reg `dv' treat ${cov_always}		
 		
-		/* Save pval  */
-		local basic_pval = table[4,1]   										//p-val
-		
-		/* Calculate RI p-value 		*/
-		local rip_count = 0
-		forval j = 1 / `rerandcount' {
-			qui xi: reg `dv' treat_`j' ${cov_always}
-				matrix RIP = r(table)
-				local coef_ri = RIP[1,1]
-					if abs(`coef') < abs(`coef_ri') { 	  
-						local rip_count = `rip_count' + 1	
-					}
-		}
-		mat R[`i',9] = `rip_count' / `rerandcount'	
-		mat R[`i',10] = `basic_pval'
-		di "*** Variable is `dv' "
-		di "*** Basic coef is `coef'"
-		di "*** Basic pval is `basic_pval'"
-		di "*** Basic ripval is `rip_count' / `rerandcount'	"
-		di "****************************************"
-		
-/* Summary Statistics __________________________________________________________*/
+			matrix table = r(table)
+				
+			/* Save values from regression */
+			global coef = table[1,1]    	//beta
+			global pval = table[4,1]		//pval
+			global r2 	= `e(r2_a)' 		//r-squared
+			global n 	= e(N) 				//N
+			
+		/* RI */
+		do "${code}/pfm_audioscreening/01_helpers/pfm_helper_ri_balance.do"
+		global ripval = ${helper_ripval}
+			
+			/* Put excel */
+			putexcel A`row' = ("${varname}")
+			putexcel B`row' = ("${varlabel}")
+			putexcel C`row' = ("${treat_mean}")
+			putexcel D`row' = ("${treat_sd}")
+			putexcel E`row' = ("${control_mean}")
+			putexcel F`row' = ("${control_sd}")
+			putexcel G`row' = ("${coef}")
+			putexcel H`row' = ("${pval}")
+			putexcel I`row' = ("${ripval}")
+			putexcel J`row' = ("${n}")
+			putexcel K`row' = ("${min}")
+			putexcel L`row' = ("${max}")
+			putexcel M`row' = ("${sample_mean}")
+
+	/* Update locals */
+	local row = `row' + 1
+	local i = `i' + 1 
+}	
+
+
+
 	
-	/* Treat/Control Mean */
-	qui sum `dv' if treat == 0 
-		local control_mean `r(mean)'
-		local control_sd `r(sd)'
-		local control_n `r(N)'
-		
-	qui sum `dv' if treat == 1 
-		local treat_mean `r(mean)'
-		local treat_sd `r(sd)'
-		local treat_n `r(N)'
-
-	/* Variable Range */
-	qui sum `dv' 
-		local min = r(min)
-		local max = r(max)
-	
-	/* Save variable summaries */
-		mat R[`i',1]= `treat_mean'    											// treat mean
-		mat R[`i',2]= `treat_sd'    											// treat sd		
-		mat R[`i',3]= `treat_n'    												// treat N
-		mat R[`i',4]= `control_mean'    										// control mean
-		mat R[`i',5]= `control_sd'    											// control sd
-		mat R[`i',6]= `control_n'    											// control N	
-		mat R[`i',7]= `min'  													// min
-		mat R[`i',8]= `max'  													// max
-
-	/* Reset Locals */
-		capture macro drop pval
-		capture macro drop basic_pval
-		capture macro drop lassovars_num == 0
-
-local rip_count = 0
-local i = `i' + 1
-}
-	
-/* Export Matrix _______________________________________________________________*/ 
-
-	/* Row Names */
-	mat rownames R = `varnames'  
-
-	/* Transfer matrix to using dataset */
-	clear
-	svmat R, names(name)
-
-	/* Create a variable for each outcome */
-	gen outcome = "" 
-	order outcome, before(name1)
-	local i = 1 
-	foreach var in `var_list' { 
-		replace outcome="`var'" if _n==`i' 
-		local ++i
-	}
-
-	/* Label regression statistics variables */
-	local i 1 
-	foreach col in `stats_list' { 
-		cap confirm variable name`i' 
-		if _rc==0 {
-			rename name`i' `col'
-			local ++i
-		} 
-	}  
-
-	/* Export */
-	
-	if `partner' > 0 {
-		export excel using "${as_tables}/pfm_as_balance", sheetreplace firstrow(variables)
-	}
-	if `partner' < 1 {
-		export excel using "${as_tables}/pfm_as_balance", sheetreplace firstrow(variables)
-	}
-
-
-
-
 
 
 

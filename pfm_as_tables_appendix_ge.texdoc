@@ -1,0 +1,52 @@
+	*-------------------------------------------------------------------------------
+* Project: Pangani FM 2
+* File: Analaysis of FM Outcomes
+* Date: 9/19/2019
+* Author: Dylan Groves, dgroves@poverty-action.org
+* Overview: Initial Check for balance
+*-------------------------------------------------------------------------------
+
+*ssc install texdoc, replace
+
+/* Introduction ________________________________________________________________*/
+
+	clear all
+	set maxvar 30000
+	set more off
+	set seed 1956
+
+	* Set Dylans Global
+	gl stata "C:\Users\dylan\Dropbox\Wellspring Tanzania - Audio Screening\"
+	gl raw "C:\Users\dylan\Dropbox\Wellspring Tanzania - Audio Screening\03 Tables and Figures\01 Raw\"
+
+
+/* Set Variables _______________________________________________________________*/
+
+* Midline GE
+local q_ge_index 				"Do you agree or disagree with the following statements? \newline \newline (1) (+) A husband and wife should share equally in cooking meals and raising children. \newline (2) (-) If a woman earns more money than her husband, it's almost certain to cause problems. \newline (3) (-) It is more important that a boy goes to school than a girl"
+
+local q_ge_index_end				"Do you agree or disagree with the following statements? \newline \newline (1) It is more important that a boy goes to school than a girl (-) \newline (2) When jobs are scarce, men should have more right to a job than women (-) \newline In general, women make equally good village leaders as men (+) \newline In general, women are just as able to run a successful business as men (+)"
+
+
+/* Gender Equality _____________________________________________________________*/
+
+texdoc init "${as_clean_tables}/appendix_variables_ge.tex", replace nolog
+
+texdoc write 	{
+texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+texdoc write 	\begin{tabular}{p{3cm} p{8cm} p{8cm}}
+texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]
+texdoc write   \multicolumn{1}{c}{Variable Name}       &  \multicolumn{1}{c}{Survey Question}           & \multicolumn{1}{c}{Variable Construction}  \\[0.15cm]
+texdoc write    \hline\addlinespace[5pt]
+texdoc write 	\multicolumn{3}{c}{\textbf{Midline}} 													\\\addlinespace[5pt]
+texdoc write	\hline\addlinespace[5pt]																			
+texdoc write 	Gender Equality Index 				& `q_ge_index'	   			& Mean of 3 				\\\addlinespace[5pt]
+texdoc write    \hline\addlinespace[5pt]
+texdoc write 	\multicolumn{3}{c}{\textbf{Endline}} 													\\\addlinespace[5pt]
+texdoc write	\hline\addlinespace[5pt]
+texdoc write 	Gender Equality Index				& `q_ge_index_end'	   		& Mean of 4 				\\\addlinespace[5pt]
+texdoc write 	\Xhline{2\arrayrulewidth}
+texdoc write  	\end{tabular}
+texdoc write 	}
+
+texdoc close

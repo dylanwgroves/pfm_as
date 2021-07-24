@@ -1,0 +1,81 @@
+	*-------------------------------------------------------------------------------
+* Project: Pangani FM 2
+* File: Analaysis of FM Outcomes
+* Date: 9/19/2019
+* Author: Dylan Groves, dgroves@poverty-action.org
+* Overview: Initial Check for balance
+*-------------------------------------------------------------------------------
+
+*ssc install texdoc, replace
+
+/* Introduction ________________________________________________________________*/
+
+	clear all
+	set maxvar 30000
+	set more off
+	set seed 1956
+
+	* Set Dylans Global
+	gl stata "C:\Users\dylan\Dropbox\Wellspring Tanzania - Audio Screening\"
+	gl raw "C:\Users\dylan\Dropbox\Wellspring Tanzania - Audio Screening\03 Tables and Figures\01 Raw\"
+
+
+/* Set Variables _______________________________________________________________*/
+
+* EFM Midline Attitudes
+
+local q_fm_conatt_support		"A girl should not have a say in who she marries; it is best if her father selects a suitable husband for her."
+local q_fm_cogatt_girlchoice 	"Please tell me if you agree or disagree with the following statement: a 18 year-old daughter should accept the husband that her father decides for her."
+
+local vig_em_cogatt_money			"A poor family you know is having money problems. A wealthy man from [inside/outside] the village offers the family [X] shillings if the family will allow [him/his son] to marry their [X] year old daughter. In this situation, two of your friends make the following two statements. Which friend would you agree with?"
+local vig_em_cogatt_daughter		"The [X] year-old daughter of a family is [failing in school / difficult to control at home / at risk of getting pregnant]. A wealthy man from [inside / outside] the village offers the family [X] shillings if the family will allow [him/his son] to marry their daughter. In this situation, two of your friends make the following two statements. Which friend would you agree with?"
+
+
+* EFM Endline Attitudes 
+
+local q_fm_attitude				"A girl should not have a say in who she marries; it is best if her father selects a suitable husband for her."
+local q_fm_attitude_long		"[If Agree] Do you agree or strongly agree? / [If Disagree] Do you disagree or strongly disagree?"
+local a_fm_attitude_long		"3 = Strongly disagree \newline 2 = Disagree \newline 1 = Agree \newline 0 = Strongly agree"
+
+local q_fm_partnerpercept		"[Asking respondent's partner] What do you think your partner thinks about this issue?"	
+
+local q_fm_cogatt_story 		"[Following story] In this situation, two of your friends make the following two statements. Which friend would you agree with?"	
+local a_fm_cogatt_story 		"1 = Statement 1: No, a family should never allow their daughter to marry at X years old \newline \newline 0 = Statement 2: Yes, under these circumstances the family should marry their daughter even though she is X years old"
+
+local q_em_normal				"Imagine that a girl in your village was offered a very good marriage, but she was less than 18 years old. Do you think it would be acceptable for the girl to be married?"
+local a_em_normal				"1 = No, should not be allowed to be married \newline 0 = Yes, should be allowed \newline 0 = Depends on the circumstances"
+
+local q_em_money				"In your opinon, could the girls marriage be acceptable if the family is facing economic hardship and the marriage will help the family with money issues?"
+local q_em_pregnant				"In your opinon, could the girls marriage be acceptable if If the daughter family fears the daughter is at risk of getting pregnant?"
+
+
+/* Table _______________________________________________________________________*/
+
+texdoc init "${as_clean_tables}/appendix_variables_attitudes.tex", replace nolog
+
+texdoc write 	{
+texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+texdoc write 	\begin{tabular}{p{3cm} p{8cm} p{8cm}}
+texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]
+texdoc write   \multicolumn{1}{c}{Variable Name}       &  \multicolumn{1}{c}{Survey Question}                  		& \multicolumn{1}{c}{Variable Construction}  \\[0.15cm]
+texdoc write    \hline\addlinespace[5pt]
+texdoc write 	\multicolumn{3}{c}{\textbf{Midline}} 										\\\addlinespace[5pt]
+texdoc write	\hline\addlinespace[5pt]																		
+texdoc write 	Reject FM (Columns 1/2) 			&   `q_fm_conatt_support'        	&	1 = Disagree \newline 0 = Agree 	\\\addlinespace[5pt]
+texdoc write	Reject FM (18+) (Columns 3/4)		&	`q_fm_cogatt_girlchoice' 		&	1 = Disagree \newline 0 = Agree 	\\\addlinespace[5pt]
+texdoc write	Reject EM (Vignette) (Columns 5/6)	& 	`vig_em_cogatt_money'			&	`a_fm_cogatt_story' 				\\\addlinespace[5pt]
+texdoc write	Others FM (Vignette) (Columns 7/8)	&   `vig_em_cogatt_daughter'		&	`a_fm_cognorm_story'				\\\addlinespace[5pt]	
+texdoc write    \hline\addlinespace[5pt]
+texdoc write 	\multicolumn{3}{c}{\textbf{Endline}} 										\\\addlinespace[5pt]
+texdoc write	\hline\addlinespace[5pt]
+texdoc write 	Reject FM (Columns 1/2) 			&   `q_fm_conatt_support'        	&	1 = Disagree \newline 0 = Agree 	\\\addlinespace[5pt]
+texdoc write	Reject FM (branched) (Columns 3/4) 	&	`q_fm_attitude_long' 			&	`a_fm_attitude_long' 				\\\addlinespace[5pt]
+texdoc write	Reject FM Partners' perception \newline (Columns 5/6)  & 	`q_fm_partnerpercept' &	1 = Disagree \newline 0 = Agree 	\\\addlinespace[5pt]
+texdoc write 	Reject EM General (Columns 7/8) 	& 	`q_em_normal'					&	`a_em_normal' 						\\\addlinespace[5pt]
+texdoc write 	Reject EM Need money (Columns 9/10) 	& 	`q_em_normal'				&	`a_em_normal' 						\\\addlinespace[5pt]
+texdoc write 	Reject EM Pregnancy (Columns 11/12) 	& 	`q_em_pregnant'				&	`a_em_normal' 						\\\addlinespace[5pt]
+texdoc write 	\Xhline{2\arrayrulewidth}
+texdoc write  	\end{tabular}
+texdoc write 	}
+
+texdoc close

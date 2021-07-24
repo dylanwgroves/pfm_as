@@ -47,7 +47,6 @@ ________________________________________________________________________________
 							b_resp_hhh 
 							b_resp_numkid
 							b_fm_reject
-							i.svy_enum
 							;
 	
 /* Outcomes */
@@ -55,7 +54,7 @@ ________________________________________________________________________________
 							attrition_endline
 							;
 							
-		global attendance 	comply_true
+		global attendance 	comply_attend_any
 							;
 							
 		global uptake		comply_attend_efm
@@ -70,6 +69,7 @@ ________________________________________________________________________________
 		global fm			fm_reject
 							fm_reject_long 									
 							p_fm_partner_reject
+							fm_reject_mixed
 							;
 							
 		global em_attitude	
@@ -118,6 +118,7 @@ ________________________________________________________________________________
 							;
 							
 		global ipv 			ipv_rej_disobey
+							ipv_rej_disobey_long
 							ipv_rej_hithard
 							ipv_rej_persists
 							ipv_norm_rej	
@@ -125,6 +126,7 @@ ________________________________________________________________________________
 							;	
 							
 		global mid_ipv		m_ipv_rej_disobey 
+							m_ipv_rej_disobey_long
 							m_ipv_rej_hithard 
 							m_ipv_rej_persists 
 							m_ipv_report 
