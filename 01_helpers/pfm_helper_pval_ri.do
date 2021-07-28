@@ -1,13 +1,13 @@
 
 /* Calculate RI p-value */
 
-if "$test" == "onesided" {
+if "$test" != "twosided" {
 
 	/* one sided */
 	local rip_count = 0
 	forval j = 1 / $rerandcount {
 	
-		qui xi: reg $dv treat_`j' ${cov_always}, cluster(id_village_n)
+		qui xi: reg $dv treat_`j' ${cov_always}, cluster(cluster_as)
 			matrix RIP = r(table)
 			local coef_ri = RIP[1,1]
 			if ${coef} < `coef_ri' { 	  
@@ -23,7 +23,7 @@ if "$test" == "twosided" {
 	local rip_count = 0
 	forval j = 1 / $rerandcount {
 	
-		qui xi: reg $dv treat_`j' ${cov_always}, cluster(id_village_n)
+		qui xi: reg $dv treat_`j' ${cov_always}, cluster(cluster_as)
 			matrix RIP = r(table)
 			local coef_ri = RIP[1,1]
 			

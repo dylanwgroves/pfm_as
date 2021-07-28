@@ -1,9 +1,10 @@
+
 /* Basics ______________________________________________________________________
 
-Project: Wellspring Tanzania, Natural Experiment
-Purpose: Analysis
-Author: dylan groves, dylanwgroves@gmail.com
-Date: 2020/12/23
+	Project: Wellspring Tanzania, Spillovers
+	Purpose: Table Construction - Main Results, HIV
+	Author: dylan groves, dylanwgroves@gmail.com
+	Date: 2020/12/23
 ________________________________________________________________________________*/
 
 
@@ -25,10 +26,10 @@ ________________________________________________________________________________
 
 /* Load Data ___________________________________________________________________*/	
 
-	import excel "${as_tables}/pfm_as_analysis_main.xlsx", sheet("fm") firstrow clear
+	import excel "${spill_tables}/pfm_spill_analysis_main.xlsx", sheet("fm") firstrow clear
 	save `dta_main', replace
 
-	import excel "${as_tables}/pfm_as_analysis_main.xlsx", sheet("em_attitude") firstrow clear
+	import excel "${spill_tables}/pfm_as_analysis_main.xlsx", sheet("em_attitude") firstrow clear
 	append using `dta_main'
 
 

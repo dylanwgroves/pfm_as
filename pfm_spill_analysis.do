@@ -20,16 +20,15 @@ ________________________________________________________________________________
 /* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
 
 	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
-	do "${code}/pfm_audioscreening/pfm_as_prelim.do"
+	do "${code}/pfm_spillovers/pfm_spill_prelim.do"
 
 
 /* Load Data ___________________________________________________________________*/	
 
-	use "${data_as}/pfm_as_analysis.dta", clear
+	use "${data_spill}/pfm_spill_analysis.dta", clear
 
 	// IMPORTANT NOTE: we do not use for attrition, attendance, and uptake											
 	keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)	
-	
 	
 /* Define Parameters ___________________________________________________*/
 
@@ -39,12 +38,11 @@ ________________________________________________________________________________
 		set seed 			1956
 							;
 							
-		/* rerandomization count */
-		global rerandcount	100
+		/* rerandomization count */	
+		global rerandcount	200
 							;
 		
-		/* survey */
-		global survey 		main
+		global survey 		friend
 							;
 							/*
 							main
@@ -55,43 +53,57 @@ ________________________________________________________________________________
 					
 		/* Indices */			
 		local index_list	
-							attrition
-							attendance
-							/*
-							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
-							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers
-							uptake
-							fm
-							em_attitude
-							norm
-							em_report 
-							em_record 
-							priority
-							wpp 
-							gender 
-							ipv
-							mid_fm
-							mid_em
-							mid_norm
-							mid_report
-							mid_priority
-							mid_ipv
-							mid_gender
+							efm_em
+							efm_fm
+							/*	
+							hiv_know 	
+							hiv_disclose 
+							hiv_stigma
+							hiv_priority
+							*/
+							/* 
+							efm_em
+							efm_fm
+							efm_priority	
+							efm_gender
+							efm_em_record	// doesn't exist for kids
+							efm_ipv			// doesn't exist for kids
+							efm_wpp 		// doesn't exist for kids
+
 							*/
 							;
 	#d cr
 
+	
+/* Switch Treatment if HIV Outcome _____________________________________________*/
 
-/* Run Do File ______________________________________________________________*/
 
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_indices_${survey}.do"
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_labels.do"
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_twosided.do"
+/* Switch Dataset if Kids Outcomes _____________________________________________*/
+	if strpos("$survey", "kid") { 
+		use "${data_spill}/pfm_spill_analysis_kids.dta", clear
+	} 
 
+
+/* Run Do File _________________________________________________________________*/
+
+	do "${code}/pfm_spillovers/02_indices/pfm_spill_indices_${survey}.do"
+	*do "${code}/pfm_spillovers/02_indices/pfm_spill_labels.do"
+	do "${code}/pfm_spillovers/02_indices/pfm_spill_twosided.do"
+	
 
 /* Run for Each Index __________________________________________________________*/
 
 foreach index of local index_list {
+
+	if strpos("`index'", "hiv_") { 
+		replace treat = treat_hiv
+		global treat hiv
+	} 
+	
+	if strpos("`index'", "efm_") { 
+		replace treat = treat_efm
+		global treat efm
+	} 
 
 	/* Drop Macros */
 	macro drop lasso_ctls 
@@ -113,7 +125,7 @@ foreach index of local index_list {
 				
 		/* Set Put Excel File Name */
 		putexcel clear
-		putexcel set "${as_tables}/pfm_as_analysis_${survey}.xlsx", sheet(`index', replace) modify
+		putexcel set "${spill_tables}/pfm_spill_analysis_${treat}_${survey}.xlsx", sheet(`index', replace) modify
 		
 		qui putexcel A1 = ("variable")
 		qui putexcel B1 = ("variablelabel")
@@ -143,7 +155,7 @@ foreach index of local index_list {
 	
 	/* Summary Stats ___________________________________________________________*/
 
-		/* Set locals */
+		/* set locals */
 		local var_list ${`index'}												// Variables
 		local row = 2															// Row for exporting to matrix
 		foreach dv of local var_list  {
@@ -159,14 +171,14 @@ foreach index of local index_list {
 				global test onesided
 			}
 		
-		/* Variable name */
+		/* variable name */
 		qui ds `dv'
 			global varname = "`r(varlist)'"  
 
-		/* Variable label */
+		/* variable label */
 		global varlabel : var label `dv'
 		
-		/* Treatment mean */
+		/* treatment mean */
 		qui sum `dv' if treat == 0 
 			global ctl_mean `r(mean)'
 			global ctl_sd `r(sd)'
@@ -176,14 +188,14 @@ foreach index of local index_list {
 			global treat_mean `r(mean)'
 			global treat_sd `r(sd)'
 			
-		/* Control village sd */
+		/* control village sd */
 		preserve
-		qui collapse (mean) `dv' treat, by(id_village_uid)
+		qui collapse (mean) `dv' treat, by(cluster_as)
 		qui sum `dv' if treat == 0
 			global vill_sd : di %6.3f r(sd)
 		restore
 
-		/* Variable range */	
+		/* variable range */	
 		qui sum `dv' 
 			global min = r(min)
 			global max = r(max)
@@ -191,7 +203,7 @@ foreach index of local index_list {
 			
 	/* Basic Regression ________________________________________________________*/
 
-		qui xi: reg `dv' treat ${cov_always}, cluster(id_village_n)									// This is the core regression
+		qui xi: reg `dv' treat ${cov_always}, cluster(cluster_as)				// This is the core regression
 			matrix table = r(table)
 			
 			/* Save values from regression */
@@ -203,11 +215,11 @@ foreach index of local index_list {
 			global df 	= e(df_r)
 			
 			/* Calculate pvalue */
-			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval.do"
+			do "${code}/pfm_spillovers/01_helpers/pfm_helper_pval.do"
 			global pval = ${helper_pval}
 
 			/* Calculate RI-pvalue */
-			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval_ri.do"
+			do "${code}/pfm_spillovers/01_helpers/pfm_helper_pval_ri.do"
 			global ripval = ${helper_ripval}
 
 	/* Lasso Regression  ___________________________________________________________*/
@@ -218,12 +230,12 @@ foreach index of local index_list {
 
 	
 		if ${lasso_ctls_num} != 0 {												// If lassovars selected	
-			qui regress `dv' treat ${cov_always} ${lasso_ctls}, cluster(id_village_n)
+			qui regress `dv' treat ${cov_always} ${lasso_ctls}, cluster(cluster_as)
 				matrix table = r(table)
 			}
 			
 			else if ${lasso_ctls_num} == 0 {									// If no lassovars selected
-				qui regress `dv' treat ${cov_always}, cluster(id_village_n)
+				qui regress `dv' treat ${cov_always}, cluster(cluster_as)
 					matrix table = r(table)
 			}	
 		
@@ -239,11 +251,11 @@ foreach index of local index_list {
 			global lasso_df 	= e(df_r)
 
 			/* Calculate one-sided pvalue */				
-			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval_lasso.do"
+			do "${code}/pfm_spillovers/01_helpers/pfm_helper_pval_lasso.do"
 			global lasso_pval = ${helper_lasso_pval}
 			
 			/* Calculate Lasso RI-pvalue */
-			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval_ri_lasso.do"
+			do "${code}/pfm_spillovers/01_helpers/pfm_helper_pval_ri_lasso.do"
 			global lasso_ripval = ${helper_lasso_ripval}
 		
 	/* Export to Excel _________________________________________________________*/ 
@@ -282,22 +294,4 @@ foreach index of local index_list {
 		local row = `row' + 1
 		}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
