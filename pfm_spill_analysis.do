@@ -42,7 +42,7 @@ ________________________________________________________________________________
 		global rerandcount	200
 							;
 		
-		global survey 		friend
+		global survey 		kid
 							;
 							/*
 							main
@@ -83,7 +83,7 @@ ________________________________________________________________________________
 		use "${data_spill}/pfm_spill_analysis_kids.dta", clear
 	} 
 
-
+	
 /* Run Do File _________________________________________________________________*/
 
 	do "${code}/pfm_spillovers/02_indices/pfm_spill_indices_${survey}.do"
