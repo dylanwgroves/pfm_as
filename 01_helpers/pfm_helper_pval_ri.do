@@ -36,6 +36,7 @@ if "$test" == "twosided" {
 	di "`rip_count' AND $rerandcount"
 	global helper_ripval = `rip_count' / $rerandcount
 	
+	stop
 	
 		
 	
