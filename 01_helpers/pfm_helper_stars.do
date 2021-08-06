@@ -1,8 +1,8 @@
 
 /* Basics ______________________________________________________________________
 
-	Project: Wellspring Tanzania, Spillovers
-	Purpose: Analysis - Set globals
+	Project: Wellspring Tanzania, Natural Experiment
+	Purpose: Analysis - SEt globals
 	Author: dylan groves, dylanwgroves@gmail.com
 	Date: 2020/12/23
 ________________________________________________________________________________*/
@@ -15,29 +15,29 @@ forval i = 1/$count {
 	
 	/* Stars */
 	
-		/* Normal 	*/															// THESE ARE GLOBALS NOT LOCALS IF YOU UNCOMMENT THIS YOU NEED TO FIX
-		if ${p`i'} < 0.1 {
-			global s`i' "*"
+		/* Normal 																// THESE ARE GLOBALS NOT LOCALS IF YOU UNCOMMENT THIS YOU NEED TO FIX
+		if `p_`i'' < 0.1 {
+			local s_`i' "*"
 		}
-			if ${p`i'} < 0.05 {
-				global s`i' "**"
+			if `p_`i'' < 0.05 {
+				local s_`i' "**"
 			}
-				if ${p`i'} < 0.01 {
-					global s`i' "***"
+				if `p_`i'' < 0.01 {
+					local s_`i' "***"
 				}	
 				
-		if ${p`i'c} < 0.1 {
-			global s`i'c "*"
+		if `p_`i'c' < 0.1 {
+			local s_`i'c "*"
 		}
-			if ${p`i'c} < 0.05 {
-				global s_`i'c "**"
+			if `p_`i'c' < 0.05 {
+				local s_`i'c "**"
 			}
-				if ${p`i'c} < 0.01 {
-					global s`i'c "***"
+				if `p_`i'c' < 0.01 {
+					local s_`i'c "***"
 				}		
+		*/
 		
-		
-		/* Restrictive
+		/* Restrictive */
 		if ${p`i'} < 0.005 {
 			global s`i' "*"
 		}
@@ -56,5 +56,4 @@ forval i = 1/$count {
 		if ${p`i'c} < 0.001 {
 			global p`i'c "<0.001"
 			}
-	*/
 }

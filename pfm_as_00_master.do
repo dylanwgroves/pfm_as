@@ -25,37 +25,22 @@ ________________________________________________________________________________
 	
 /* RD prelim ___________________________________________________________________*/
 
-	do "${code}/pfm_spill/pfm_spill_prelim.do"
+	do "${code}/pfm_as/pfm_as_prelim.do"
 
 	
 /* Balance _____________________________________________________________________*/
 
-	do "${code}/pfm_spill/pfm_spill_02_balance.do"
+	do "${code}/pfm_as/pfm_as_02_balance.do"
 	
 /* Analysis ____________________________________________________________________*/
 
-	do "${code}/pfm_spill/pfm_spill_03_analysis.do"
+	do "${code}/pfm_as/pfm_as_03_analysis.do"
 	
 /* Tables ______________________________________________________________________*/
 
-	*texdoc do "${code}/pfm_spillovers/pfm_spill_tables_01_balance.texdoc"
+	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_01_balance.texdoc"
 	
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_know_main.texdoc"
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_know_partner.texdoc"
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_know_friend.texdoc"
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_know_kid.texdoc"
-
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_disclose_main.texdoc"
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_disclose_partner.texdoc"
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_disclose_friend.texdoc"
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_disclose_kid.texdoc"
-	
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_priority_main.texdoc"
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_priority_partner.texdoc"
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_priority_friend.texdoc"
-	texdoc do "${code}/pfm_spillovers/pfm_spill_tables_results_hiv_priority_kid.texdoc"
-	
-	
+	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_attendanceattrition.texdoc"
 	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_compliance.texdoc"
 
 	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_fm_em_mid.texdoc"

@@ -1,10 +1,10 @@
 	
 /* Overview ______________________________________________________________________
 
-	Project: Wellspring Tanzania, Audio Screening
-	Purpose: Analysis Prelimenary Work
-	Author: dylan groves, dylanwgroves@gmail.com
-	Date: 2020/12/23l
+Project: Wellspring Tanzania, Audio Screening
+Purpose: Analysis Prelimenary Work
+Author: dylan groves, dylanwgroves@gmail.com
+Date: 2020/12/23l
 
 ________________________________________________________________________________*/
 
@@ -26,7 +26,7 @@ ________________________________________________________________________________
 /* Load Data ___________________________________________________________________*/	
 
 	/* Attendance Data */
-	import excel "${data_spill}/pfm_as_attendance_RM.xlsx", sheet("Sheet1") firstrow clear
+	import excel "${data_as}/pfm_as_attendance_RM.xlsx", sheet("Sheet1") firstrow clear
 		drop fm_reject resp_female m_comply_attend treat Diff id_resp_n id_village_n
 	save `temp_attend', replace
 
@@ -188,9 +188,6 @@ ________________________________________________________________________________
 							b_resp_married 
 							b_resp_hhh 
 							b_resp_numkid
-							p_resp_age 
-							p_resp_female 
-							p_resp_muslim
 							;
 		#d cr
 		
@@ -211,7 +208,17 @@ ________________________________________________________________________________
 
 /* Save ________________________________________________________________________*/
 
-	save "${data_spill}/pfm_spill_analysis.dta", replace
+	save "${data_as}/pfm_as_analysis.dta", replace
 	save `temp_all', replace
 	
 
+/* Reshape Long ________________________________________________________________
+
+	use "${data}/01_raw_data/pfm_as_endline_clean_kid_long.dta", clear
+	rename * k_*
+	rename k_id_resp_uid id_resp_uid 
+	merge n:1 id_resp_uid using `temp_all', gen(_merge_kids)
+	keep if _merge_kids == 3
+	save "${data_as}/pfm_as_analysis_kids.dta", replace
+
+*/

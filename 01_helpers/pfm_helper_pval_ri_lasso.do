@@ -3,19 +3,19 @@
 /* Calculate Lasso RI p-value */
 
 /* one-sided */
-if "$test" != "twosided" {
+if "$test" == "onesided" {
 
 									
 	local lasso_rip_count = 0
 	forval k = 1/$rerandcount {
 		
 		if ${lasso_ctls_num} != 0 {											// If lassovars selected						
-			qui regress $dv treat_`k' ${cov_always} ${lasso_ctls}, cluster(cluster_as)
+			qui regress $dv treat_`k' ${cov_always} ${lasso_ctls}, cluster(id_village_n)
 				matrix LASSO_RIP = r(table)
 			}
 			
 			else if ${lasso_ctls_num} == 0 {							// If lassovars not selected
-				qui regress $dv treat_`k' ${cov_always}, cluster(cluster_as)
+				qui regress $dv treat_`k' ${cov_always}, cluster(id_village_n)
 					matrix LASSO_RIP = r(table)
 			}	
 			
@@ -37,12 +37,12 @@ if "$test" == "twosided" {
 	forval k = 1/$rerandcount {
 		
 		if ${lasso_ctls_num} != 0 {											// If lassovars selected						
-			qui regress $dv treat_`k' ${cov_always} ${lasso_ctls}, cluster(cluster_as)
+			qui regress $dv treat_`k' ${cov_always} ${lasso_ctls}, cluster(id_village_n)
 				matrix LASSO_RIP = r(table)
 			}
 			
 			else if ${lasso_ctls_num} == 0 {							// If lassovars not selected
-				qui regress $dv treat_`k' ${cov_always}, cluster(cluster_as)
+				qui regress $dv treat_`k' ${cov_always}, cluster(id_village_n)
 					matrix LASSO_RIP = r(table)
 			}	
 			
