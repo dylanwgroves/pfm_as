@@ -29,7 +29,7 @@ ________________________________________________________________________________
 	save `dta_main', replace
 	
 	import excel "${as_tables}/pfm_as_analysis_main.xlsx", sheet("attendance") firstrow clear
-	append using `dta_main', force
+	append using `dta_main'
 
 	
 /* Sort Data ___________________________________________________________________*/
@@ -38,7 +38,7 @@ ________________________________________________________________________________
 	sort pval
 	destring 	variable variablelabel coef se pval r2 N ///
 				lasso_coef lasso_se lasso_pval ripval lasso_ripval lasso_r2 lasso_N lasso_ctls lasso_ctls_num ///
-				treat_mean treat_sd ctl_mean ctl_sd vill_sd min max test, replace
+				treat_mean treat_sd ctl_mean ctl_sd vill_sd min max, replace
 	save `dta_main', replace
 
 
@@ -47,7 +47,7 @@ ________________________________________________________________________________
 	/* Individual Data */
 	# d ;
 	local sumstat_vars 	
-						comply_attend_any 
+						comply_true
 						attrition_midline
 						attrition_endline
  
@@ -66,15 +66,7 @@ ________________________________________________________________________________
 
 	drop if rank == .
 	gsort rank
-	
-/* Variable Label */
-tostring variablelabel, replace
-replace variablelabel = "Attended Any Screening" if variable == "comply_attend_any"
-replace variablelabel = "Midline Attrition" if variable == "attrition_midline"
-replace variablelabel = "Endline Attrition" if variable == "attrition_endline"
 
-replace test = "Two-sided" if test == "twosided"
-replace test = "+" if test == "onesided"
 
 /* Create variables ____________________________________________________________*/
 
@@ -106,10 +98,10 @@ replace test = "+" if test == "onesided"
 		
 		/* Summary stats */
 		global c`i' = strofreal(ctl_mean[`i'], "%6.2f")
-		global sd`i' = strofreal(vill_sd[`i'], "%6.2f")
+		global sd`i' = strofreal(ctl_sd[`i'], "%6.2f")
 		global mn`i' = strofreal(min[`i'], "%6.0f")
 		global mx`i' = strofreal(max[`i'], "%6.0f")
-		global t`i' = test[`i']
+	
 	}
 	
 	
@@ -132,11 +124,11 @@ texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} &\multicol
 
 texdoc write    							& (1)				& (2)				& (3)			& (4)			& (5)			& (6)						\\
 		
-texdoc write 	EFM Treat  					& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}		\\
+texdoc write 	Anti-EFM Screening  		& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}		\\
 texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  		& $se3 			& $se3c				\\
 texdoc write 	\hline
 texdoc write 	RI \$p\$-value 				& $p1				& $p1c 				& $p2			& $p2c			& $p3  			& $p3c				\\
-texdoc write 	Hypothesis					& $t1				& $t1 				& $t2			& $t2 			& $t3			& $t3						\\
+texdoc write 	Hypothesis					& +					& + 				& +				& + 			& +				& +						\\
 texdoc write 	Control Mean      			& $c1				& $c1				& $c2			& $c2			& $c3  			& $c3						\\
 texdoc write 	Control SD					& $sd1				& $sd1				& $sd2			& $sd2			& $sd3 			& $sd3						\\
 texdoc write	DV Range					& [$mn1-$mx1]		& [$mn1-$mx1]		& [$mn2-$mx2]	& [$mn2-$mx2]	& [$mn3-$mx3] 	& [$mn3-$mx3]				\\	
