@@ -21,4 +21,3 @@ if "$test" == "twosided" {
 
 
 di "$helper_pval"
-stop
