@@ -93,7 +93,7 @@ ________________________________________________________________________________
 		
 		/* Summary stats */
 		global c`i' = strofreal(ctl_mean[`i'], "%6.2f")
-		global sd`i' = strofreal(ctl_sd[`i'], "%6.2f")
+		global sd`i' = strofreal(vill_sd[`i'], "%6.2f")
 		global mn`i' = strofreal(min[`i'], "%6.0f")
 		global mx`i' = strofreal(max[`i'], "%6.0f")
 	
@@ -114,14 +114,14 @@ texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 texdoc write 	\begin{tabular}{l*{4}{c}}
 texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	
 
-texdoc write    &\multicolumn{2}{c}{\textit{Attitudes}} &\multicolumn{2}{c}{\textit{Norms}}	\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} 
+texdoc write    &\multicolumn{2}{c}{Attitudes} &\multicolumn{2}{c}{Norms}	\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} 
 
 texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2}	\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} 
 
 texdoc write    							& (1)				& (2)				& (3)			& (4)					\\
 
   
-texdoc write 	Anti-EFM Drama      		& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} 		\\
+texdoc write 	EFM Treat		      		& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} 		\\
 texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  				\\
 texdoc write 	\hline
 texdoc write 	RI \$p\$-value 				& $p1				& $p1c 				& $p2			& $p2c					\\

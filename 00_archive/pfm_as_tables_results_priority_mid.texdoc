@@ -94,7 +94,7 @@ ________________________________________________________________________________
 		
 		/* Summary stats */
 		global c`i' = strofreal(ctl_mean[`i'], "%6.2f")
-		global sd`i' = strofreal(ctl_sd[`i'], "%6.2f")
+		global sd`i' = strofreal(vill_sd[`i'], "%6.2f")
 		global mn`i' = strofreal(min[`i'], "%6.0f")
 		global mx`i' = strofreal(max[`i'], "%6.0f")
 	
@@ -120,7 +120,7 @@ texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2}	\tstrut \b
 texdoc write    							& (1)				& (2)				& (3)			& (4)					\\
 
   
-texdoc write 	Anti-EFM Drama      		& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} 		\\
+texdoc write 	EFM Treat		      		& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} 		\\
 texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  				\\
 texdoc write 	\hline
 texdoc write 	RI \$p\$-value 				& $p1				& $p1c 				& $p2			& $p2c					\\
