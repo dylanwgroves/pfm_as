@@ -1,0 +1,68 @@
+*-------------------------------------------------------------------------------
+* Project: Pangani FM 2
+* File: Analaysis of FM Outcomes
+* Date: 9/19/2019
+* Author: Dylan Groves, dgroves@poverty-action.org
+* Overview: Initial Check for balance
+*-------------------------------------------------------------------------------
+
+*ssc install texdoc, replace
+
+/* Introduction ________________________________________________________________*/
+
+	clear all
+	set maxvar 30000
+	set more off
+	set seed 1956
+
+	* Set Dylans Global
+	gl stata "C:\Users\dylan\Dropbox\Wellspring Tanzania - Audio Screening\"
+	gl raw "C:\Users\dylan\Dropbox\Wellspring Tanzania - Audio Screening\03 Tables and Figures\01 Raw\"
+
+
+/* Set Variables _______________________________________________________________*/
+
+
+* Midline Priority
+
+local q_em_prior				"\textit{Here is another set of cards, which show different goals for your village. Please choose the three that are currently the most important to you, and the item that is least important. \newline \newline Options: Reduce the number of people who do not have enough food to eat; reduce the incidence of forced marriage; increase the number of roads; increase the availability of water; increase the availability of electricity; reduce the amount of crime; increase the availability of medicine for HIV/AIDS}"
+local a_em_prior				"3 = Forced marriage 1st \newline 3 = Forced marriage 2nd + HIV 1st \newline 2 = Forced marriage 2nd \newline 2 = Forced marriage 3rd + HIV 1st or 2nd \newline 1 = Forced marriage 3rd \newline 0 = Forced marriage ranked last \newline 0 = Forced marriage not ranked"
+
+local q_em_prior_elect 			"Let me ask you about one more village nearby that is holding an election for village Chairperson. The first candidate is named [Mr. Salim / Mr. John / Mrs. Neema / Mrs. Mwanaidi] and [he/she]promises to [fight against child marriage / make hiv-aids treatment more available / improve roads / crack down on stealing in the village]. The second candidate is named [...] and [...] promises to [...]. \newline \newline Which of these candidates do you think should be selected?}"
+local a_em_prior_elect			"1 = Child marriage candidate \newline 0 = Alternative candidate \newline\newline  \textbf{Note}: The election question was asked twice, and each name / platform appeared once. The variable only concerns the hypothetical election in which child marriage appeared as an option and HIV did not"
+
+
+* Endline Priority
+
+local q_em_prior_end			"Here is another set of cards, which show different goals for your village. Please put them in order, from most important to you to least important to you. \newline \newline Options: Agriculture, Crime, EFM, Education, Electricity, Santiation, Roads, Health/HIV, Courts"
+local a_em_prior_end 			"3 = Forced marriage 1st \newline 3 = Forced marriage 2nd + HIV 1st \newline 2 = Forced marriage 2nd \newline 2 = Forced marriage 3rd + HIV 1st or 2nd \newline 1 = Forced marriage 3rd \newline 0 = Forced marriage ranked last \newline 0 = Forced marriage not ranked"
+
+local q_em_elect_end			"Imagine a village about one day’s walk from here is having an election for village chairperson. There are two candidates giving speeches. Let me tell you about each one and you can tell me which of the two you think should be elected. The first candidate is named [Mr. Salim / Mr. John / Mrs. Rose / Mrs. Mwanaidi]. [Candidate name] is a [Muslim / Christian]. [Candidate name] promises to [reduce the number of early marriages / improve roads / reduce crime] in the village. The second candidate is named [Mr. Salim / Mr. John / Mrs. Rose / Mrs. Mwanaidi]. [Candidate name is a [Muslim / Christian]. [Candidate name] promises to [reduce the number of early marriages / improve roads / reduce crime] in the village. Which of these two candidates do you think should be elected?"
+local q_em_elect_end 			"1 = Child marriage candidate \newline 0 = Alternative candidate \newline\newline  \textbf{Note}: The election question was asked twice, and each name / platform appeared once. For the endline survey, the EFM and HIV platforms always appeared in separate elections."
+
+
+/* Table _______________________________________________________________________*/
+
+texdoc init "${as_clean_tables}/appendix_variables_priority.tex", replace nolog
+
+texdoc write 	{
+texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+texdoc write 	\begin{tabular}{p{3cm} p{8cm} p{8cm}}
+texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]
+texdoc write   \multicolumn{1}{c}{Variable Name}       &  \multicolumn{1}{c}{Survey Question}                  		& \multicolumn{1}{c}{Variable Construction}  \\[0.15cm]
+texdoc write    \hline\addlinespace[5pt]
+texdoc write 	\multicolumn{3}{c}{\textbf{Midline}} 										\\\addlinespace[5pt]
+texdoc write	\hline\addlinespace[5pt]																		
+texdoc write 	Priority Rank (Columns 1/2) 				& `q_em_prior'        		& `a_em_prior' 				\\\addlinespace[5pt]
+texdoc write	Vote Preference (Columns 3/4)				& `q_em_prior_elect'		& `a_em_prior_elect' 		\\\addlinespace[5pt]
+texdoc write    \hline\addlinespace[5pt]
+texdoc write 	\multicolumn{3}{c}{\textbf{Endline}} 																\\\addlinespace[5pt]
+texdoc write	\hline\addlinespace[5pt]
+texdoc write 	Priority Rank (Columns 1/2) 				& `q_em_prior_end'   		&	`a_em_prior_end'	\\\addlinespace[5pt]
+texdoc write	Vote Preference (Columns 3/4) 				& `q_em_prior_elect_end' 	&	`a_em_prior_elect_end' 	\\\addlinespace[5pt]
+texdoc write 	\Xhline{2\arrayrulewidth}
+texdoc write  	\end{tabular}
+texdoc write 	}
+
+
+texdoc close
