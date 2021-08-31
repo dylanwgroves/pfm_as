@@ -158,7 +158,6 @@ ________________________________________________________________________________
 	/* mix partner perception and self-report */
 	gen fm_reject_mixed = (fm_reject + p_fm_partner_reject)/2
 		*replace fm_reject_mixed = fm_reject if fm_reject_mixed == .
-		
 
 
 /* Fill missing baseline values ________________________________________________*/
@@ -212,7 +211,7 @@ ________________________________________________________________________________
 	save `temp_all', replace
 	
 
-/* Reshape Long ________________________________________________________________
+/* Reshape Kids Long ___________________________________________________________
 
 	use "${data}/01_raw_data/pfm_as_endline_clean_kid_long.dta", clear
 	rename * k_*
@@ -220,5 +219,14 @@ ________________________________________________________________________________
 	merge n:1 id_resp_uid using `temp_all', gen(_merge_kids)
 	keep if _merge_kids == 3
 	save "${data_as}/pfm_as_analysis_kids.dta", replace
+	*/
+	
+/* Reshape Leaders Long ________________________________________________________*/
 
-*/
+	collapse (mean) treat block_as cluster_as ptixpref_rank_ag ptixpref_rank_crime ptixpref_rank_efm ptixpref_rank_edu ptixpref_rank_justice ptixpref_rank_electric ptixpref_rank_sanit ptixpref_rank_roads ptixpref_rank_health, by(id_village_uid)
+	gen l_id_village_uid = id_village_uid
+	merge 1:n l_id_village_uid using "${data}/01_raw_data/pfm_leader_long.dta", gen(merge_leaderlong)
+	save "${data_as}/pfm_as_analysis_leaders.dta", replace
+	
+
+
