@@ -1,7 +1,7 @@
 
 /* Basics ______________________________________________________________________
 
-	Project: Wellspring Tanzania, Radio Distribution
+	Project: Wellspring Tanzania, Audio Screening
 	Purpose: Master
 	Author: dylan groves, dylanwgroves@gmail.com
 	Date: 2021/04/26
@@ -23,9 +23,9 @@ ________________________________________________________________________________
 	do "${code}/pfm_.master/pfm_master.do"
 
 	
-/* RD prelim ___________________________________________________________________*/
+/* AS prelim ___________________________________________________________________*/
 
-	do "${code}/pfm_audioscreening_efm_efm/pfm_as_prelim.do"
+	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
 
 /* Balance _____________________________________________________________________*/
 
