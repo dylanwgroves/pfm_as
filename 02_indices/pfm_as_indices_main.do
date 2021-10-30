@@ -157,6 +157,9 @@ ________________________________________________________________________________
 							
 		global mid_priority	m_em_priority_list
 							m_em_priority_unchanged
+							m_ptixpref_efm_first 
+							m_ptixpref_efm_topthree 	
+							m_ptixpref_efm_notlast 
 							m_em_elect
 							;
 

@@ -1,0 +1,131 @@
+/* Basics ______________________________________________________________________
+
+Project: Wellspring Tanzania, Natural Experiment
+Purpose: Analysis
+Author: dylan groves, dylanwgroves@gmail.com
+Date: 2020/12/23
+________________________________________________________________________________*/
+
+
+/* Introduction ________________________________________________________________*/
+	
+	clear all	
+	clear matrix
+	clear mata
+	set more off
+	global c_date = c(current_date)
+	tempfile dta_main 
+	tempfile dta_vill
+
+/* Run Prelim File _____________________________________________________________	
+
+	do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
+	do "${code}/pfm_ne/pfm_ne_prelim.do"
+*/
+
+/* Load Data ___________________________________________________________________*/	
+
+	import excel "${as_tables}/pfm_as_balance.xlsx", firstrow clear
+	save `dta_main', replace
+	
+/* Sort Data ___________________________________________________________________*/
+
+	/* Individual Data */
+	sort pval
+	destring 	variable variablelabel ///
+				treatmean treatsd controlmean controlsd samplemean  ///
+				pval ripval N min max, replace
+	save `dta_main', replace
+
+
+/* Create Rank _________________________________________________________________*/
+
+	/* Individual Data */
+	# d ;
+	local sumstat_vars 	
+						resp_age 
+						resp_female
+						resp_muslim
+						b_resp_standard7
+						b_resp_married 
+						b_asset_cell
+						b_asset_radio_num
+						b_ge_index
+						;
+	#d cr 
+						
+						
+
+	gen rank = .
+	local i = 1
+	
+	foreach var of local sumstat_vars {
+		replace rank = `i' if variable == "`var'"
+		local i = `i' + 1
+	}		   
+
+	drop if rank == .
+	gsort rank
+	
+/* Variable Label */
+tostring variablelabel, replace
+
+
+/* Create variables ____________________________________________________________*/
+
+	count
+	global count = `r(N)'
+	
+	forval i = 1/$count {
+	
+		/* Drop pre-existing macros */
+		macro drop var`i' b`i' se`i' p`i' r2`i' n`i' ctl`i' c`i' sd`i' mn`i' mx`i'
+
+		global var`i' = variablelabel[`i']
+		
+		/* Normal */
+		global tm`i' = strofreal(treatmean[`i'], "%6.3f")
+		global cm`i' = strofreal(controlmean[`i'], "%6.3f")
+		global ri`i' = strofreal(ripval[`i'], "%6.3f")
+		global n`i' = strofreal(N[`i'], "%6.0fc")
+		global min`i' = strofreal(min[`i'], "%6.0fc")
+		global max`i' = strofreal(max[`i'], "%6.0fc")		
+		
+	}
+	
+	stop
+	
+/* Make Table __________________________________________________________________*/
+
+texdoc init "${as_clean_tables}/pfm_as_tables_balance_short.tex", replace nolog
+
+texdoc write 	{
+texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+texdoc write 	\begin{tabular}{l*{11}{c}}
+texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	
+
+texdoc write    							& EFM Mean 			& HIV Mean 			& RI pval  		& N	 \tstrut \bstrut \\ \cmidrule(r){2-2} \cmidrule(r){3-3} \cmidrule(r){4-4} \cmidrule(r){5-5} 
+
+		
+texdoc write 	${var1}  					& ${tm1} 			& ${cm1}				& ${ri1} 		& ${n1} 		\\
+texdoc write 	${var2}  					& ${tm2} 			& ${cm2}				& ${ri2} 		& ${n2} 		\\
+texdoc write 	${var3}  					& ${tm3} 			& ${cm3}				& ${ri3} 		& ${n3} 		\\
+texdoc write 	${var4}  					& ${tm4} 			& ${cm4}				& ${ri4} 		& ${n4} 		\\
+texdoc write 	${var5}  					& ${tm5} 			& ${cm5}				& ${ri5} 		& ${n5} 		\\
+texdoc write 	${var6}  					& ${tm6} 			& ${cm6}				& ${ri6} 		& ${n6} 		\\
+texdoc write 	${var7}  					& ${tm7} 			& ${cm7}				& ${ri7} 		& ${n7} 		\\
+texdoc write 	${var8}  					& ${tm8} 			& ${cm8}				& ${ri8} 		& ${n8} 		\\
+texdoc write 	\Xhline{2\arrayrulewidth}
+texdoc write 	\end{tabular}
+texdoc write 	}
+
+texdoc close
+
+
+
+
+
+
+
+
+
