@@ -39,13 +39,13 @@ ________________________________________________________________________________
 				treat_mean treat_sd ctl_mean ctl_sd vill_sd min max, replace
 	save `dta_main', replace
 
-
+stop
 /* Create Rank _________________________________________________________________*/
 
 	/* Individual Data */
 	# d ;
 	local sumstat_vars 	
-						m_em_priority_list
+						m_ptixpref_efm_first
 						m_em_elect
 						;
 	#d cr 
@@ -63,6 +63,11 @@ ________________________________________________________________________________
 	drop if rank == .
 	gsort rank
 
+/* Any Labelling Changes _______________________________________________________*/
+
+	replace variablelabel = "Top Priority" if variable == "m_ptixpref_efm_first"
+	replace variablelabel = "Index" if variable == "m_ge_index"
+	
 
 /* Create variables ____________________________________________________________*/
 
@@ -102,7 +107,7 @@ ________________________________________________________________________________
 	
 	
 	/* Assign stars and set p-value to <0.001 instead of 0.000 */
-	do "${code}/pfm_audioscreening/01_helpers/pfm_helper_stars.do"	
+	do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_stars.do"	
 	
 	
 	

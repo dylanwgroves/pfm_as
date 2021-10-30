@@ -72,7 +72,12 @@ ________________________________________________________________________________
 
 /* Any Labelling Changes _______________________________________________________*/
 
-	replace variablelabel = "Reject FM (branched)" if variable == "fm_reject_long"
+	replace variablelabel = "Binary" if variable == "fm_reject"
+	replace variablelabel = "Branched" if variable == "fm_reject_long"
+	replace variablelabel = "Partner" if variable == "p_fm_partner_reject"
+	
+	replace variablelabel = "Misbehaving" if variable == "em_reject_pregnant_dum"
+
 	
 
 /* Create variables ____________________________________________________________*/
@@ -113,7 +118,7 @@ ________________________________________________________________________________
 	
 	
 	/* Assign stars and set p-value to <0.001 instead of 0.000 */
-	do "${code}/pfm_radiodistribution/01_helpers/pfm_rd_helper_stars.do"	
+	do "${code}/pfm_audioscreening_efm/01_helpers/pfm_rd_helper_stars.do"	
 	
 	
 	

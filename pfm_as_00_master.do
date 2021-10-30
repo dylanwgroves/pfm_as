@@ -25,9 +25,8 @@ ________________________________________________________________________________
 	
 /* RD prelim ___________________________________________________________________*/
 
-	do "${code}/pfm_as/pfm_as_prelim.do"
+	do "${code}/pfm_audioscreening_efm_efm/pfm_as_prelim.do"
 
-	
 /* Balance _____________________________________________________________________*/
 
 	do "${code}/pfm_as/pfm_as_02_balance.do"
@@ -38,45 +37,50 @@ ________________________________________________________________________________
 	
 /* Tables ______________________________________________________________________*/
 
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_01_balance.texdoc"
-	
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_attendanceattrition.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_compliance.texdoc"
-
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_fm_em_mid.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_fm_em.texdoc"
-	
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_norm_mid.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_norm.texdoc"
-
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_report_mid.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_report.texdoc"
-	
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_priority_mid.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_priority.texdoc"
-	
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_gender.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_gender_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_01_balance.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_balance_short.texdoc"
 
 	
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_ipvlong.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_ipvlong_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_attendanceattrition.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_compliance.texdoc"
+
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_fm_em_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_fm_em.texdoc"
 	
-	*texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_ipv.texdoc"
-	*texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_ipv_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_norm_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_norm.texdoc"
+
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_report_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_report.texdoc"
+	
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_priority_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_priority.texdoc"
+	
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_gender.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_gender_mid.texdoc"
+
+	
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong_mid.texdoc"
+	
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong_ge.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong_ge_mid.texdoc"
+	
+	*texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_04_results_ipv.texdoc"
+	*texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_04_results_ipv_mid.texdoc"
 	
 	/* HetFX */
-	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_hetfx_fm_mid.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_hetfx_fm.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_04_results_hetfx_fm_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_04_results_hetfx_fm.texdoc"
 	
 	
 	/* Appendix */
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_appendix_attitudes.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_appendix_norms.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_appendix_priority.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_appendix_reporting.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_appendix_ipv.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_appendix_ge.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_attitudes.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_norms.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_priority.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_reporting.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_ipv.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_ge.texdoc"
 
 
 
@@ -84,8 +88,8 @@ ________________________________________________________________________________
 	/* Forced Marriage
 	
 	
-	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_samplesum.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_02_compliance	.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_samplesum.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_02_compliance	.texdoc"
 	
 	** Prejudice
 	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_02_uptake_topics.texdoc"

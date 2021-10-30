@@ -22,7 +22,7 @@ ________________________________________________________________________________
 /* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
 
 	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
-	do "${code}/pfm_audioscreening/pfm_as_prelim.do"
+	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
 
 
 /* Load Data ___________________________________________________________________*/	
@@ -31,7 +31,7 @@ ________________________________________________________________________________
 
 	// IMPORTANT NOTE: we do not use for attrition, attendance, and uptake											
 	keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)	
-	
+
 	
 /* Define Parameters ___________________________________________________*/
 
@@ -42,7 +42,7 @@ ________________________________________________________________________________
 							;
 							
 		/* rerandomization count */
-		global rerandcount	100
+		global rerandcount	200
 							;
 		
 		/* survey */
@@ -57,8 +57,7 @@ ________________________________________________________________________________
 					
 		/* Indices */			
 		local index_list	
-							attrition
-							attendance
+							mid_priority
 							/*
 							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
 							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers
@@ -86,10 +85,9 @@ ________________________________________________________________________________
 
 /* Run Do File ______________________________________________________________*/
 
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_indices_${survey}.do"
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_labels.do"
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_twosided.do"
-
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_${survey}.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_labels.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
 
 /* Run for Each Index __________________________________________________________*/
 
@@ -205,11 +203,11 @@ foreach index of local index_list {
 			global df 	= e(df_r)
 			
 			/* Calculate pvalue */
-			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval.do"
+			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval.do"
 			global pval = ${helper_pval}
 
 			/* Calculate RI-pvalue */
-			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval_ri.do"
+			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval_ri.do"
 			global ripval = ${helper_ripval}
 
 	/* Lasso Regression  ___________________________________________________________*/
@@ -241,11 +239,11 @@ foreach index of local index_list {
 			global lasso_df 	= e(df_r)
 
 			/* Calculate one-sided pvalue */				
-			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval_lasso.do"
+			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval_lasso.do"
 			global lasso_pval = ${helper_lasso_pval}
 			
 			/* Calculate Lasso RI-pvalue */
-			do "${code}/pfm_audioscreening/01_helpers/pfm_helper_pval_ri_lasso.do"
+			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval_ri_lasso.do"
 			global lasso_ripval = ${helper_lasso_ripval}
 		
 	/* Export to Excel _________________________________________________________*/ 
