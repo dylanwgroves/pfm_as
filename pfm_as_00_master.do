@@ -58,12 +58,8 @@ ________________________________________________________________________________
 	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_gender.texdoc"
 	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_gender_mid.texdoc"
 
-	
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_ipvlong.texdoc"
-	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_ipvlong_mid.texdoc"
-	
-	*texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_ipv.texdoc"
-	*texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_ipv_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_ipv_ipvlong_ge.texdoc"
+	texdoc do "${code}/pfm_audioscreening/pfm_as_tables_results_ipv_ipvlong_ge_mid.texdoc"
 	
 	/* HetFX */
 	texdoc do "${code}/pfm_audioscreening/pfm_as_04_tables_04_results_hetfx_fm_mid.texdoc"
