@@ -73,6 +73,7 @@ ________________________________________________________________________________
 /* Any Labelling Changes _______________________________________________________*/
 
 	replace variablelabel = "Reject FM (branched)" if variable == "fm_reject_long"
+	replace variablelabel = "Money" 			   if variable == "em_reject_money_dum"
 	
 
 /* Create variables ____________________________________________________________*/
