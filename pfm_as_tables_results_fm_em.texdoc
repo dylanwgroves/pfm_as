@@ -78,7 +78,6 @@ ________________________________________________________________________________
 	
 	replace variablelabel = "Misbehaving" if variable == "em_reject_pregnant_dum"
 
-	
 
 /* Create variables ____________________________________________________________*/
 
