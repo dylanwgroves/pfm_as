@@ -34,6 +34,7 @@
 	lab var b_values_likechange "Values - support change"
 	lab var b_values_techgood "Values - technology good"
 	lab var b_values_respectauthority "Values - respect authority"
+	lab var b_values_trustelders "Values - trust elders"
 	lab var	b_asset_cell "Assets - cell phone"
 	lab var b_asset_tv "Assets - TV"
 	lab var b_asset_radio_num "Assets - radio number"

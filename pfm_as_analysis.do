@@ -5,8 +5,6 @@
 	Purpose: Analysis
 	Author: dylan groves, dylanwgroves@gmail.com
 	Date: 2020/12/23
-	
-	LETS MAKE SOME CHANGES
 ________________________________________________________________________________*/
 
 
@@ -42,7 +40,7 @@ ________________________________________________________________________________
 							;
 							
 		/* rerandomization count */
-		global rerandcount	200
+		global rerandcount	10000
 							;
 		
 		/* survey */
@@ -56,14 +54,20 @@ ________________________________________________________________________________
 							*/	
 					
 		/* Indices */			
-		local index_list	
+		local index_list	mid_priority
+							mid_fm
+							mid_em
+							mid_norm
+							mid_report
 							mid_priority
+							mid_gender
+							mid_ipv
 							/*
 							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
 							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers
 							uptake
 							fm
-							em_attitude
+							em
 							norm
 							em_report 
 							em_record 
@@ -76,8 +80,8 @@ ________________________________________________________________________________
 							mid_norm
 							mid_report
 							mid_priority
-							mid_ipv
 							mid_gender
+							mid_ipv
 							*/
 							;
 	#d cr

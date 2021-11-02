@@ -1,10 +1,11 @@
 /* Basics ______________________________________________________________________
 
-Project: Wellspring Tanzania, Radio Distribution Experiment
+Project: Wellspring Tanzania, Audio Screening Experiment
 Purpose: Balance
 Author: dylan groves, dylanwgroves@gmail.com
 Date: 2021/04/01
 ________________________________________________________________________________*/
+
 
 
 /* Introduction ________________________________________________________________*/
@@ -23,10 +24,9 @@ ________________________________________________________________________________
 	
 /* Run Prelim Do File __________________________________________________________*/
 
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_indices_${survey}.do"
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_labels.do"
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_twosided.do"
-
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_${survey}.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_labels.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
 
 	
 /* Define Globals and Locals ____________________________________________________*/
@@ -35,28 +35,56 @@ ________________________________________________________________________________
 	set seed 			1956
 	
 	/* Set seed */
-	global rerandcount 	10
+	global rerandcount 	10000
 
 	/* Outcomes */
 	#d ;
-	local base_vars		resp_age resp_female resp_muslim b_resp_standard7 b_resp_married 
-						b_resp_religiosity b_resp_literate b_resp_lang_swahili 
-						b_resp_yrsvill 
-						b_resp_numhh b_resp_numkid b_resp_numolder b_resp_numyounger b_resp_numadult 
-						b_ge_index b_ge_raisekids b_ge_earning b_ge_leadership b_ge_noprefboy 
-						b_fm_reject 
-						b_radio_any
-						b_values_likechange b_values_techgood 
-						b_values_respectauthority
-						b_asset_cell b_asset_tv b_asset_radio_num
+	local short_vars	resp_age 
+						resp_female
+						resp_muslim
+						b_resp_standard7
+						b_resp_married 
+						b_asset_cell
+						b_asset_radio_num
+						b_ge_index
 						;
+						
+	local lasso_vars	resp_female 
+						resp_muslim
+						b_resp_religiosity
+						b_values_likechange 
+						b_values_techgood 
+						b_values_respectauthority 
+						b_values_trustelders
+						b_fm_reject
+						b_ge_raisekids 
+						b_ge_earning 
+						b_ge_leadership 
+						b_ge_noprefboy 
+						b_media_tv_any 
+						b_media_news_never 
+						b_media_news_daily 
+						b_radio_any 
+						b_resp_lang_swahili 
+						b_resp_literate 	
+						b_resp_standard7 
+						b_resp_nevervisitcity 
+						b_resp_married 
+						b_resp_hhh 
+						b_resp_numkid
+						;
+					
 	#d cr
 	
 /* Define Matrix _______________________________________________________________*/
+
+local setofvars short_vars lasso_vars
+
+foreach setvars of local setofvars {
 		
 	/* Set Put Excel File Name */
 	putexcel clear
-	putexcel set "${as_tables}/pfm_as_balance.xlsx", replace 
+	putexcel set "${as_tables}/pfm_as_balance.xlsx", sheet(`setvars', replace)  modify 
 	
 	putexcel A1 = ("variable")
 	putexcel B1 = ("variablelabel")
@@ -80,7 +108,7 @@ ________________________________________________________________________________
 	local row = 2
 
 	/* Run and save for each variable */
-	foreach dv of local base_vars  {
+	foreach dv of local `setvars' {
 	
 		/* Set global */
 		global dv `dv'
@@ -121,7 +149,7 @@ ________________________________________________________________________________
 			global n 	= e(N) 				//N
 			
 		/* RI */
-		do "${code}/pfm_audioscreening/01_helpers/pfm_helper_ri_balance.do"
+		do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_ri_balance.do"
 		global ripval = ${helper_ripval}
 			
 			/* Put excel */
@@ -139,11 +167,16 @@ ________________________________________________________________________________
 			putexcel L`row' = ("${max}")
 			putexcel M`row' = ("${sample_mean}")
 
+	/* Keep track */
+	di "`dv'"
+	di "$helper_pval"
+	
 	/* Update locals */
 	local row = `row' + 1
 	local i = `i' + 1 
-}	
 
+}	
+}
 
 
 	

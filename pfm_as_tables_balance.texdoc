@@ -23,16 +23,13 @@ ________________________________________________________________________________
 
 /* Load Data ___________________________________________________________________*/	
 
-	import excel "${as_tables}/pfm_as_balance.xlsx", sheet("Sheet1") firstrow
+	import excel "${as_tables}/pfm_as_balance.xlsx", sheet("lasso_vars") firstrow clear
 	
 
 /* Sort Data ___________________________________________________________________*/
 
 sort pval
 destring treatmean treatsd controlmean controlsd coef pval ripval min max N, replace
-
-
-
 
 /* Load pval ___________________________________________________________________*/
 
@@ -52,7 +49,7 @@ destring treatmean treatsd controlmean controlsd coef pval ripval min max N, rep
 /* Load pval ___________________________________________________________________*/
 
 
-texdoc init "${as_clean_tables}/pfm_as_tables_01_balance.tex", replace nolog
+texdoc init "${as_clean_tables}/pfm_as_tables_balance.texdoc", replace nolog
 
 texdoc write 	{
 texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
@@ -60,12 +57,6 @@ texdoc write 	\begin{tabular}{l *{4}{d{3.3}} }
 texdoc write 	\hline
 texdoc write    \multicolumn{1}{c}{\text{Variable}} & \multicolumn{1}{c}{\text{Treatment}} 	& \multicolumn{1}{c}{\text{Comparison}} 	& \multicolumn{1}{c}{\text{RI $p$ -value}} & \multicolumn{1}{c}{\text{Observations}} \\
 texdoc write 	\hline
-texdoc write 	\text{`var_1'}				&	`t_mean_1'				& `c_mean_1'				& `pval_1'				& `n_1'				\\
-texdoc write 	\text{`var_2'}       		&	`t_mean_2'				& `c_mean_2'				& `pval_2'				& `n_2'				\\
-texdoc write 	\text{`var_3'}     			&	`t_mean_3'				& `c_mean_3'				& `pval_3'				& `n_3'				\\
-texdoc write 	\text{`var_4'}	      		&	`t_mean_4'				& `c_mean_4'				& `pval_4'				& `n_4'				\\
-texdoc write 	\text{`var_5'}     			&	`t_mean_5'				& `c_mean_5'				& `pval_5'				& `n_5'				\\
-texdoc write 	\text{`var_6'}	       		&	`t_mean_6'				& `c_mean_6'				& `pval_6'				& `n_6'				\\
 texdoc write 	\text{`var_7'}	       		&	`t_mean_7'				& `c_mean_7'				& `pval_7'				& `n_7'				\\
 texdoc write 	\text{`var_8'}	       		&	`t_mean_8'				& `c_mean_8'				& `pval_8'				& `n_8'				\\
 texdoc write 	\text{`var_9'} 	      		&	`t_mean_9'				& `c_mean_9'				& `pval_9'				& `n_9'				\\
@@ -87,8 +78,9 @@ texdoc write 	\text{`var_24'}	       		&	`t_mean_24'				& `c_mean_24'				& `pval
 texdoc write 	\text{`var_25'}	       		&	`t_mean_25'				& `c_mean_25'				& `pval_25'				& `n_25'			\\
 texdoc write 	\text{`var_26'}	       		&	`t_mean_26'				& `c_mean_26'				& `pval_26'				& `n_26'			\\
 texdoc write 	\text{`var_27'}	       		&	`t_mean_27'				& `c_mean_27'				& `pval_27'				& `n_27'			\\
+texdoc write 	\text{`var_28'}	       		&	`t_mean_28'				& `c_mean_28'				& `pval_28'				& `n_28'			\\
+texdoc write 	\text{`var_29'}	       		&	`t_mean_29'				& `c_mean_29'				& `pval_29'				& `n_29'			\\
 texdoc write 	\hline
-
 texdoc write 	\end{tabular}
 texdoc write 	}
 

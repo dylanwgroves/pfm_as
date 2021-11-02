@@ -101,7 +101,7 @@ ________________________________________________________________________________
 	
 
 	/* Assign stars and set p-value to <0.001 instead of 0.000 */
-	do "${code}/pfm_audioscreening/01_helpers/pfm_helper_stars.do"	
+	do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_stars.do"	
 	
 	
 	
@@ -114,7 +114,7 @@ texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 texdoc write 	\begin{tabular}{l*{6}{c}}
 texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	
 
-texdoc write    &\multicolumn{4}{c}{Forced Marriage} &\multicolumn{2}{c}{Early Marriage} \tstrut \bstrut \\ \cmidrule(r){2-5} \cmidrule(r){6-7} 
+texdoc write    &\multicolumn{4}{c}{Reject Forced Marriage} &\multicolumn{2}{c}{Reject Early Forced Marriage} \tstrut \bstrut \\ \cmidrule(r){2-5} \cmidrule(r){6-7} 
 
 texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} &\multicolumn{2}{c}{$var3}  		\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} \cmidrule(r){6-7} 
 

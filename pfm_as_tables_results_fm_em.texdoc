@@ -76,7 +76,8 @@ ________________________________________________________________________________
 	replace variablelabel = "Branched" if variable == "fm_reject_long"
 	replace variablelabel = "Partner" if variable == "p_fm_partner_reject"
 	
-	replace variablelabel = "Misbehaving" if variable == "em_reject_pregnant_dum"
+	replace variablelabel = "Money" if variable == "em_reject_money_dum"
+	replace variablelabel = "Pregnancy" if variable == "em_reject_pregnant_dum"
 
 
 /* Create variables ____________________________________________________________*/
@@ -117,7 +118,7 @@ ________________________________________________________________________________
 	
 	
 	/* Assign stars and set p-value to <0.001 instead of 0.000 */
-	do "${code}/pfm_audioscreening_efm/01_helpers/pfm_rd_helper_stars.do"	
+	do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_stars.do"	
 	
 	
 	
@@ -130,7 +131,7 @@ texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 texdoc write 	\begin{tabular}{l*{12}{c}}
 texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	
 
-texdoc write    &\multicolumn{6}{c}{Reject Forced Marriage} &\multicolumn{6}{c}{Reject Early Marriage} 	\tstrut \bstrut \\ \cmidrule(r){2-7} \cmidrule(r){8-13} 
+texdoc write    &\multicolumn{6}{c}{Reject Forced Marriage} &\multicolumn{6}{c}{Reject Early Forced Marriage} 	\tstrut \bstrut \\ \cmidrule(r){2-7} \cmidrule(r){8-13} 
 
 texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} &\multicolumn{2}{c}{$var3}  	&\multicolumn{2}{c}{$var4} &\multicolumn{2}{c}{$var5} &\multicolumn{2}{c}{$var6} 	\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} \cmidrule(r){6-7} \cmidrule(r){8-9} \cmidrule(r){10-11} \cmidrule(r){12-13} 
 

@@ -101,7 +101,7 @@ ________________________________________________________________________________
 	
 	
 	/* Assign stars and set p-value to <0.001 instead of 0.000 */
-	do "${code}/pfm_audioscreening/01_helpers/pfm_helper_stars.do"	
+	do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_stars.do"	
 	
 	
 	

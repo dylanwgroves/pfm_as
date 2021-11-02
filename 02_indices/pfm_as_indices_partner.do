@@ -132,7 +132,7 @@ ________________________________________________________________________________
 		*/
 		
 		/* Covariates */	
-		global cov_always	i.id_village_uid_c									
+		global cov_always	i.block_as									
 							;					
 
 		

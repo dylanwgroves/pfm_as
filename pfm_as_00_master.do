@@ -19,31 +19,40 @@ ________________________________________________________________________________
 
 /* Paths and master ____________________________________________________________*/	
 
-	do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
+	foreach user in  "X:" "/Users/BeatriceMontano" "/Users/Bardia" {
+					capture cd "`user'"
+					if _rc == 0 macro def path `user'
+				}
+	local dir `c(pwd)'
+	global user `dir'
+	display "${user}"
+
+	cap assert "$`{globals_set}'" == "yes"
+	if _rc!=0 {   
+		do "${user}/Documents/pfm_.master/00_setup/pfm_paths_master.do"	
+		}
+	else { 
+		di "Globals have already been set."
+	}
+
 	do "${code}/pfm_.master/pfm_master.do"
 
-	
 /* AS prelim ___________________________________________________________________*/
 
 	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
 
 /* Balance _____________________________________________________________________*/
 
-	do "${code}/pfm_as/pfm_as_02_balance.do"
+	do "${code}/pfm_audioscreening_efm/pfm_as_balance.do"
 	
 /* Analysis ____________________________________________________________________*/
 
-	do "${code}/pfm_as/pfm_as_03_analysis.do"
+	do "${code}/pfm_audioscreening_efm/pfm_as_analysis.do"
 	
 /* Tables ______________________________________________________________________*/
 
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_01_balance.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_balance_short.texdoc"
-
 	
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_attendanceattrition.texdoc"
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_compliance.texdoc"
-
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_fm_em_mid.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_fm_em.texdoc"
 	
@@ -55,63 +64,25 @@ ________________________________________________________________________________
 	
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_priority_mid.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_priority.texdoc"
-	
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_gender.texdoc"
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_gender_mid.texdoc"
-	
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong.texdoc"
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong_mid.texdoc"
-	
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong_ge.texdoc"
+		
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong_ge_mid.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong_ge.texdoc"
 	
-	*texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_04_results_ipv.texdoc"
-	*texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_04_results_ipv_mid.texdoc"
-
-	/* HetFX */
+	/* HetFX 
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_04_results_hetfx_fm_mid.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_04_results_hetfx_fm.texdoc"
-	
+	*/
 	
 	/* Appendix */
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_attendanceattrition.texdoc"
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_balance.texdoc"
+
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_attitudes.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_norms.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_priority.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_reporting.texdoc"
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_ipv.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_ge.texdoc"
-
-
-
-	
-	/* Forced Marriage
-	
-	
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_samplesum.texdoc"
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_02_compliance	.texdoc"
-	
-	** Prejudice
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_02_uptake_topics.texdoc"
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_prejudice_nbr.texdoc"
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_prejudice_marry.texdoc"
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_prejudice_thermo.texdoc"
-	
-	** Gender
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_wpp_ge.texdoc"
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_ipv.texdoc"
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_fm_em.texdoc"
-	
-	** Political Interest and Knowledge
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_ptixknow.texdoc"
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_ptixint_ptixpart.texdoc"
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_healthknow.texdoc"
-
-	/* Values and Preferences */
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_values.texdoc"
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_ptixpref1.texdoc"
-	texdoc do "${code}/pfm_radiodistribution/pfm_rd_04_tables_03_ptixpref2_ranks.texdoc"
-
-		
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_appendix_ipv.texdoc"
 	
 	
 	

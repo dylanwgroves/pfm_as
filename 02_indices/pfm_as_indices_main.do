@@ -50,6 +50,7 @@ ________________________________________________________________________________
 							;
 	
 /* Outcomes */
+
 		global attrition	attrition_midline
 							attrition_endline
 							;
@@ -65,14 +66,14 @@ ________________________________________________________________________________
 							;
 	
 							
-							
+		/* Endline */							
 		global fm			fm_reject
 							fm_reject_long 									
 							p_fm_partner_reject
 							fm_reject_mixed
 							;
 							
-		global em_attitude	
+		global em	
 							em_reject
 							em_reject_religion_dum 
 							em_reject_noschool_dum 
@@ -125,13 +126,6 @@ ________________________________________________________________________________
 							ipv_report
 							;	
 							
-		global mid_ipv		m_ipv_rej_disobey 
-							m_ipv_rej_disobey_long
-							m_ipv_rej_hithard 
-							m_ipv_rej_persists 
-							m_ipv_report 
-							m_ipv_norm_rej
-							;
 
 		/* Midline */
 		global mid_fm		m_fm_reject
@@ -159,7 +153,6 @@ ________________________________________________________________________________
 							m_em_priority_unchanged
 							m_ptixpref_efm_first 
 							m_ptixpref_efm_topthree 	
-							m_ptixpref_efm_notlast 
 							m_em_elect
 							;
 
@@ -167,6 +160,14 @@ ________________________________________________________________________________
 							m_ge_earning 
 							m_ge_school 
 							m_ge_kid
+							;
+
+		global mid_ipv		m_ipv_rej_disobey 
+							m_ipv_rej_disobey_long
+							m_ipv_rej_hithard 
+							m_ipv_rej_persists 
+							m_ipv_report 
+							m_ipv_norm_rej
 							;
 							
 	#d cr

@@ -62,8 +62,9 @@ ________________________________________________________________________________
 
 /* Any Labelling Changes _______________________________________________________*/
 
-	replace variablelabel = "Priority Rank" if variable == "em_priority_list"
 	replace variablelabel = "Top Priority" if variable == "ptixpref_efm_first"
+	replace variablelabel = "Vote for EFM platform" if variable == "em_elect"
+
 
 /* Create variables ____________________________________________________________*/
 
@@ -122,16 +123,16 @@ texdoc write    							& (1)				& (2)				& (3)			& (4)					\\
 
   
 texdoc write 	EFM Treat		      		& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} 		\\
-texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  				\\
+texdoc write    Standard Error 				& $se1			 	& $se1c			 	& $se2    		& $se2c  				\\
 texdoc write 	\hline
-texdoc write 	RI \$p\$-value 				& $p1				& $p1c 				& $p2			& $p2c					\\
+texdoc write 	RI \$p\$-value 				& $p1			 	& $p1c 				& $p2		 	& $p2c				 	\\
 texdoc write 	Hypothesis					& +					& + 				& +				& + 					\\
-texdoc write 	Control Mean      			& $c1				& $c1				& $c2			& $c2					\\
-texdoc write 	Control SD					& $sd1				& $sd1				& $sd2			& $sd2					\\
-texdoc write	DV Range					& [$mn1-$mx1]		& [$mn1-$mx1]		& [$mn2-$mx2]	& [$mn2-$mx2]			\\	
+texdoc write 	Control Mean      			& $c1			 	& $c1			 	& $c2		 	& $c2				 	\\
+texdoc write 	Control SD					& $sd1			 	& $sd1			 	& $sd2		 	& $sd2				 	\\
+texdoc write	DV Range					& [$mn1-$mx1]	 	& [$mn1-$mx1]	 	& [$mn2-$mx2] 	& [$mn2-$mx2]		 	\\	
 texdoc write 	Blocked FE 					& Yes 				& Yes 				&  Yes   		& Yes  					\\
 texdoc write 	Controls 					& $ctl1 			& $ctl1c 			&  $ctl2   		& $ctl2c  				\\
-texdoc write 	Adj-\$ R^2\$				& $r1 				& $r1c 				& $r2   		& $r2c 					\\
+texdoc write 	Adj-\$ R^2\$			 	& $r1 				& $r1c 				& $r2   		& $r2c 					\\
 texdoc write 	Observations      			& $n1 				& $n1c 				& $n2   		& $n2c 			   		\\
 texdoc write 	\Xhline{2\arrayrulewidth}
 texdoc write 	\end{tabular}
