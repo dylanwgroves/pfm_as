@@ -93,7 +93,6 @@ tostring variablelabel, replace
 		
 	}
 	
-	stop
 	
 /* Make Table __________________________________________________________________*/
 

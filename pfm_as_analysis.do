@@ -19,7 +19,7 @@ ________________________________________________________________________________
 	
 /* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
 
-	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
+	do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
 	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
 
 

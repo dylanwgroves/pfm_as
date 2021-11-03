@@ -49,7 +49,7 @@ destring treatmean treatsd controlmean controlsd coef pval ripval min max N, rep
 /* Load pval ___________________________________________________________________*/
 
 
-texdoc init "${as_clean_tables}/pfm_as_tables_balance.texdoc", replace nolog
+texdoc init "${as_clean_tables}/pfm_as_tables_balance.tex", replace nolog
 
 texdoc write 	{
 texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
