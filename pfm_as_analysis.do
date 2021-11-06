@@ -54,14 +54,8 @@ ________________________________________________________________________________
 							*/	
 					
 		/* Indices */			
-		local index_list	mid_priority
-							mid_fm
-							mid_em
-							mid_norm
-							mid_report
-							mid_priority
-							mid_gender
-							mid_ipv
+		local index_list	norm
+							gender
 							/*
 							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
 							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers
