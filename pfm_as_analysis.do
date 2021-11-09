@@ -28,7 +28,7 @@ ________________________________________________________________________________
 	use "${data_as}/pfm_as_analysis.dta", clear
 
 	// IMPORTANT NOTE: we do not use for attrition, attendance, and uptake											
-	keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)	
+	*keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)	
 
 	
 /* Define Parameters ___________________________________________________*/
@@ -40,7 +40,7 @@ ________________________________________________________________________________
 							;
 							
 		/* rerandomization count */
-		global rerandcount	10000
+		global rerandcount	50
 							;
 		
 		/* survey */
@@ -54,8 +54,7 @@ ________________________________________________________________________________
 							*/	
 					
 		/* Indices */			
-		local index_list	norm
-							gender
+		local index_list	fm
 							/*
 							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
 							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers
@@ -111,7 +110,7 @@ foreach index of local index_list {
 				
 		/* Set Put Excel File Name */
 		putexcel clear
-		putexcel set "${as_tables}/pfm_as_analysis_${survey}.xlsx", sheet(`index', replace) modify
+		putexcel set "${as_tables}/pfm_as_analysis_${survey}_update.xlsx", sheet(`index', replace) modify
 		
 		qui putexcel A1 = ("variable")
 		qui putexcel B1 = ("variablelabel")

@@ -53,6 +53,8 @@ ________________________________________________________________________________
 
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_balance_short.texdoc"
 	
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_descriptives_em.texdoc"
+	
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_fm_em_mid.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_fm_em.texdoc"
 	

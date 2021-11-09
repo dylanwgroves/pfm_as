@@ -26,8 +26,8 @@ ________________________________________________________________________________
 /* Load Data ___________________________________________________________________*/	
 
 	/* Attendance Data */
-	import excel "${data_as}/pfm_as_attendance_RM.xlsx", sheet("Sheet1") firstrow clear
-		drop fm_reject resp_female m_comply_attend treat Diff id_resp_n id_village_n
+	import excel "${data_as}/pfm_as_attendance_final.xlsx", sheet("Sheet1") firstrow clear
+		drop resp_female m_comply_attend treat id_resp_n id_village_n
 	save `temp_attend', replace
 
 	/* Main Survey Data */
@@ -93,6 +93,8 @@ ________________________________________________________________________________
 	gen m_em_reject_norm_under18 = m_em_reject_norm if m_treat_efmvig_age < 18
 		
 	/* Create forced vs early marriage and divide up by story features */
+	clonevar m_efm_reject_story = m_em_reject_story
+	
 	gen m_fm_reject_story = m_em_reject_story if m_treat_efmvig_age > 17
 	gen m_fm_reject_story_money = m_fm_reject_story if m_treat_efmvig_scen == 1
 	gen m_fm_reject_story_daught = m_fm_reject_story if m_treat_efmvig_scen == 0
@@ -158,6 +160,21 @@ ________________________________________________________________________________
 	/* mix partner perception and self-report */
 	gen fm_reject_mixed = (fm_reject + p_fm_partner_reject)/2
 		*replace fm_reject_mixed = fm_reject if fm_reject_mixed == .
+		
+		
+/* Some Things for Tables ________________________________________________*/
+
+	recode m_s4q2_fm_lawpref (.d .r = 0)
+	tab m_s4q2_fm_lawpref if treat == 0
+	
+	*tab comply_attend_any treat, col
+	
+	*tab comply_attend_any
+	
+	tab m_fo svy_enum
+	tab b_fo_name svy_enum if fm_reject != .
+stop
+	
 
 
 /* Fill missing baseline values ________________________________________________*/

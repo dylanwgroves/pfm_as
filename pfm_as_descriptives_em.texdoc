@@ -1,0 +1,291 @@
+
+/* Basics ______________________________________________________________________
+
+	Project: Wellspring Tanzania, Audio Screening
+	Purpose: Descriptives of EM Attitudes
+	Author: dylan groves, dylanwgroves@gmail.com
+	Date: 2020/12/23
+________________________________________________________________________________*/
+
+*ssc install texdoc, replace
+
+/*
+A - Cognitive Attitudes and Norms (support victim, reject father, vignette, and norm)
+B - Reporting Attitudes and Norms (willing to report, believe others would report)
+C - Policy Beliefs (believe law should change, would elect someone to fight FM)
+D - Gender Hierarchy
+*/
+
+* Introduction -----------------------------------------------------------------
+clear all
+set maxvar 30000
+set more off
+set seed 1956
+
+* Set Dylans Global
+gl stata "C:\Users\dylan\Box Sync\Wellspring Tanzania Papers\Wellspring Tanzania - Audio Screening"
+gl raw "C:\Users\dylan\Dropbox\Wellspring Tanzania - Audio Screening\03 Tables and Figures\01 Raw\"
+
+* Import Data ------------------------------------------------------------------
+use "$stata\01 Data/pfm2_ri.dta", clear
+
+* Define Programs
+do "$stata/02 Code/pfm2_02_ri_program.do"										// Runs RI Program
+
+* Define Locals
+local rerandcount 1000
+
+*-------------------------------------------------------------------------------
+* Regression Tables (FM)
+*-------------------------------------------------------------------------------
+
+*-------------------------------------------------------------------------------
+* Export Regressions
+*-------------------------------------------------------------------------------
+
+** Set Outcome Vars ------------------------------------------------------------
+
+#d ;
+local fm		fm_cogatt_story
+				fm_cognorm_story ; 
+#d cr
+
+tempfile original
+save `original'
+
+** Run Analysis and Capture Locals ---------------------------------------------
+
+local i = 1
+
+foreach dv of local fm  {
+
+* Select Lasso Variables
+qui lasso linear fm_cognorm_story c_* if comply_attend == 1
+local lassovars = e(allvars_sel)
+
+local l_`i'  = e(k_nonzero_sel)
+
+* Younger
+use `original', clear
+keep if s4q1_fm_t_age != "18" & s4q1_fm_t_age != "19"
+
+
+** Regression ------------------------------------------------------------------
+qui reg `dv' treat i.ward_id if comply_attend == 1, cluster(vill_id)
+	local b_`i' = strofreal(_b[treat], "%6.3f")									
+	local se_`i' = strofreal(_se[treat], "%6.3f")								
+	local n_`i' : di %6.0fc `e(N)'												
+	local r2_`i' : di %6.3f `e(r2_a)'
+	local t_`i' = _b[treat]/_se[treat]
+	local psb_`i' = ttail(e(df_r),abs(`t_`i''))
+	local p_`i' : di %6.3f `psb_`i''
+
+* Control Mean
+qui sum `dv' if treat == 0 & comply_attend == 1
+local c_`i' : di %6.3f `r(mean)'
+
+* Variable Range
+qui sum `dv' 
+local min_`i' = r(min)
+local max_`i' = r(max)
+
+* Village Level SD
+preserve
+keep if comply_attend == 1
+qui collapse (mean) `dv' treat, by(vill_id)
+qui sum `dv' if treat == 0
+local sd_`i' : di %6.3f r(sd)
+restore
+
+** Lasso -----------------------------------------------------------------------
+if `l_`i'' != 0 {	
+	qui reg `dv' treat `lassovars' i.ward_id if comply_attend == 1, cluster(vill_id)
+	}
+	else if `l_`i'' == 0 {
+	qui reg `dv' treat i.ward_id if comply_attend == 1, cluster(vill_id)
+	}
+	
+	local b_`i'_c = strofreal(_b[treat], "%6.3f")									
+	local se_`i'_c = strofreal(_se[treat], "%6.3f")								
+	local n_`i'_c : di %6.0fc `e(N)'												
+	local r2_`i'_c : di %6.3f `e(r2_a)'
+	local t_`i'_c = _b[treat]/_se[treat]
+	local psb_`i'_c = ttail(e(df_r),abs(`t_`i'_c'))
+	local p_`i'_c : di %6.3f `psb_`i'_c'
+
+
+** RI P-Values -----------------------------------------------------------------
+ri `dv' `rerandcount' `lassovars' `i'
+
+	rename c1 num_`i'
+	rename c2 b_`i'
+	rename c3 bl_`i'
+	
+	gsort -b_`i'
+	gen b_rank_`i' = _n
+	sum b_rank_`i' if num_`i' == 0
+	local rp_`i': di %6.3f `r(mean)' / `rerandcount'
+	
+	gsort -bl_`i'
+	gen bl_rank_`i' = _n
+	sum bl_rank_`i' if num_`i' == 0
+	local rp_`i'_c : di %6.3f `r(mean)' / `rerandcount'
+	
+* Assign Stars (Normal)
+if `rp_`i'' < 0.01 { 
+		local s_`i' = "***" 
+		}
+ else if `rp_`i'' < 0.05 {
+		local s_`i' = "**" 
+		}
+ else if `rp_`i'' < 0.1 {
+		local s_`i' = "*" 
+		}
+else if `rp_`i'' > 0.1 {
+		local s_`i' = ""	
+}
+* Lasso
+if `rp_`i'_c' < 0.01 { 
+		local s_`i'_c = "***" 
+		}
+ else if `rp_`i'_c' < 0.05 {
+		local s_`i'_c = "**" 
+		}
+ else if `rp_`i'_c' < 0.1 {
+		local s_`i'_c = "*" 
+		}
+else if `rp_`i'_c' > 0.1 {
+		local s_`i'_c = ""	
+}
+
+********************************************************************************
+** OLDER GIRL
+
+use `original', clear
+keep if s4q1_fm_t_age == "18" | s4q1_fm_t_age == "19"
+
+** Run Analysis and Capture Locals ---------------------------------------------
+
+** Regression ------------------------------------------------------------------
+qui reg `dv' treat i.ward_id if comply_attend == 1, cluster(vill_id)
+	local b_`i'_y = strofreal(_b[treat], "%6.3f")									
+	local se_`i'_y = strofreal(_se[treat], "%6.3f")								
+	local n_`i'_y : di %6.0fc `e(N)'												
+	local r2_`i'_y : di %6.3f `e(r2_a)'
+	local t_`i'_y = _b[treat]/_se[treat]
+	local psb_`i'_y = ttail(e(df_r),abs(`t_`i'_y'))
+	local p_`i'_y : di %6.3f `psb_`i'_y'
+
+* Control Mean
+qui sum `dv' if treat == 0 & comply_attend == 1
+local c_`i'_y : di %6.3f `r(mean)'
+
+* Variable Range
+qui sum `dv' 
+local min_`i'_y = r(min)
+local max_`i'_y = r(max)
+
+* Village Level SD
+preserve
+keep if comply_attend == 1
+qui collapse (mean) `dv' treat, by(vill_id)
+qui sum `dv' if treat == 0
+local sd_`i'_y : di %6.3f r(sd)
+restore
+
+** Lasso -----------------------------------------------------------------------
+if `l_`i'' != 0 {	
+	qui reg `dv' treat `lassovars' i.ward_id if comply_attend == 1, cluster(vill_id)
+	}
+	else if `l_`i'' == 0 {
+	qui reg `dv' treat i.ward_id if comply_attend == 1, cluster(vill_id)
+	}
+	local b_`i'_y_c = strofreal(_b[treat], "%6.3f")									
+	local se_`i'_y_c = strofreal(_se[treat], "%6.3f")								
+	local n_`i'_y_c : di %6.0fc `e(N)'												
+	local r2_`i'_y_c : di %6.3f `e(r2_a)'
+	local t_`i'_y_c = _b[treat]/_se[treat]
+	local psb_`i'_y_c = ttail(e(df_r),abs(`t_`i'_y_c'))
+	local p_`i'_y_c : di %6.3f `psb_`i'_y_c'
+
+** RI P-Values -----------------------------------------------------------------
+ri `dv' `rerandcount' `lassovars' `i'
+
+	rename 	c1 num_`i'_y
+	rename 	c2 b_`i'_y
+	rename 	c3 bl_`i'_y
+	
+	gsort 	-b_`i'_y
+	gen 	b_rank_`i'_y = _n
+	sum 	b_rank_`i'_y if num_`i'_y == 0
+	local 	rp_`i'_y: di %6.3f `r(mean)' / `rerandcount'
+	
+	gsort 	-bl_`i'_y
+	gen 	bl_rank_`i'_y = _n
+	sum 	bl_rank_`i'_y if num_`i'_y == 0
+	local 	rp_`i'_y_c : di %6.3f `r(mean)' / `rerandcount'
+	
+	
+* Assign Stars (Normal)
+if `p_`i'_y' < 0.01 { 
+		local s_`i'_y = "***" 
+		}
+ else if `rp_`i'_y' < 0.05 {
+		local s_`i'_y = "**" 
+		}
+ else if `rp_`i'_y' < 0.1 {
+		local s_`i'_y = "*" 
+		}
+else if `rp_`i'_y' > 0.1 {
+		local s_`i'_y = ""	
+}
+* Lasso
+if `rp_`i'_y_c' < 0.01 { 
+		local s_`i'_y_c = "***" 
+		}
+ else if `rp_`i'_y_c' < 0.05 {
+		local s_`i'_y_c = "**" 
+		}
+ else if `rp_`i'_y_c' < 0.1 {
+		local s_`i'_y_c = "*" 
+		}
+else if `rp_`i'_y_c' > 0.1 {
+		local s_`i'_y_c = ""	
+}
+	
+local i = `i' + 1
+}
+
+
+* Save 
+save "$stata/01 Data/01 RI/pfm2_ri_main.dta", replace
+
+* Make Table -------------------------------------------------------------------
+texdoc init "$stata/04 Writeup (FM)\02 Main Paper/vignette_treat.tex", replace nolog
+
+texdoc write 	{
+texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+texdoc write 	\begin{tabular}{ccccc|cccc}
+texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	 	
+texdoc write   						&\multicolumn{4}{c}{\textit{Attitudes}}															&\multicolumn{4}{c}{\textit{Norms}} 																	\\[0.08cm] 		 
+texdoc write        	     		&\multicolumn{2}{c}{Bride younger than 18} 		&	\multicolumn{2}{c}{Bride older than 18}		& \multicolumn{2}{c}{Bride younger than 18} 		&	\multicolumn{2}{c}{Bride older than 18}		\\[0.08cm] 
+texdoc write        	     		& (1) 					& (2)					& (3) 					& (4)					& (5) 					& (6)						& (7) 					& (8)						\\[0.08cm]
+texdoc write 	\hline
+texdoc write 	Anti-FM Media       & `b_1'\sym{`s_1'}  	& `b_1_c'\sym{`s_1_c'} 	& `b_1_y'\sym{`s_1_y'} 	& `b_1_y_c'\sym{`s_1_y_c'} & `b_2'\sym{`s_2'} 	& `b_2_c'\sym{`s_2_c'}		& `b_2_y'\sym{`s_2_y'}	& `b_2_y_c'\sym{`s_2_y_c'}  	\\
+texdoc write    Standard Error 		& `se_1'				& `se_1_c'				& `se_1_y'    			& `se_1_y_c'  			& `se_2' 				& `se_2_c'					& `se_2_y'   		   	& `se_2_y_c'   				\\
+texdoc write 	\hline
+texdoc write 	RI \$ p\$-value 	& `rp_1'				& `rp_1_c' 				& `rp_1_y'				& `rp_1_y_c'			& `rp_2'  				& `rp_2_c'					& `rp_2_y'				& `rp_2_y_c'					\\
+texdoc write 	Hypothesis			& \textbf{+}			& \textbf{+} 			& \textbf{+}			& \textbf{+} 			& \textbf{+}			& \textbf{+}				& \textbf{+}			& \textbf{+}				\\
+texdoc write 	Control Mean      	& `c_1'					& `c_1'					& `c_1_y'				& `c_1_y'				& `c_2'  				& `c_2'						& `c_2_y'				& `c_2_y'					\\
+texdoc write 	Village-Level SD (control) 	& `sd_1'		& `sd_1'				& `sd_1_y'				& `sd_1_y'				& `sd_2' 				& `sd_2'					& `sd_2_y'				& `sd_2_y'					\\
+texdoc write	DV Range			& [`min_1'-`max_1']		& [`min_1'-`max_1']		& [`min_1_y'-`max_1_y']	& [`min_1_y'-`max_1_y']	& [`min_2'-`max_2'] 	& [`min_2'-`max_2']			& [`min_2_y'-`max_2_y']	& [`min_2_y'-`max_2_y']		\\	
+texdoc write 	Blocked FE 			& Yes 					& Yes 					&  Yes   				& Yes  					& Yes					& Yes						& Yes					& Yes						\\
+texdoc write 	Controls 			& No 					& `l_1' 				&  No   				& `l_1'  				& No					& `l_2' 					& No					& `l_2' 					\\
+texdoc write 	Adj-\$ R^2\$		& `r2_1' 				& `r2_1_c' 				& `r2_1_y'   			& `r2_1_y_c' 			& `r2_2'				& `r2_2_c'					& `r2_2_y' 				& `r2_2_y_c' 					\\
+texdoc write 	Observations      	& `n_1' 				& `n_1_c' 				& `n_1_y'   			& `n_1_y_c' 			& `n_2'					& `n_2_c'					& `n_2_y'       		& `n_2_y_c'  					\\
+texdoc write 	\Xhline{2\arrayrulewidth}
+texdoc write 	\end{tabular}
+texdoc write 	}
+
+texdoc close
+

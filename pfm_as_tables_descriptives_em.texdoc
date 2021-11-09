@@ -1,0 +1,193 @@
+
+/* Basics ______________________________________________________________________
+
+	Project: Wellspring Tanzania, Audio Screening
+	Purpose: Analysis
+	Author: dylan groves, dylanwgroves@gmail.com
+	Date: 2020/12/23
+________________________________________________________________________________*/
+
+
+/* Introduction ________________________________________________________________*/
+	
+	clear all	
+	clear matrix
+	clear mata
+	set more off
+	global c_date = c(current_date)
+
+	
+/* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
+
+	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
+	*do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
+
+/* Load Data ___________________________________________________________________*/	
+
+	use "${data_as}/pfm_as_analysis.dta", clear
+
+	// IMPORTANT NOTE: we do not use for attrition, attendance, and uptake											
+	keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)
+
+	
+/* Load Data ___________________________________________________________________*/	
+
+keep if treat == 0
+drop if m_treat_efmvig_age == .
+
+tostring m_treat_efmvig_age, gen(age)
+replace  age = "18" if  age == "19"
+replace  age = "15" if  age == "13" | age == "14"
+replace  age = "16" if age == "17"
+
+replace m_treat_efmvig_offer = subinstr(m_treat_efmvig_offer,",","",.)
+destring m_treat_efmvig_offer, replace
+replace m_treat_efmvig_offer = 500000 if m_treat_efmvig_offer < 500000 
+
+gen amt = m_treat_efmvig_offer
+replace amt = 5 if m_treat_efmvig_offer ==  600000 | m_treat_efmvig_offer ==  500000
+replace amt = 9 if m_treat_efmvig_offer> 600000 & m_treat_efmvig_offer< 1000000
+replace amt = 10 if m_treat_efmvig_offer ==  1500000 | m_treat_efmvig_offer ==  1000000
+replace amt = 10 if m_treat_efmvig_offer ==  2500000 | m_treat_efmvig_offer ==  2000000
+
+/*
+table age amt s4q1_fm_t_scen, contents(mean fm_cogatt_story count fm_cogatt_story) row col f(%6.2f)
+table age amt s4q1_fm_t_scen, contents(mean fm_cognorm_story count fm_cognorm_story) row col f(%6.2f)
+
+s4q1_fm_t_scen    s4q1_fm_t_age
+*/
+
+levelsof age, local(age)
+levelsof amt, local(amt)
+levelsof m_treat_efmvig_scen, local(scen)
+
+foreach s of local scen {
+foreach a of local age {
+foreach mon of local amt {
+
+sum m_efm_reject_story if age == "`a'" & amt == `mon' & m_treat_efmvig_scen == `s'
+local m_`a'_`mon'_`s' : di %6.2f `r(mean)'
+local mn_`a'_`mon'_`s' : di %6.0f `r(N)'
+
+sum m_em_reject_norm if age == "`a'" & amt == `mon' & m_treat_efmvig_scen == `s'
+local n_`a'_`mon'_`s' : di %6.2f `r(mean)'
+local nn_`a'_`mon'_`s' : di %6.0f `r(N)'
+
+}
+}
+}
+
+foreach s of local scen {
+foreach a of local age {
+
+sum m_efm_reject_story if age == "`a'" & m_treat_efmvig_scen == `s'
+local m_`a'_`s' : di %6.2f `r(mean)'
+local mn_`a'_`s' `r(N)'
+
+
+sum m_em_reject_norm if age == "`a'" & m_treat_efmvig_scen == `s'
+local n_`a'_`s' : di %6.2f `r(mean)'
+local nn_`a'_`s' `r(N)'
+}
+}
+
+foreach s of local scen {
+foreach mon of local amt {
+
+sum m_efm_reject_story if amt == `mon' & m_treat_efmvig_scen == `s'
+local m_`mon'_`s' : di %6.2f `r(mean)'
+local mn_`mon'_`s' `r(N)'
+
+
+sum m_em_reject_norm if amt == `mon' & m_treat_efmvig_scen == `s'
+local n_`mon'_`s' : di %6.2f `r(mean)'
+local nn_`mon'_`s' `r(N)'
+}
+}
+
+foreach s of local scen {
+
+sum m_efm_reject_story if m_treat_efmvig_scen == `s'
+local m_`s' : di %6.2f `r(mean)'
+local mn_`s' `r(N)'
+
+sum m_em_reject_norm if m_treat_efmvig_scen == `s'
+local n_`s' : di %6.2f `r(mean)'
+local nn_`s' `r(N)'
+}
+
+foreach a of local age {
+
+sum m_efm_reject_story if age == "`a'"
+local m_`a' : di %6.2f `r(mean)'
+local mn_`a' `r(N)'
+
+sum m_em_reject_norm if age == "`a'"
+local n_`a' : di %6.2f `r(mean)'
+local nn_`a' `r(N)'
+}
+
+sum m_efm_reject_story 
+local m : di %6.2f `r(mean)'
+local mn `r(N)'
+
+sum m_em_reject_norm
+local n : di %6.2f `r(mean)'
+local nn `r(N)'
+
+
+* Make Tables -------------------------------------------------------------------
+texdoc init "${as_clean_tables}/descriptives_em_attitudes.tex", replace nolog
+
+texdoc write 	{
+texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+texdoc write 	\begin{tabular}{l*{10}{c}}
+texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	
+
+texdoc write   						&\multicolumn{4}{c}{\textit{Misbehaving Daughter}}											&	\multicolumn{4}{c}{\textit{Family Needs Money}}																	\\ 
+texdoc write    Age					& <500 TZS					& 500-900 				& >1,000 		& Scenario Total	 			& <500 TZS 				& 500-900			& >1,000			& Scenario Total			& 		Total	\\
+texdoc write 	\hline 	
+texdoc write 	14-15       		& `m_15_5_0' 		 	& `m_15_9_0' 			& `m_15_10_0' 		& `m_15_0' 				& `m_15_5_1' 			& `m_15_9_1'				& `m_15_10_1'		& `m_15_1'					& `m_15'	\\
+texdoc write 			      		& $(`mn_15_5_0')$ 		& $(`mn_15_9_0')$ 		& $(`mn_15_10_0')$ 	& $(`mn_15_0')$ 			& $(`mn_15_5_1')$ 		& $(`mn_15_9_1')$				& $(`mn_15_10_1')$	& $(`mn_15_1')$		& $(`mn_15')$	\\[0.05cm] 
+texdoc write    16-17 				& `m_16_5_0'			& `m_16_9_0'			& `m_16_10_0'		& `m_16_0'  			& `m_16_5_1'			& `m_16_9_1'				& `m_16_10_1'		& `m_16_1'					& `m_16'	\\	
+texdoc write    	 				& $(`mn_16_5_0')$		& $(`mn_16_9_0')$		& $(`mn_16_10_0')$	& $(`mn_16_0')$  		& $(`mn_16_5_1')$		& $(`mn_16_9_1')$			& $(`mn_16_10_1')$	& $(`mn_16_1')$				& $(`mn_16')$	\\[0.05cm] 				
+			
+texdoc write 	18-19				& `m_18_5_0'			& `m_18_9_0' 			& `m_18_10_0' 		& `m_18_0'  			& `m_18_5_1' 			& `m_18_9_1' 				& `m_18_10_1' 		& `m_18_1'					& `m_18 '	\\
+texdoc write 						& $(`mn_18_5_0')$		& $(`mn_18_9_0')$ 		& $(`mn_18_10_0')$ 	& $(`mn_18_0')$  		& $(`mn_18_5_1')$ 		& $(`mn_18_9_1')$ 			& $(`mn_18_10_1')$ 	& $(`mn_18_1')$				& $(`mn_18 ')$	\\[0.05cm] 	
+
+texdoc write 	\hline	
+texdoc write 	Total				& `m_5_0'				& `m_9_0' 				& `m_10_0' 			& `m_0' 				& `m_5_1' 				& `m_9_1' 					& `m_10_1' 			& `m_1' 					& `m'		\\
+texdoc write 						& $(`mn_5_0')$			& $(`mn_9_0')$ 			& $(`mn_10_0')$ 	& $(`mn_0')$ 			& $(`mn_5_1')$ 			& $(`mn_9_1')$ 				& $(`mn_10_1')$ 	& $(`mn_1')$ 				& $(`mn')$		\\
+
+texdoc write 	\end{tabular}
+texdoc write 	}
+
+texdoc close
+
+
+texdoc init "${as_clean_tables}/descriptives_em_norms.tex", replace nolog
+
+texdoc write 	{
+texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+texdoc write 	\begin{tabular}{l*{10}{c}}
+texdoc write 	\Xhline{2\arrayrulewidth}\addlinespace[3pt]	
+
+texdoc write   						&\multicolumn{4}{c}{\textit{Misbehaving Daughter}}											&	\multicolumn{4}{c}{\textit{Family Needs Money}}																	\\ 
+texdoc write    Age					& <500 TZS					& 500-900 				& >1,000 		& Scenario Total	 			& <500 TZS 				& 500-900			& >1,000			& Scenario Total			& 		Total	\\
+texdoc write 	\hline 	
+texdoc write 	14-15       		& `n_15_5_0' 		 	& `n_15_9_0' 			& `n_15_10_0' 		& `n_15_0' 				& `n_15_5_1' 			& `n_15_9_1'				& `n_15_10_1'		& `n_15_1'					& `n_15'	\\
+texdoc write 			      		& $(`nn_15_5_0')$ 		& $(`nn_15_9_0')$ 		& $(`nn_15_10_0')$ 	& $(`nn_15_0')$ 			& $(`nn_15_5_1')$ 		& $(`nn_15_9_1')$				& $(`nn_15_10_1')$	& $(`nn_15_1')$		& $(`nn_15')$	\\[0.05cm] 
+texdoc write    16-17 				& `n_16_5_0'			& `n_16_9_0'			& `n_16_10_0'		& `n_16_0'  			& `n_16_5_1'			& `n_16_9_1'				& `n_16_10_1'		& `n_16_1'					& `n_16'	\\	
+texdoc write    	 				& $(`nn_16_5_0')$		& $(`nn_16_9_0')$		& $(`nn_16_10_0')$	& $(`nn_16_0')$  		& $(`nn_16_5_1')$		& $(`nn_16_9_1')$			& $(`nn_16_10_1')$	& $(`nn_16_1')$				& $(`nn_16')$	\\[0.05cm] 				
+			
+texdoc write 	18-19				& `n_18_5_0'			& `n_18_9_0' 			& `n_18_10_0' 		& `n_18_0'  			& `n_18_5_1' 			& `n_18_9_1' 				& `n_18_10_1' 		& `n_18_1'					& `n_18 '	\\
+texdoc write 						& $(`nn_18_5_0')$		& $(`nn_18_9_0')$ 		& $(`nn_18_10_0')$ 	& $(`nn_18_0')$  		& $(`nn_18_5_1')$ 		& $(`nn_18_9_1')$ 			& $(`nn_18_10_1')$ 	& $(`nn_18_1')$				& $(`nn_18 ')$	\\[0.05cm] 	
+
+texdoc write 	\hline	
+texdoc write 	Total				& `n_5_0'				& `n_9_0' 				& `n_10_0' 			& `n_0' 				& `n_5_1' 				& `n_9_1' 					& `n_10_1' 			& `n_1' 					& `n'		\\
+texdoc write 						& $(`nn_5_0')$			& $(`nn_9_0')$ 			& $(`nn_10_0')$ 	& $(`nn_0')$ 			& $(`nn_5_1')$ 			& $(`nn_9_1')$ 				& $(`nn_10_1')$ 	& $(`nn_1')$ 				& $(`nn')$		\\
+
+texdoc write 	\end{tabular}
+texdoc write 	}
+
+texdoc close
