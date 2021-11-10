@@ -62,11 +62,11 @@ ________________________________________________________________________________
 							em_norm_reject_dum
 							;
 							
-		global em_report  	em_report
+		global report  		em_report
 							em_report_norm
 							;
 							
-		global em_record 	em_record_reject 
+		global record 	em_record_reject 
 							em_record_name
 							em_record_sharepfm
 							em_record_shareptix

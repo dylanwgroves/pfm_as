@@ -54,7 +54,13 @@ ________________________________________________________________________________
 							*/	
 					
 		/* Indices */			
-		local index_list	fm
+		local index_list	mid_fm
+							mid_em
+							mid_norm
+							mid_report
+							mid_priority
+							mid_gender
+							mid_ipv
 							/*
 							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
 							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers
@@ -62,19 +68,11 @@ ________________________________________________________________________________
 							fm
 							em
 							norm
-							em_report 
-							em_record 
-							priority
-							wpp 
+							report 
+							record 
+							priority 
 							gender 	
 							ipv
-							mid_fm
-							mid_em
-							mid_norm
-							mid_report
-							mid_priority
-							mid_gender
-							mid_ipv
 							*/
 							;
 	#d cr
@@ -168,11 +166,11 @@ foreach index of local index_list {
 			
 			/* Save values from regression */
 			global coef = table[1,1]    	//beta
-			global se 	= table[2,1]		//pval
+			global se 	= table[2,1]		//se
 			global t 	= table[3,1]		//tstat
 			global r2 	= `e(r2_a)' 		//r-squared
 			global n 	= e(N) 				//N
-			global df 	= e(df_r)
+			global df 	= e(df_r)			//df
 			
 			/* Calculate pvalue */
 			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval.do"
@@ -184,7 +182,7 @@ foreach index of local index_list {
 
 	/* Lasso Regression  ___________________________________________________________*/
 
-		qui lasso linear `dv' ${cov_lasso}										// set this up as a separate do file
+		qui lasso linear `dv' ${cov_lasso}										
 			global lasso_ctls = e(allvars_sel)										
 			global lasso_ctls_num = e(k_nonzero_sel)
 
@@ -204,13 +202,13 @@ foreach index of local index_list {
 				
 			/* Save values from regression */
 			global lasso_coef 	= table[1,1]    	//beta
-			global lasso_se 	= table[2,1]		//pval
-			global lasso_t 		= table[3,1]		//pval
+			global lasso_se 	= table[2,1]		//se
+			global lasso_t 		= table[3,1]		//tstat
 			global lasso_r2 	= `e(r2_a)' 		//r-squared
 			global lasso_n 		= e(N) 				//N			
-			global lasso_df 	= e(df_r)
+			global lasso_df 	= e(df_r)			//df
 
-			/* Calculate one-sided pvalue */				
+			/* Calculate Lasso pvalue */				
 			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval_lasso.do"
 			global lasso_pval = ${helper_lasso_pval}
 			
