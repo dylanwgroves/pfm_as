@@ -29,7 +29,7 @@
 	lab var b_ge_noprefboy "Gender equality - kid pref"
 	lab var b_fm_reject "Reject forced marriage"
 	lab var b_radio_any "Listened to radio yesterday"
-	lab var b_radio_community "Listen to radio w community"
+	lab var b_radio_community "Listens to radio w community"
 	lab var b_values_likechange "Values - support change"
 	lab var b_values_techgood "Values - technology good"
 	lab var b_values_respectauthority "Values - respect authority"
@@ -39,6 +39,21 @@
 	lab var b_asset_radio_num "Assets - radio number"
 	lab var b_resp_yrsvill "Years Lived in Village"
 	
+	lab var b_media_tv_any "Watched TV yesterday"
+	lab var b_media_news_never "Ever listens to news"
+	lab var b_media_news_daily "Daily listens to news"
+	lab var b_resp_nevervisitcity "Ever visits city"
+	lab var b_resp_hhh "Head of Household"
+	lab var b_resp_samevillage "Born in this village"
+	lab var b_radio_stations_tbc "Listens to Tanzania Broadcasting Corporation"
+	lab var b_radio_community_ever "Ever listened to radio w community"
+	lab var b_radio_call_ever "Ever called in radio"
+	lab var b_asset_multiplehuts "Multiple huts in compound"
+	lab var b_asset_mudwalls "House has mud walls"
+	lab var b_asset_radio "Assets - radio"
+	lab var b_asset_cellint "Asset - cell w internet"
+	lab var b_asset_battery "Asset - battery strenght"
+	lab var b_hiv_exctot "HIV exclusion index"
 
 /* IPV ___________________________________________________________________*/
 

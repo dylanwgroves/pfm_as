@@ -16,7 +16,8 @@ ________________________________________________________________________________
 	set more off
 	global c_date = c(current_date)
 	
-/* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
+/* Run Prelim File _____________________________________________________________*/	
+
 
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_covars.do"
 	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
