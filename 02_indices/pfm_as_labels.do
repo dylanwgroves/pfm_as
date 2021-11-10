@@ -9,7 +9,6 @@
 
 	lab var b_resp_female "Female"
 	lab var resp_female "Female"
-	lab var b_resp_age "Age"
 	lab var resp_age "Age"
 	lab var b_resp_standard7 "Finished Standard 7"
 	lab var b_resp_literate "Can read and write"

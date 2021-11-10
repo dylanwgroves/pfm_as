@@ -161,6 +161,9 @@ ________________________________________________________________________________
 	gen fm_reject_mixed = (fm_reject + p_fm_partner_reject)/2
 		*replace fm_reject_mixed = fm_reject if fm_reject_mixed == .
 		
+	/* destring age*/
+	destring b_age, replace
+		
 		
 /* Some Things for Tables ________________________________________________*/
 
@@ -234,6 +237,7 @@ ________________________________________________________________________________
 		*/
 		
 		foreach var of global cov_lasso {
+			di "`var'"
 			bys id_village_uid : egen vill_`var' = mean(`var')
 			replace `var' = vill_`var' if `var' == . | `var' == .d | `var' == .r
  		}

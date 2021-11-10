@@ -18,9 +18,8 @@ ________________________________________________________________________________
 	
 /* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
 
-	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
-	*do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_covars.do"
+	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
 
 
 /* Load Data ___________________________________________________________________*/	
@@ -55,8 +54,6 @@ ________________________________________________________________________________
 					
 		/* Indices */			
 		local index_list	fm
-							em
-							norm
 							/*
 							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
 							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers

@@ -17,16 +17,16 @@ ________________________________________________________________________________
 	global c_date = c(current_date)
 
 
+/* Run Prelim Do File __________________________________________________________*/
+
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_covars.do"
+	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
+	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
+
+	
 /* Load Data ___________________________________________________________________*/	
 
 	use "${data_as}/pfm_as_analysis.dta", clear
-
-	
-/* Run Prelim Do File __________________________________________________________*/
-
-	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_${survey}.do"
-	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_labels.do"
-	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
 
 	
 /* Define Globals and Locals ____________________________________________________*/
@@ -74,6 +74,13 @@ foreach index of local index_list {
 	putexcel K1 = ("min")
 	putexcel L1 = ("max")
 	putexcel M1 = ("samplemean")
+	
+	
+/* Run Prelim Do File __________________________________________________________*/
+
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_labels.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_main.do"
 
 	
 /* Export Regression ___________________________________________________________*/
@@ -113,8 +120,7 @@ foreach index of local index_list {
 			global max = r(max)
 
 		/* Regression  */
-		qui xi: reg `dv' treat ${cov_always}		
-		
+		xi: reg `dv' treat ${cov_always}, cluster(cluster_as)		
 			matrix table = r(table)
 				
 			/* Save values from regression */
