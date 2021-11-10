@@ -51,7 +51,7 @@ ________________________________________________________________________________
 	
 /* Tables ______________________________________________________________________*/
 
-	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_balance_short.texdoc"
+	*texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_balance_short.texdoc"
 	
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_descriptives_em.texdoc"
 	

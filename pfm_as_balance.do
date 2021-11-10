@@ -35,10 +35,13 @@ ________________________________________________________________________________
 	set seed 			1956
 	
 	/* Set seed */
-	global rerandcount 	10000
+	global rerandcount 	2000
 
 	/* Outcomes */
 	#d ;
+	local index_list	cov_lasso
+						;
+						
 	local short_vars	resp_age 
 						resp_female
 						resp_muslim
@@ -48,43 +51,15 @@ ________________________________________________________________________________
 						b_asset_radio_num
 						b_ge_index
 						;
-						
-	local lasso_vars	resp_female 
-						resp_muslim
-						b_resp_religiosity
-						b_values_likechange 
-						b_values_techgood 
-						b_values_respectauthority 
-						b_values_trustelders
-						b_fm_reject
-						b_ge_raisekids 
-						b_ge_earning 
-						b_ge_leadership 
-						b_ge_noprefboy 
-						b_media_tv_any 
-						b_media_news_never 
-						b_media_news_daily 
-						b_radio_any 
-						b_resp_lang_swahili 
-						b_resp_literate 	
-						b_resp_standard7 
-						b_resp_nevervisitcity 
-						b_resp_married 
-						b_resp_hhh 
-						b_resp_numkid
-						;
-					
 	#d cr
 	
 /* Define Matrix _______________________________________________________________*/
 
-local setofvars short_vars lasso_vars
-
-foreach setvars of local setofvars {
+foreach index of local index_list {
 		
 	/* Set Put Excel File Name */
 	putexcel clear
-	putexcel set "${as_tables}/pfm_as_balance.xlsx", sheet(`setvars', replace)  modify 
+	putexcel set "${as_tables}/pfm_as_balance_long.xlsx", sheet(`index_list', replace)  modify 
 	
 	putexcel A1 = ("variable")
 	putexcel B1 = ("variablelabel")
@@ -104,12 +79,12 @@ foreach setvars of local setofvars {
 /* Export Regression ___________________________________________________________*/
 
 	/* Set locals */
-	local i = 1
-	local row = 2
-
-	/* Run and save for each variable */
-	foreach dv of local `setvars' {
+	local var_list ${`index'}													// Variables
+	local row = 2																// Row for exporting to matrix
 	
+	/* Run for each variable */
+	foreach dv of local var_list  {
+
 		/* Set global */
 		global dv `dv'
 
@@ -154,7 +129,7 @@ foreach setvars of local setofvars {
 			
 			/* Put excel */
 			putexcel A`row' = ("${varname}")
-			putexcel B`row' = ("${varlabel}")
+			cap putexcel B`row' = ("${varlabel}")
 			putexcel C`row' = ("${treat_mean}")
 			putexcel D`row' = ("${treat_sd}")
 			putexcel E`row' = ("${control_mean}")
@@ -169,7 +144,7 @@ foreach setvars of local setofvars {
 
 	/* Keep track */
 	di "`dv'"
-	di "$helper_pval"
+	di "$helper_ripval"
 	
 	/* Update locals */
 	local row = `row' + 1
@@ -177,23 +152,4 @@ foreach setvars of local setofvars {
 
 }	
 }
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

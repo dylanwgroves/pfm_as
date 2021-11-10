@@ -15,12 +15,12 @@ ________________________________________________________________________________
 	clear mata
 	set more off
 	global c_date = c(current_date)
-
 	
 /* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
 
-	do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
-	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
+	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
+	*do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_covars.do"
 
 
 /* Load Data ___________________________________________________________________*/	
@@ -28,9 +28,9 @@ ________________________________________________________________________________
 	use "${data_as}/pfm_as_analysis.dta", clear
 
 	// IMPORTANT NOTE: we do not use for attrition, attendance, and uptake											
-	*keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)	
+	keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)	
 
-	
+
 /* Define Parameters ___________________________________________________*/
 
 	#d ;
@@ -40,14 +40,14 @@ ________________________________________________________________________________
 							;
 							
 		/* rerandomization count */
-		global rerandcount	50
+		global rerandcount	10000
 							;
 		
 		/* survey */
 		global survey 		main
 							;
 							/*
-							main
+							main	
 							partner
 							friend
 							kid
@@ -55,6 +55,8 @@ ________________________________________________________________________________
 					
 		/* Indices */			
 		local index_list	fm
+							em
+							norm
 							/*
 							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
 							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers
@@ -66,7 +68,7 @@ ________________________________________________________________________________
 							em_record 
 							priority
 							wpp 
-							gender 
+							gender 	
 							ipv
 							mid_fm
 							mid_em
@@ -79,12 +81,13 @@ ________________________________________________________________________________
 							;
 	#d cr
 
-
+	
 /* Run Do File ______________________________________________________________*/
 
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_${survey}.do"
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_labels.do"
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
+	
 
 /* Run for Each Index __________________________________________________________*/
 
@@ -111,33 +114,7 @@ foreach index of local index_list {
 		/* Set Put Excel File Name */
 		putexcel clear
 		putexcel set "${as_tables}/pfm_as_analysis_${survey}_update.xlsx", sheet(`index', replace) modify
-		
-		qui putexcel A1 = ("variable")
-		qui putexcel B1 = ("variablelabel")
-		qui putexcel C1 = ("coef")
-		qui putexcel D1 = ("se")
-		qui putexcel E1 = ("pval")
-		qui putexcel F1 = ("ripval")
-		qui putexcel G1 = ("r2")
-		qui putexcel H1 = ("N")
-		qui putexcel I1 = ("lasso_coef")
-		qui putexcel J1 = ("lasso_se")
-		qui putexcel K1 = ("lasso_pval")
-		qui putexcel L1 = ("lasso_ripval")
-		qui putexcel M1 = ("lasso_r2")
-		qui putexcel N1 = ("lasso_N")
-		qui putexcel O1 = ("lasso_ctls")
-		qui putexcel P1 = ("lasso_ctls_num")
-		qui putexcel Q1 = ("treat_mean")
-		qui putexcel R1 = ("treat_sd")
-		qui putexcel S1 = ("ctl_mean")
-		qui putexcel T1 = ("ctl_sd")
-		qui putexcel U1 = ("vill_sd")
-		qui putexcel V1 = ("min")
-		qui putexcel W1 = ("max")
-		qui putexcel X1 = ("test")
-
-	
+			
 	/* Summary Stats ___________________________________________________________*/
 
 		/* Set locals */
@@ -194,7 +171,7 @@ foreach index of local index_list {
 			/* Save values from regression */
 			global coef = table[1,1]    	//beta
 			global se 	= table[2,1]		//pval
-			global t 	= table[3,1]		//pval
+			global t 	= table[3,1]		//tstat
 			global r2 	= `e(r2_a)' 		//r-squared
 			global n 	= e(N) 				//N
 			global df 	= e(df_r)
@@ -278,6 +255,32 @@ foreach index of local index_list {
 		
 		local row = `row' + 1
 		}
+		
+		qui putexcel A1 = ("variable")
+		qui putexcel B1 = ("variablelabel")
+		qui putexcel C1 = ("coef")
+		qui putexcel D1 = ("se")
+		qui putexcel E1 = ("pval")
+		qui putexcel F1 = ("ripval")
+		qui putexcel G1 = ("r2")
+		qui putexcel H1 = ("N")
+		qui putexcel I1 = ("lasso_coef")
+		qui putexcel J1 = ("lasso_se")
+		qui putexcel K1 = ("lasso_pval")
+		qui putexcel L1 = ("lasso_ripval")
+		qui putexcel M1 = ("lasso_r2")
+		qui putexcel N1 = ("lasso_N")
+		qui putexcel O1 = ("lasso_ctls")
+		qui putexcel P1 = ("lasso_ctls_num")
+		qui putexcel Q1 = ("treat_mean")
+		qui putexcel R1 = ("treat_sd")
+		qui putexcel S1 = ("ctl_mean")
+		qui putexcel T1 = ("ctl_sd")
+		qui putexcel U1 = ("vill_sd")
+		qui putexcel V1 = ("min")
+		qui putexcel W1 = ("max")
+		qui putexcel X1 = ("test")
+		
 }
 
 

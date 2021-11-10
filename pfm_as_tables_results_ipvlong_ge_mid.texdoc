@@ -88,7 +88,7 @@ ________________________________________________________________________________
 		/* Normal */
 		global b`i' = strofreal(coef[`i'], "%6.3f")
 		global se`i' = strofreal(se[`i'], "%6.3f")
-		global p`i' = strofreal(pval[`i'], "%6.3f")
+		global p`i' = strofreal(ripval[`i'], "%6.3f")
 		global r`i' = strofreal(r2[`i'], "%6.2f")
 		global n`i' = strofreal(N[`i'], "%6.0fc")
 		global ctl`i' = "No"
@@ -96,7 +96,7 @@ ________________________________________________________________________________
 		/* Lasso */
 		global b`i'c = strofreal(lasso_coef[`i'], "%6.3f")
 		global se`i'c = strofreal(lasso_se[`i'], "%6.3f")
-		global p`i'c = strofreal(lasso_pval[`i'], "%6.3f")
+		global p`i'c = strofreal(lasso_ripval[`i'], "%6.3f")
 		global r`i'c = strofreal(lasso_r2[`i'], "%6.2f")
 		global n`i'c = strofreal(lasso_N[`i'], "%6.0fc")
 		global ctl`i'c = strofreal(lasso_ctls_num[`i'], "%6.0fc")

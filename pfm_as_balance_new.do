@@ -23,9 +23,9 @@ ________________________________________________________________________________
 	
 /* Run Prelim Do File __________________________________________________________*/
 
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_indices_${survey}.do"
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_labels.do"
-	do "${code}/pfm_audioscreening/02_indices/pfm_as_twosided.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_${survey}.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_labels.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
 
 
 	
@@ -35,20 +35,60 @@ ________________________________________________________________________________
 	set seed 			1956
 	
 	/* Set seed */
-	global rerandcount 	10
+	global rerandcount 	1000
 
 	/* Outcomes */
 	#d ;
-	local base_vars		resp_age resp_female resp_muslim b_resp_standard7 b_resp_married 
-						b_resp_religiosity b_resp_literate b_resp_lang_swahili 
-						b_resp_yrsvill 
-						b_resp_numhh b_resp_numkid b_resp_numolder b_resp_numyounger b_resp_numadult 
-						b_ge_index b_ge_raisekids b_ge_earning b_ge_leadership b_ge_noprefboy 
-						b_fm_reject 
-						b_radio_any
-						b_values_likechange b_values_techgood 
-						b_values_respectauthority
-						b_asset_cell b_asset_tv b_asset_radio_num
+	local base_vars		resp_female 
+						resp_muslim
+						b_resp_religiosity
+						b_values_likechange 
+						b_values_techgood 
+						b_values_respectauthority 
+						b_values_trustelders
+						b_ge_raisekids 
+						b_ge_earning 
+						b_ge_leadership 
+						b_ge_noprefboy 
+						b_media_tv_any 
+						b_media_news_never 
+						b_media_news_daily 
+						b_radio_any 
+						b_resp_lang_swahili 
+						b_resp_literate 	
+						b_resp_standard7 
+						b_resp_nevervisitcity 
+						b_resp_nevervisittown
+						b_resp_married 
+						b_resp_hhh 
+						b_resp_numkid
+						b_resp_numhh
+						b_resp_numolder
+						b_resp_numyounger
+						b_resp_kidsever
+						b_resp_yrsvill
+						b_fm_reject
+						b_resp_samevillage
+						b_radio_stations_clouds
+						b_radio_stations_pfm
+						b_radio_stations_tbc
+						b_radio_community_ever
+						b_radio_call_ever
+						b_hiv_aware
+						b_hiv_exctot
+						b_hiv_safe
+						b_hiv_bus
+						b_mob_falseaccuse
+						b_mob_accuseresponse
+						b_asset_multiplehuts
+						b_asset_walls
+						b_asset_radio
+						b_asset_radio_listen
+						b_asset_tv
+						b_asset_cell
+						b_asset_cellint
+						b_asset_battery
+						b_svy_otherspresent
 						;
 	#d cr
 	
@@ -56,7 +96,7 @@ ________________________________________________________________________________
 		
 	/* Set Put Excel File Name */
 	putexcel clear
-	putexcel set "${as_tables}/pfm_as_balance.xlsx", replace 
+	putexcel set "${as_tables}/pfm_as_balance_long.xlsx", replace 
 	
 	putexcel A1 = ("variable")
 	putexcel B1 = ("variablelabel")
