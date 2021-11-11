@@ -66,7 +66,7 @@ ________________________________________________________________________________
 							em_report_norm
 							;
 							
-		global record 	em_record_reject 
+		global record 		em_record_reject 
 							em_record_name
 							em_record_sharepfm
 							em_record_shareptix
@@ -102,41 +102,41 @@ ________________________________________________________________________________
 							
 
 		/* Midline */
-		global mid_fm		m_fm_reject
+		global mid_fm	    m_fm_reject
 							m_fm_reject_18
 							m_fm_reject_story
 							m_fm_reject_story_money
 							m_fm_reject_story_daught						
 							;
 							
-		global mid_em		m_em_reject_story
+		global mid_em	    m_em_reject_story
 							m_em_reject_story_money
 							m_em_reject_story_daught
 							;
 							
-		global mid_norm 	m_fm_reject_norm
+		global mid_norm     m_fm_reject_norm
 							m_em_reject_norm_under18
 							m_em_reject_norm
 							;
 							
-		global mid_report 	m_em_report 
+		global mid_report   m_em_report 
 							m_em_report_norm
 							;
 							
-		global mid_priority	m_em_priority_list
+		global mid_priority m_em_priority_list
 							m_em_priority_unchanged
 							m_ptixpref_efm_first 
 							m_ptixpref_efm_topthree 	
 							m_em_elect
 							;
 
-		global mid_gender	m_ge_index
+		global mid_gender   m_ge_index
 							m_ge_earning 
 							m_ge_school 
 							m_ge_kid
 							;
 
-		global mid_ipv		m_ipv_rej_disobey 
+		global mid_ipv	    m_ipv_rej_disobey 
 							m_ipv_rej_disobey_long
 							m_ipv_rej_hithard 
 							m_ipv_rej_persists 
