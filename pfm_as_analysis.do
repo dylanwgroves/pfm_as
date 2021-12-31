@@ -10,14 +10,13 @@ ________________________________________________________________________________
 
 /* Introduction ________________________________________________________________*/
 	
-	clear all	
+	clear all		
 	clear matrix
 	clear mata
 	set more off
 	global c_date = c(current_date)
 	
-/* Run Prelim File _____________________________________________________________*/	
-
+/* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
 
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_covars.do"
 	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
@@ -54,13 +53,7 @@ ________________________________________________________________________________
 							*/	
 					
 		/* Indices */			
-		local index_list	mid_fm
-							mid_em
-							mid_norm
-							mid_report
-							mid_priority
-							mid_gender
-							mid_ipv
+		local index_list	ipv
 							/*
 							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
 							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers
@@ -68,11 +61,19 @@ ________________________________________________________________________________
 							fm
 							em
 							norm
-							report 
-							record 
-							priority 
+							em_report 
+							em_record 
+							priority
+							wpp 
 							gender 	
 							ipv
+							mid_fm
+							mid_em
+							mid_norm
+							mid_report
+							mid_priority
+							mid_gender
+							mid_ipv
 							*/
 							;
 	#d cr
@@ -84,7 +85,6 @@ ________________________________________________________________________________
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_labels.do"
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
 	
-
 /* Run for Each Index __________________________________________________________*/
 
 foreach index of local index_list {
@@ -110,6 +110,31 @@ foreach index of local index_list {
 		/* Set Put Excel File Name */
 		putexcel clear
 		putexcel set "${as_tables}/pfm_as_analysis_${survey}_update.xlsx", sheet(`index', replace) modify
+		
+		qui putexcel A1 = ("variable")
+		qui putexcel B1 = ("variablelabel")
+		qui putexcel C1 = ("coef")
+		qui putexcel D1 = ("se")
+		qui putexcel E1 = ("pval")
+		qui putexcel F1 = ("ripval")
+		qui putexcel G1 = ("r2")
+		qui putexcel H1 = ("N")
+		qui putexcel I1 = ("lasso_coef")
+		qui putexcel J1 = ("lasso_se")
+		qui putexcel K1 = ("lasso_pval")
+		qui putexcel L1 = ("lasso_ripval")
+		qui putexcel M1 = ("lasso_r2")
+		qui putexcel N1 = ("lasso_N")
+		qui putexcel O1 = ("lasso_ctls")
+		qui putexcel P1 = ("lasso_ctls_num")
+		qui putexcel Q1 = ("treat_mean")
+		qui putexcel R1 = ("treat_sd")
+		qui putexcel S1 = ("ctl_mean")
+		qui putexcel T1 = ("ctl_sd")
+		qui putexcel U1 = ("vill_sd")
+		qui putexcel V1 = ("min")
+		qui putexcel W1 = ("max")
+		qui putexcel X1 = ("test")
 			
 	/* Summary Stats ___________________________________________________________*/
 
@@ -166,11 +191,11 @@ foreach index of local index_list {
 			
 			/* Save values from regression */
 			global coef = table[1,1]    	//beta
-			global se 	= table[2,1]		//se
+			global se 	= table[2,1]		//pval
 			global t 	= table[3,1]		//tstat
 			global r2 	= `e(r2_a)' 		//r-squared
 			global n 	= e(N) 				//N
-			global df 	= e(df_r)			//df
+			global df 	= e(df_r)
 			
 			/* Calculate pvalue */
 			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval.do"
@@ -182,7 +207,7 @@ foreach index of local index_list {
 
 	/* Lasso Regression  ___________________________________________________________*/
 
-		qui lasso linear `dv' ${cov_lasso}										
+		qui lasso linear `dv' ${cov_lasso}										// set this up as a separate do file
 			global lasso_ctls = e(allvars_sel)										
 			global lasso_ctls_num = e(k_nonzero_sel)
 
@@ -202,13 +227,13 @@ foreach index of local index_list {
 				
 			/* Save values from regression */
 			global lasso_coef 	= table[1,1]    	//beta
-			global lasso_se 	= table[2,1]		//se
-			global lasso_t 		= table[3,1]		//tstat
+			global lasso_se 	= table[2,1]		//pval
+			global lasso_t 		= table[3,1]		//pval
 			global lasso_r2 	= `e(r2_a)' 		//r-squared
 			global lasso_n 		= e(N) 				//N			
-			global lasso_df 	= e(df_r)			//df
+			global lasso_df 	= e(df_r)
 
-			/* Calculate Lasso pvalue */				
+			/* Calculate one-sided pvalue */				
 			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval_lasso.do"
 			global lasso_pval = ${helper_lasso_pval}
 			
@@ -251,31 +276,6 @@ foreach index of local index_list {
 		
 		local row = `row' + 1
 		}
-		
-		qui putexcel A1 = ("variable")
-		qui putexcel B1 = ("variablelabel")
-		qui putexcel C1 = ("coef")
-		qui putexcel D1 = ("se")
-		qui putexcel E1 = ("pval")
-		qui putexcel F1 = ("ripval")
-		qui putexcel G1 = ("r2")
-		qui putexcel H1 = ("N")
-		qui putexcel I1 = ("lasso_coef")
-		qui putexcel J1 = ("lasso_se")
-		qui putexcel K1 = ("lasso_pval")
-		qui putexcel L1 = ("lasso_ripval")
-		qui putexcel M1 = ("lasso_r2")
-		qui putexcel N1 = ("lasso_N")
-		qui putexcel O1 = ("lasso_ctls")
-		qui putexcel P1 = ("lasso_ctls_num")
-		qui putexcel Q1 = ("treat_mean")
-		qui putexcel R1 = ("treat_sd")
-		qui putexcel S1 = ("ctl_mean")
-		qui putexcel T1 = ("ctl_sd")
-		qui putexcel U1 = ("vill_sd")
-		qui putexcel V1 = ("min")
-		qui putexcel W1 = ("max")
-		qui putexcel X1 = ("test")
 		
 }
 

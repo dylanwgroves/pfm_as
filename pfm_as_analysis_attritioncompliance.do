@@ -19,14 +19,13 @@ ________________________________________________________________________________
 	
 /* Run Prelim File _____________________________________________________________*/ // comment out if you dont need to rerun prelim cleaning	
 
-	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
-	do "${code}/pfm_audioscreening_efm_efm/pfm_as_prelim.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_covars.do"
+	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
 
 
 /* Load Data ___________________________________________________________________*/	
 
 	use "${data_as}/pfm_as_analysis.dta", clear
-	
 	
 	
 /* Define Parameters ___________________________________________________*/
@@ -38,7 +37,7 @@ ________________________________________________________________________________
 							;
 							
 		/* rerandomization count */
-		global rerandcount	100
+		global rerandcount	2000
 							;
 		
 		/* survey */
@@ -61,9 +60,9 @@ ________________________________________________________________________________
 
 /* Run Do File ______________________________________________________________*/
 
-	do "${code}/pfm_audioscreening_efm_efm/02_indices/pfm_as_indices_${survey}.do"
-	do "${code}/pfm_audioscreening_efm_efm/02_indices/pfm_as_labels.do"
-	do "${code}/pfm_audioscreening_efm_efm/02_indices/pfm_as_twosided.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_${survey}.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_labels.do"
+	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
 
 
 /* Run for Each Index __________________________________________________________*/
@@ -86,38 +85,14 @@ foreach index of local index_list {
 	
 	macro drop test
 	
+	
 	/* Define Matrix _______________________________________________________________*/
 				
 		/* Set Put Excel File Name */
 		putexcel clear
-		putexcel set "${as_tables}/pfm_as_analysis_${survey}.xlsx", sheet(`index', replace) modify
+		putexcel set "${as_tables}/pfm_as_analysis_${survey}_update.xlsx", sheet(`index', replace) modify
 		
-		qui putexcel A1 = ("variable")
-		qui putexcel B1 = ("variablelabel")
-		qui putexcel C1 = ("coef")
-		qui putexcel D1 = ("se")
-		qui putexcel E1 = ("pval")
-		qui putexcel F1 = ("ripval")
-		qui putexcel G1 = ("r2")
-		qui putexcel H1 = ("N")
-		qui putexcel I1 = ("lasso_coef")
-		qui putexcel J1 = ("lasso_se")
-		qui putexcel K1 = ("lasso_pval")
-		qui putexcel L1 = ("lasso_ripval")
-		qui putexcel M1 = ("lasso_r2")
-		qui putexcel N1 = ("lasso_N")
-		qui putexcel O1 = ("lasso_ctls")
-		qui putexcel P1 = ("lasso_ctls_num")
-		qui putexcel Q1 = ("treat_mean")
-		qui putexcel R1 = ("treat_sd")
-		qui putexcel S1 = ("ctl_mean")
-		qui putexcel T1 = ("ctl_sd")
-		qui putexcel U1 = ("vill_sd")
-		qui putexcel V1 = ("min")
-		qui putexcel W1 = ("max")
-		qui putexcel X1 = ("test")
-
-	
+		
 	/* Summary Stats ___________________________________________________________*/
 
 		/* Set locals */
@@ -187,6 +162,7 @@ foreach index of local index_list {
 			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval_ri.do"
 			global ripval = ${helper_ripval}
 
+			
 	/* Lasso Regression  ___________________________________________________________*/
 
 		qui lasso linear `dv' ${cov_lasso}										// set this up as a separate do file
@@ -223,6 +199,7 @@ foreach index of local index_list {
 			do "${code}/pfm_audioscreening_efm/01_helpers/pfm_helper_pval_ri_lasso.do"
 			global lasso_ripval = ${helper_lasso_ripval}
 		
+		
 	/* Export to Excel _________________________________________________________*/ 
 		
 		di "Variable is ${varname}, coefficient is ${coef}, pval is ${pval} / ripval is ${ripval}, N = ${n}"
@@ -258,6 +235,31 @@ foreach index of local index_list {
 		
 		local row = `row' + 1
 		}
+		
+		qui putexcel A1 = ("variable")
+		qui putexcel B1 = ("variablelabel")
+		qui putexcel C1 = ("coef")
+		qui putexcel D1 = ("se")
+		qui putexcel E1 = ("pval")
+		qui putexcel F1 = ("ripval")
+		qui putexcel G1 = ("r2")
+		qui putexcel H1 = ("N")
+		qui putexcel I1 = ("lasso_coef")
+		qui putexcel J1 = ("lasso_se")
+		qui putexcel K1 = ("lasso_pval")
+		qui putexcel L1 = ("lasso_ripval")
+		qui putexcel M1 = ("lasso_r2")
+		qui putexcel N1 = ("lasso_N")
+		qui putexcel O1 = ("lasso_ctls")
+		qui putexcel P1 = ("lasso_ctls_num")
+		qui putexcel Q1 = ("treat_mean")
+		qui putexcel R1 = ("treat_sd")
+		qui putexcel S1 = ("ctl_mean")
+		qui putexcel T1 = ("ctl_sd")
+		qui putexcel U1 = ("vill_sd")
+		qui putexcel V1 = ("min")
+		qui putexcel W1 = ("max")
+		qui putexcel X1 = ("test")
 }
 
 
