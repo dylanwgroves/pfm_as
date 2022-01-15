@@ -145,17 +145,17 @@ ________________________________________________________________________________
 	gen m_em_prioritytoptwo = (m_em_priority_list > 2)
 	replace m_em_prioritytoptwo = 1 if m_em_priority_list == 2 & m_hiv_priority_list > 2
 
-	* Change endline to match midline */
-	gen em_priority_list = .
-		replace em_priority_list = 3 if ptixpref_rank_efm == 9 
-		replace em_priority_list = 3 if ptixpref_rank_efm == 8 & ptixpref_rank_health > 8
-		
-		replace em_priority_list = 2 if ptixpref_rank_efm == 8 & ptixpref_rank_health < 8
-		replace em_priority_list = 2 if ptixpref_rank_efm == 7 & ptixpref_rank_health > 7
-		
-		replace em_priority_list = 1 if ptixpref_rank_efm == 7 & ptixpref_rank_health < 7
-		
-		replace em_priority_list = 0 if ptixpref_rank_efm < 7
+		* Change endline to match midline */
+		gen em_priority_list = .
+			replace em_priority_list = 3 if ptixpref_rank_efm == 9 
+			replace em_priority_list = 3 if ptixpref_rank_efm == 8 & ptixpref_rank_health > 8
+			
+			replace em_priority_list = 2 if ptixpref_rank_efm == 8 & ptixpref_rank_health < 8
+			replace em_priority_list = 2 if ptixpref_rank_efm == 7 & ptixpref_rank_health > 7
+			
+			replace em_priority_list = 1 if ptixpref_rank_efm == 7 & ptixpref_rank_health < 7
+			
+			replace em_priority_list = 0 if ptixpref_rank_efm < 7
 			
 	/* mix partner perception and self-report */
 	gen fm_reject_mixed = (fm_reject + p_fm_partner_reject)/2
