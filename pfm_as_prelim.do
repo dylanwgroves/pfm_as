@@ -32,6 +32,7 @@ ________________________________________________________________________________
 
 	/* Main Survey Data */
 	use "${data}/03_final_data/pfm_appended_prefix.dta", clear
+	stop
 	drop if sample == "ne"
 
 	
