@@ -7,7 +7,7 @@ if "$test" == "onesided" {
 	local rip_count = 0
 	forval j = 1 / $rerandcount {
 	
-		qui xi: reg $dv treat_`j' ${cov_always}, cluster(id_village_n)
+		qui xi: reg $dv ${treat}_`j' ${cov_always}, cluster(id_village_n)
 			matrix RIP = r(table)
 			local coef_ri = RIP[1,1]
 			if ${coef} < `coef_ri' { 	  
@@ -16,6 +16,22 @@ if "$test" == "onesided" {
 	}	
 }
 
+if "$test" == "onesidedneg" {
+
+	/* one sided */
+	local rip_count = 0
+	forval j = 1 / $rerandcount {
+	
+		qui xi: reg $dv ${treat}_`j' ${cov_always}, cluster(id_village_n)
+			matrix RIP = r(table)
+			local coef_ri = RIP[1,1]
+			if ${coef} > `coef_ri' { 	  
+					local rip_count = `rip_count' + 1	
+			}
+	}	
+}
+
+
 
 if "$test" == "twosided" {
 
@@ -23,7 +39,7 @@ if "$test" == "twosided" {
 	local rip_count = 0
 	forval j = 1 / $rerandcount {
 	
-		qui xi: reg $dv treat_`j' ${cov_always}, cluster(id_village_n)
+		qui xi: reg $dv ${treat}_`j' ${cov_always}, cluster(id_village_n)
 			matrix RIP = r(table)
 			local coef_ri = RIP[1,1]
 			

@@ -30,6 +30,9 @@ ________________________________________________________________________________
 	keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)	
 
 
+
+
+
 /* Define Parameters ___________________________________________________*/
 
 	#d ;
@@ -85,6 +88,91 @@ ________________________________________________________________________________
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_labels.do"
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
 	stop
+	
+	
+stop
+
+
+  
+quietly regress 
+estimates store m_fm_reject
+
+coefplot (m_fm_reject, label(Foreign)), keep(treat) drop(cons) 
+
+. quietly regress price mpg trunk length turn if foreign==1
+. estimates store foreign
+
+
+sysuse auto, clear
+
+*** Midline
+reg m_fm_reject treat i.block_as, cluster(id_village_n)
+estimates store mid_1
+reg m_efm_reject_story treat i.block_as, cluster(id_village_n)
+estimates store mid_2
+
+set scheme s2manual 
+coefplot (mid_?), keep(treat) aseq swapnames ///
+coeflabels(*1* = "Forced Marriage" *2* = "Early Marriage") ///
+xscale(range(-0.15(0.05)0.15)) xlabel(-0.15(0.05)0.15) ///
+xline(0)
+
+
+*** Midline Secondary
+reg m_em_reject_norm treat i.block_as, cluster(id_village_n)
+estimates store mid_1
+reg m_em_report treat i.block_as, cluster(id_village_n)
+estimates store mid_2
+reg m_ge_index treat i.block_as, cluster(id_village_n)
+estimates store mid_3
+
+set scheme s2manual 
+coefplot (mid_?), keep(treat) aseq swapnames ///
+coeflabels(*1* = "Perceived Norms" *2* = "Reporting" *3* = "Gender Equality") ///
+xscale(range(-0.15(0.05)0.15)) xlabel(-0.15(0.05)0.15) ///
+xline(0)
+
+
+
+**** Endline 
+replace fm_reject_long = (fm_reject_long + 1)/4
+reg fm_reject_long treat i.block_as, cluster(id_village_n)
+estimates store mid_1
+reg em_reject_all treat i.block_as, cluster(id_village_n)
+estimates store mid_2
+reg em_reject_money_dum treat i.block_as, cluster(id_village_n)
+estimates store mid_3
+
+set scheme s2manual 
+coefplot (mid_?), keep(treat) aseq swapnames ///
+coeflabels(*1* = "Reject FM" *2* = "Reject EM" *3* = "Reject EM (Money)") ///
+xscale(range(-0.15(0.05)0.15)) xlabel(-0.15(0.05)0.15) ///
+xline(0)
+
+
+*** Endline Secondary
+ em_norm_reject_dum ge_index
+
+
+reg em_norm_reject_dum treat i.block_as, cluster(id_village_n)
+estimates store mid_1
+reg em_report treat i.block_as, cluster(id_village_n)
+estimates store mid_2
+reg ge_index treat i.block_as b_ge_index b_resp_standard7, cluster(id_village_n)
+estimates store mid_3
+
+set scheme s2manual 
+coefplot (mid_?), keep(treat) aseq swapnames ///
+coeflabels(*1* = "Perceived Norms" *2* = "Reporting" *3* = "Gender Equality") ///
+xscale(range(-0.15(0.05)0.15)) xlabel(-0.15(0.05)0.15) ///
+xline(0)
+
+
+ ///
+    groups(mid_? = "Baseline" results_?_g4 = "Group 4" results_?_g5 = "Group 5") ///
+    
+
+
 /* Run for Each Index __________________________________________________________*/
 
 foreach index of local index_list {
