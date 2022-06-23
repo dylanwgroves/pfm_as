@@ -17,7 +17,7 @@ ________________________________________________________________________________
 	global c_date = c(current_date)
 	set seed 1956
 
-/* Paths and master ____________________________________________________________*/	
+/* Set Globals _________________________________________________________*/
 
 	foreach user in  "X:" "/Users/BeatriceMontano" "/Users/Bardia" {
 					capture cd "`user'"
@@ -26,6 +26,14 @@ ________________________________________________________________________________
 	local dir `c(pwd)'
 	global user `dir'
 	display "${user}"
+
+	foreach user in  "X:" "/Volumes/Secomba/BeatriceMontano/Boxcryptor" "/Volumes/Secomba/Bardia/Boxcryptor" {
+					capture cd "`user'"
+					if _rc == 0 macro def path `user'
+				}
+	local dir `c(pwd)'
+	global userboxcryptor `dir'
+	display "${userboxcryptor}"	
 
 	cap assert "$`{globals_set}'" == "yes"
 	if _rc!=0 {   
