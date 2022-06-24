@@ -106,13 +106,14 @@ ______________________________________________________________________________*/
 		
 				bys v010: sum meanyob_em_w
 				
-				twoway (scatter meanyob_em_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
+				twoway (lowess meanyob_em_w v010 , lcolor(black) ) ///
+					   (scatter meanyob_em_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
 							ysize(3) xsize(3) yscale(range(0/1)) xscale(range(1960/1990)) ///
 							ylabel(0(0.1)1,     labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
 							legend(off) ytitle(Share of Early Marriages, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
-							title("Tanzania") subtitle("N: `count' ")
+							title("Tanzania", color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_emshare_TZ.png", as(png) width(3000)   replace
 
 		* Calculate average age of marriage
@@ -141,13 +142,14 @@ ______________________________________________________________________________*/
 		
 				bys v010: sum meanyob_agecohab_w
 				
-				twoway (scatter meanyob_agecohab_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
+				twoway (lowess meanyob_agecohab_w v010 , lcolor(black) ) ///
+						(scatter meanyob_agecohab_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
 							ysize(3) xsize(3) yscale(range(16(1)22)) xscale(range(1965(5)1990)) ///
 							ylabel(16(0.5)22, labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
 							legend(off) ytitle(Average Age at First Marriage, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
-							title(Tanzania) subtitle("N: `count' ")
+							title(Tanzania, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_meanage_TZ.png", as(png) width(3000)   replace
 				
 				
@@ -189,13 +191,14 @@ ______________________________________________________________________________*/
 		
 				bys v010: sum meanyob_em_w
 								
-				twoway (scatter meanyob_em_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
+				twoway (lowess meanyob_em_w v010 , lcolor(black) ) ///
+					   (scatter meanyob_em_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
 							ysize(3) xsize(3) yscale(range(0/1)) xscale(range(1960/1990)) ///
 							ylabel(0(0.1)1,     labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
 							legend(off) ytitle(Share of Early Marriages, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
-							title(Rural Tanzania) subtitle("N: `count' ")
+							title(Rural Tanzania, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_emshare_TZrural.png", as(png) width(3000)   replace
 
 	 	* Calculate average age of marriage
@@ -225,13 +228,14 @@ ______________________________________________________________________________*/
 		
 				bys v010: sum meanyob_agecohab_w
 								
-				twoway (scatter meanyob_agecohab_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
+				twoway (lowess meanyob_agecohab_w v010 , lcolor(black) ) ///
+						(scatter meanyob_agecohab_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
 							ysize(3) xsize(3) yscale(range(16(1)22)) xscale(range(1965(5)1990)) ///
 							ylabel(16(0.5)22, labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
 							legend(off) ytitle(Average Age at First Marriage, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
-							title(Rural Tanzania) subtitle("N: `count' ")
+							title(Rural Tanzania, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_meanage_TZrural.png", as(png) width(3000)   replace
 	
 
@@ -270,13 +274,14 @@ ______________________________________________________________________________*/
 		
 				bys v010: sum meanyob_em_w
 								
-				twoway (scatter meanyob_em_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
+				twoway (lowess meanyob_em_w v010 , lcolor(black) ) ///
+					   (scatter meanyob_em_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
 							ysize(3) xsize(3) yscale(range(0/1)) xscale(range(1960/1990)) ///
 							ylabel(0(0.1)1,     labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
 							legend(off) ytitle(Share of Early Marriages, size(small)) xtitle(Woman Year of Birth , size(small))  /// 
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
-							title(Tanga) subtitle("N: `count' ")
+							title(Tanga, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_emshare_Tanga.png", as(png) width(3000)   replace
 
 		* Calculate average age of marriage
@@ -304,13 +309,14 @@ ______________________________________________________________________________*/
 		
 				bys v010: sum meanyob_agecohab_w
 								
-				twoway (scatter meanyob_agecohab_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
+				twoway (lowess meanyob_agecohab_w v010 , lcolor(black) ) ///
+						(scatter meanyob_agecohab_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
 							ysize(3) xsize(3) yscale(range(16(0.5)22)) xscale(range(1965(5)1990)) ///
 							ylabel(16(0.5)22, labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
 							legend(off) ytitle(Average Age at First Marriage, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
-							title(Tanga) subtitle("N: `count' ")
+							title(Tanga, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_meanage_Tanga.png", as(png) width(3000)   replace
 			
 				
@@ -350,13 +356,14 @@ ______________________________________________________________________________*/
 		
 				bys v010: sum meanyob_em_w
 								
-				twoway (scatter meanyob_em_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
+				twoway (lowess meanyob_em_w v010 , lcolor(black) ) ///
+					   (scatter meanyob_em_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
 							ysize(3) xsize(3) yscale(range(0/1)) xscale(range(1960/1990)) ///
 							ylabel(0(0.1)1,     labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
 							legend(off) ytitle(Share of Early Marriages, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
-							title(Rural Tanga) subtitle("N: `count' ")
+							title(Rural Tanga, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_emshare_Tangarural.png", as(png) width(3000)   replace
 	
 		* Calculate average age of marriage
@@ -384,12 +391,13 @@ ______________________________________________________________________________*/
 		
 				bys v010: sum meanyob_agecohab_w
 								
-				twoway (scatter meanyob_agecohab_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
+				twoway (lowess meanyob_agecohab_w v010 , lcolor(black) ) ///
+						(scatter meanyob_agecohab_w v010 , mcolor(gs15) msize(medium) msymbol(circle) mlcolor(black) mlwidth(vthin)), ///
 							ysize(3) xsize(3) yscale(range(16(1)22)) xscale(range(1965(5)1990)) ///
 							ylabel(16(0.5)22, labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
 							legend(off) ytitle(Average Age at First Marriage, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
-							title(Rural Tanga) subtitle("N: `count' ")
+							title(Rural Tanga, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_meanage_Tangarural.png", as(png) width(3000)   replace
 	
