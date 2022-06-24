@@ -58,6 +58,10 @@ ________________________________________________________________________________
 
 	do "${code}/pfm_audioscreening_efm/pfm_as_analysis.do"
 	
+/* Figures _____________________________________________________________________*/
+
+	do "${code}/pfm_audioscreening_efm/pfm_as_figures_dhs.do"
+
 /* Tables ______________________________________________________________________*/
 
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_balance_short.texdoc"
@@ -78,6 +82,8 @@ ________________________________________________________________________________
 		
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong_ge_mid.texdoc"
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_results_ipvlong_ge.texdoc"
+
+	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_tables_afrobarometer.texdoc"
 	
 	/* HetFX 
 	texdoc do "${code}/pfm_audioscreening_efm/pfm_as_04_tables_04_results_hetfx_fm_mid.texdoc"
