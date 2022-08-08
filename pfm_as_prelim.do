@@ -340,13 +340,17 @@ gen m_efm_norm_story = m_fm_reject_norm
 								b_asset_radio_num
 								b_ge_index
 								em_reject
+								values_tzovertribe
+								b_resp_education
+								assets_electricity
+								ge_work 
+								m_ipv_rej_disobey 
 								;
 	#d cr
 	
 
-	save "X:\Dropbox\Wellspring Tanzania Papers\Wellspring Tanzania - Audio Screening (efm)\cps_replication\cps_efm_analysis.dta", replace
+	save "${user}/Dropbox/Wellspring Tanzania Papers/Wellspring Tanzania - Audio Screening (efm)/cps_replication/cps_efm_analysis.dta", replace
 	
-stop
 /* Reshape Kids Long ___________________________________________________________
 
 	use "${data}/01_raw_data/pfm_as_endline_clean_kid_long.dta", clear
