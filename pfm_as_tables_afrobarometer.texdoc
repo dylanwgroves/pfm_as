@@ -343,21 +343,21 @@ texdoc write 										& 	Mean			&	N				& Mean				&	N 						& Mean			&	N	\\
 texdoc write	\hline
 texdoc write 	\textbf{Demographics} \\ 
 texdoc write 	\hline
-texdoc write 	\text{`var_8'}	       				&	`ne_mean_8'		&	`ne_n_8'		& `africa_mean_8'	& `africa_n_8'				& `tz_mean_8'	& `tz_n_8'			\\
-texdoc write 	\text{`var_9'} 	      				&	`ne_mean_9'		&	`ne_n_9'		& `africa_mean_9'	& `africa_n_9'				& `tz_mean_9'	& `tz_n_9'			\\
+texdoc write 	\text{`var_8'}	       				&	`as_mean_8'		&	`as_n_8'		& `africa_mean_8'	& `africa_n_8'				& `tz_mean_8'	& `tz_n_8'			\\
+texdoc write 	\text{`var_9'} 	      				&	`as_mean_9'		&	`as_n_9'		& `africa_mean_9'	& `africa_n_9'				& `tz_mean_9'	& `tz_n_9'			\\
 texdoc write 	\hline 	 
 texdoc write 	\textbf{Media} \\ 
 texdoc write 	\hline
-texdoc write 	\text{`var_5'}	      				&	`ne_mean_5'		&	`ne_n_5'		& `africa_mean_5'	& `africa_n_5'				& `tz_mean_5'	& `tz_n_5'			\\
-texdoc write 	\text{`var_6'}	      				&	`ne_mean_6'		&	`ne_n_6'		& `africa_mean_6'	& `africa_n_6'				& `tz_mean_6'	& `tz_n_6'			\\ 
-texdoc write 	\text{`var_7'}	       				&	`ne_mean_7'		&	`ne_n_7'		& `africa_mean_7'	& `africa_n_7'				& `tz_mean_7'	& `tz_n_7'			\\
+texdoc write 	\text{`var_5'}	      				&	`as_mean_5'		&	`as_n_5'		& `africa_mean_5'	& `africa_n_5'				& `tz_mean_5'	& `tz_n_5'			\\
+texdoc write 	\text{`var_6'}	      				&	`as_mean_6'		&	`as_n_6'		& `africa_mean_6'	& `africa_n_6'				& `tz_mean_6'	& `tz_n_6'			\\ 
+texdoc write 	\text{`var_7'}	       				&	`as_mean_7'		&	`as_n_7'		& `africa_mean_7'	& `africa_n_7'				& `tz_mean_7'	& `tz_n_7'			\\
 texdoc write	\hline
 texdoc write 	\textbf{Attitudes} \\ 
 texdoc write 	\hline
-texdoc write 	\text{`var_1'}						&	`ne_mean_1'		&	`ne_n_1'		& `africa_mean_1'	& `africa_n_1'				& `tz_mean_1'	& `tz_n_1'			\\
-texdoc write 	\text{`var_2'}       				&	`ne_mean_2'		&	`ne_n_2'		& `africa_mean_2'	& `africa_n_2'				& `tz_mean_2'	& `tz_n_2'			\\
-texdoc write 	\text{`var_3'}     					&	`ne_mean_3'		&	`ne_n_3'		& `africa_mean_3'	& `africa_n_3'				& `tz_mean_3'	& `tz_n_3'			\\
-texdoc write 	\text{`var_4'}	      				&	`ne_mean_4'		&	`ne_n_4'		& `africa_mean_4'	& `africa_n_4'				& `tz_mean_4'	& `tz_n_4'			\\
+texdoc write 	\text{`var_1'}						&	`as_mean_1'		&	`as_n_1'		& `africa_mean_1'	& `africa_n_1'				& `tz_mean_1'	& `tz_n_1'			\\
+texdoc write 	\text{`var_2'}       				&	`as_mean_2'		&	`as_n_2'		& `africa_mean_2'	& `africa_n_2'				& `tz_mean_2'	& `tz_n_2'			\\
+texdoc write 	\text{`var_3'}     					&	`as_mean_3'		&	`as_n_3'		& `africa_mean_3'	& `africa_n_3'				& `tz_mean_3'	& `tz_n_3'			\\
+texdoc write 	\text{`var_4'}	      				&	`as_mean_4'		&	`as_n_4'		& `africa_mean_4'	& `africa_n_4'				& `tz_mean_4'	& `tz_n_4'			\\
 texdoc write 	\hline
 texdoc write 	\end{tabular}
 texdoc write 	}

@@ -111,7 +111,7 @@ ______________________________________________________________________________*/
 							ysize(3) xsize(3) yscale(range(0/1)) xscale(range(1960/1990)) ///
 							ylabel(0(0.1)1,     labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
-							legend(off) ytitle(Share of Early Marriages, size(small)) xtitle(Woman Year of Birth , size(small))  ///
+							legend(off) ytitle(Share of Marriages that are Early, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
 							title("Tanzania", color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_emshare_TZ.png", as(png) width(3000)   replace
@@ -196,7 +196,7 @@ ______________________________________________________________________________*/
 							ysize(3) xsize(3) yscale(range(0/1)) xscale(range(1960/1990)) ///
 							ylabel(0(0.1)1,     labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
-							legend(off) ytitle(Share of Early Marriages, size(small)) xtitle(Woman Year of Birth , size(small))  ///
+							legend(off) ytitle(Share of Marriages that are Early, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
 							title(Rural Tanzania, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_emshare_TZrural.png", as(png) width(3000)   replace
@@ -279,7 +279,7 @@ ______________________________________________________________________________*/
 							ysize(3) xsize(3) yscale(range(0/1)) xscale(range(1960/1990)) ///
 							ylabel(0(0.1)1,     labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
-							legend(off) ytitle(Share of Early Marriages, size(small)) xtitle(Woman Year of Birth , size(small))  /// 
+							legend(off) ytitle(Share of Marriages that are Early, size(small)) xtitle(Woman Year of Birth , size(small))  /// 
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
 							title(Tanga, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_emshare_Tanga.png", as(png) width(3000)   replace
@@ -361,7 +361,7 @@ ______________________________________________________________________________*/
 							ysize(3) xsize(3) yscale(range(0/1)) xscale(range(1960/1990)) ///
 							ylabel(0(0.1)1,     labsize(small) grid glwidth(thin) glcolor(white)) /// 
 							xlabel(1960(5)1990, labsize(small) grid glwidth(thin) glcolor(white)) ///
-							legend(off) ytitle(Share of Early Marriages, size(small)) xtitle(Woman Year of Birth , size(small))  ///
+							legend(off) ytitle(Share of Marriages that are Early, size(small)) xtitle(Woman Year of Birth , size(small))  ///
 							bgcolor(white) graphregion(fcolor(white) ifcolor(white)  lcolor(white) ilcolor(white)) plotregion(fcolor(white) margin(zero)) ///
 							title(Rural Tanga, color(black)) subtitle("N: `count' ")
 				graph export "${as_clean_figures}/figure_dhs_emshare_Tangarural.png", as(png) width(3000)   replace
