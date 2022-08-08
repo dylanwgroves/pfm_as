@@ -21,7 +21,7 @@ ________________________________________________________________________________
 
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_covars.do"
 	*do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
-	do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
+	*do "${code}/pfm_audioscreening_efm/pfm_as_prelim.do"
 
 	
 /* Load Data ___________________________________________________________________*/	
@@ -39,10 +39,10 @@ ________________________________________________________________________________
 
 	/* Outcomes */
 	#d ;
-	local index_list	cov_lasso
+	local index_list	short_vars
 						;
 						
-	local short_vars	resp_age 
+	global  short_vars	resp_age 
 						resp_female
 						resp_muslim
 						b_resp_standard7
@@ -82,7 +82,6 @@ foreach index of local index_list {
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_twosided.do"
 	do "${code}/pfm_audioscreening_efm/02_indices/pfm_as_indices_main.do"
 
-	
 /* Export Regression ___________________________________________________________*/
 
 	/* Set locals */

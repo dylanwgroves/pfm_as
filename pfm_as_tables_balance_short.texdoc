@@ -25,9 +25,9 @@ ________________________________________________________________________________
 
 /* Load Data ___________________________________________________________________*/	
 
-	import excel "${as_tables}/pfm_as_balance.xlsx", sheet("short_vars") firstrow clear
+	import excel "${as_tables}/pfm_as_balance_long.xlsx", sheet("short_vars") firstrow clear
 	save `dta_main', replace
-	
+
 /* Sort Data ___________________________________________________________________*/
 
 	/* Individual Data */
@@ -53,7 +53,6 @@ ________________________________________________________________________________
 						b_ge_index
 						;
 	#d cr 
-						
 						
 
 	gen rank = .

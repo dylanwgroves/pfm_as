@@ -27,7 +27,7 @@ ________________________________________________________________________________
 	use "${data_as}/pfm_as_analysis.dta", clear
 
 	// IMPORTANT NOTE: we do not use for attrition, attendance, and uptake											
-	keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)	
+	keep if m_comply_attend == 0 & (m_comply_attend != 1 & comply_true == 1)	
 
 
 /* Define Parameters ___________________________________________________*/
@@ -41,42 +41,28 @@ ________________________________________________________________________________
 		/* rerandomization count */
 		global rerandcount	10000
 							;
+							
+							
+		global cov_always	i.block_as											// Covariates that are always included
+							i.rd_group
+							;
 		
-		/* survey */
-		global survey 		main
-							;
-							/*
-							main	
-							partner
-							friend
-							kid
-							*/	
-					
-		/* Indices */			
-		local index_list	ipv
-							/*
-							attrition // NOTE only use this independently, and run among entire sample instead of just compliers	
-							attendance // Note only use this separate from other indices, and run on entire sample instead of just compliers
-							uptake
-							fm
-							em
-							norm
-							em_report 
-							em_record 
-							priority
-							wpp 
-							gender 	
-							ipv
-							mid_fm
-							mid_em
-							mid_norm
-							mid_report
-							mid_priority
-							mid_gender
-							mid_ipv
-							*/
-							;
 	#d cr
+
+	
+	
+/* Table 4 _____________________________________________________________________
+
+	Attitudes toward Early Forced Marriage, 2-3 Weeks After Exposure
+	
+	m_fm_reject
+	m_fm_reject_18
+	m_fm_reject_story
+	m_fm_reject_story_money
+	m_fm_reject_story_daught	
+*/
+
+		xi: reg m_fm_reject treat ${cov_always}, cluster(id_village_n)									// This is the core regression
 
 	
 /* Run Do File ______________________________________________________________*/
