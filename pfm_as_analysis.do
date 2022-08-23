@@ -62,7 +62,6 @@ ________________________________________________________________________________
 	m_fm_reject_story_daught	
 */
 
-		xi: reg m_fm_reject treat ${cov_always}, cluster(id_village_n)									// This is the core regression
 
 	
 /* Run Do File ______________________________________________________________*/

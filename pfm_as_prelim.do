@@ -188,7 +188,7 @@ ________________________________________________________________________________
 
 	foreach var of varlist b_ge_raisekids b_ge_earning b_ge_leadership ///
 							b_ge_noprefboy b_ge_index b_fm_reject {
-		bys id_village_uid : egen v_`var' = mean(`var')
+		bys id_village_uid : egen v_`var' = mean(`var')		
 	}
 	
 /* Create ______________________________________________________________________*/
@@ -197,7 +197,6 @@ ________________________________________________________________________________
 	replace complier = 1 if m_comply_attend != 1 & comply_true == 1
 	replace complier = 0 if complier != 1
 
-	
 /* Set things up for vignette __________________________________________________*/
 
 gen age = m_treat_efmvig_age
@@ -224,6 +223,14 @@ gen m_efm_reject_story = m_em_reject_story
 gen m_efm_norm_story = m_fm_reject_norm
 	replace m_efm_norm_story = m_em_reject_norm if m_efm_norm_story == .
 
+	
+/* Create Merge ________________________________________________________________*/
+	
+	replace fm_reject_long = fm_reject_long/3
+	egen fm_reject_selfANDpartner = rowmean(fm_reject_long p_fm_partner_reject)
+	global dv fm_reject_selfANDpartner 
+
+
 /* Save ________________________________________________________________________*/
 
 	save "${data_as}/pfm_as_analysis.dta", replace
@@ -234,14 +241,66 @@ gen m_efm_norm_story = m_fm_reject_norm
 /* Keep for replication files __________________________________________________*/
 
 	use	"${data_as}/pfm_as_analysis.dta", clear
-	
+
 	encode id_village_n, gen(sb_id_village_n)
 	drop id_village_n
 	rename sb_id_village_n id_village_n
 	label drop sb_id_village_n
+	
+	#d ;
+	global cov_lasso	resp_female 										// Covariates that are used by LASSO
+						resp_muslim						
+						resp_age
+						b_resp_samevillage
+						b_resp_religiosity
+						b_resp_literate 	
+						b_resp_standard7 
+						b_resp_nevervisitcity 
+						b_resp_married 
+						b_resp_hhh 
+						b_resp_numkid
+						b_resp_numhh
+						b_resp_yrsvill
+						b_values_likechange 
+						b_values_techgood 
+						b_values_respectauthority 
+						b_values_trustelders
+						b_ge_raisekids 
+						b_ge_earning 
+						b_ge_leadership 
+						b_ge_noprefboy 
+						b_fm_reject
+						b_media_tv_any 
+						b_media_news_never 
+						b_media_news_daily 
+						b_radio_any 
+						b_radio_community_ever
+						b_radio_call_ever
+						b_radio_stations_tbc 
+						b_radio_stations_pfm 
+						b_radio_stations_voa 
+						b_radio_stations_clouds
+						b_asset_multiplehuts
+						b_asset_rooms
+						b_asset_mudwalls
+						b_asset_radio
+						b_asset_tv
+						b_asset_cell
+						b_asset_cellint
+						b_asset_worseconditions
+						b_hiv_exctot
+						b_hiv_safe
+						;
+	#d cr
+	
+	foreach var of global cov_lasso {
+		gen std_`var' = `var'
+	}
+	
 
 	#d ;
-	keep 						treat 
+	keep 						id_resp_uid
+								treat 
 								treat_*
 								cluster_as 
 								block_as
@@ -250,18 +309,16 @@ gen m_efm_norm_story = m_fm_reject_norm
 								scenario 
 								complier
 								age
-								b_age
 								amt
-								b_resp_female 
+								m_comply_topic
 								m_efm_reject_story
 								m_efm_norm_story
 								attrition_midline
 								attrition_endline
-								comply_attend_any
 								fm_reject
 								fm_reject_long 									
 								p_fm_partner_reject
-								fm_reject_mixed
+								fm_reject_selfANDpartner 
 								em_reject_index
 								em_reject_pregnant_dum 
 								em_reject_money_dum 
@@ -345,11 +402,18 @@ gen m_efm_norm_story = m_fm_reject_norm
 								assets_electricity
 								ge_work 
 								m_ipv_rej_disobey 
+								std_*
 								;
 	#d cr
-	
 
+	preserve
+	drop treat_*
 	save "${user}/Dropbox/Wellspring Tanzania Papers/Wellspring Tanzania - Audio Screening (efm)/cps_replication/cps_efm_analysis.dta", replace
+	restore 
+	
+	keep id_resp_uid treat_*
+	save "${user}/Dropbox/Wellspring Tanzania Papers/Wellspring Tanzania - Audio Screening (efm)/cps_replication/cps_efm_ri.dta", replace
+ 
 	
 /* Reshape Kids Long ___________________________________________________________
 

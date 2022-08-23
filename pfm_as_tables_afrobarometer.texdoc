@@ -95,7 +95,7 @@ ______________________________________________________________________________*/
 /* Variables from our sample ___________________________________________________*/	
 
 	use "${data_as}/pfm_as_analysis.dta", clear
-	keep if m_comply_attend == 1 | (m_comply_attend != 1 & comply_true == 1)	
+	keep if complier == 1	
 
 	count // 1,035
 	save `dta_as', replace
@@ -104,7 +104,7 @@ ______________________________________________________________________________*/
 	rename ge_work	compare_ge_work												// only asked at endline
 			replace compare_ge_work = . if treat==1
 	rename m_ipv_rej_disobey compare_ge_ipv										// asked at midline and at endline 
-			replace m_ipv_rej_disobey = . if treat==1
+			replace compare_ge_ipv	 = . if treat==1
 	rename b_ge_leadership	compare_ge_leadership								// asked at baseline and at endline to a random subset 
     recode values_tzovertribe (1 2 3= 1)(4 5 = 0), gen(compare_nationalism)		// asked at endline
 			replace compare_nationalism = . if treat==1
