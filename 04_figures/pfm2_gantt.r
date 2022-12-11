@@ -35,20 +35,19 @@ rm(list=ls())
 df <- read.csv("X:/Dropbox/Wellspring Tanzania Papers/Wellspring Tanzania - Audio Screening (efm)/01 Data/pfm2_villagesample_surveydates_dates.csv")
 
 
-
 # Set Data Variables ------------------------------------------------------
-df$mobilization_start <- as.Date(df$mobilization_start, "%m/%d/%y")
-df$baseline_start <- as.Date(df$baseline_start, "%m/%d/%y")
-df$baseline_end <- as.Date(df$baseline_end, "%m/%d/%y")
-df$screening_invite <- as.Date(df$screening_invite, "%m/%d/%y")
-df$screening_event <- as.Date(df$screening_event, "%m/%d/%y")
-df$endline_start <- as.Date(df$endline_start, "%m/%d/%y")
-df$endline_end <- as.Date(df$endline_end, "%m/%d/%y")
-df$endline2_start <- as.Date(df$endline2_start, "%m/%d/%y")
-df$endline2_end <- as.Date(df$endline2_end, "%m/%d/%y")
+df$mobilization_start <- as.Date(df$mobilization_start, "%m/%d/%Y")
+df$baseline_start <- as.Date(df$baseline_start, "%m/%d/%Y")
+df$baseline_end <- as.Date(df$baseline_end, "%m/%d/%Y")
+df$screening_invite <- as.Date(df$screening_invite, "%m/%d/%Y")
+df$screening_event <- as.Date(df$screening_event, "%m/%d/%Y")
+df$endline_start <- as.Date(df$endline_start, "%m/%d/%Y")
+df$endline_end <- as.Date(df$endline_end, "%m/%d/%Y")
+df$endline2_start <- as.Date(df$endline2_start, "%m/%d/%Y")
+df$endline2_end <- as.Date(df$endline2_end, "%m/%d/%Y")
 
 # Prepare GANTT -----------------------------------------------------------
-dateRange <- c(min(df$mobilization_start), as.Date("2020-12-31"))
+dateRange <- c(min(df$mobilization_start), as.Date("2021-12-31"))
 nVills <- length(df$vill_id)
 dateSeq <- seq.Date(dateRange[1], dateRange[2], by = 7)
 
@@ -67,7 +66,7 @@ gantt <-
   ggplot(df, aes(y=uid, yend=uid)) + 
   theme_minimal()+ 
   geom_segment(size=2, aes(x=mobilization_start, xend = baseline_end, colour = "black")) +
-  geom_text(size=3, aes(label=Group, x=screening_event, colour = "grey")) +
+  geom_text(size=2, aes(label=Label, x=screening_event, colour = "grey")) +
   geom_segment(size=2, aes(x=endline_start, xend=endline_end, colour = "grey")) +
   geom_segment(size=2, aes(x=endline2_start, xend=endline2_end, colour = "grey")) + 
   scale_color_manual(labels = c("Census and Baseline", "Endline"), values=c("grey", "black")) +
@@ -82,8 +81,10 @@ gantt <-
         axis.title.y = element_text(face="bold", size=12, vjust=1))
 
 
+gantt
+
 # Save --------------------------------------------------------------------
 
 ggsave("X:/Dropbox/Apps/Overleaf/Tanzania - Audio Screening (efm)/Figures/pfm2_gantt.pdf", plot = gantt, 
        width = 12, height = 8, units = "in")
-
+  

@@ -121,7 +121,7 @@ texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} &\multicol
 
 texdoc write    							& (1)				& (2)				& (3)			& (4)			& (5)			& (6)				\\
  
-texdoc write 	EFM Treat    			& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}		\\
+texdoc write 	EFM Drama	    			& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}		\\
 texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  		& $se3 			& $se3c				\\
 texdoc write 	\hline
 texdoc write 	RI \$p\$-value 				& $p1				& $p1c 				& $p2			& $p2c			& $p3  			& $p3c				\\

@@ -129,7 +129,7 @@ texdoc write    &\multicolumn{2}{c}{Gender Equality}      		 &  \multicolumn{6}{
 texdoc write    &\multicolumn{2}{c}{$var1} &\multicolumn{2}{c}{$var2} &\multicolumn{2}{c}{$var3}  &\multicolumn{2}{c}{$var4}	\tstrut \bstrut \\ \cmidrule(r){2-3} \cmidrule(r){4-5} \cmidrule(r){6-7} \cmidrule(r){8-9} \cmidrule(r){10-11} 
 texdoc write    							& (1)				& (2)				& (3)			& (4)			& (5)			& (6)				& (7)			& (8)				\\
 
-texdoc write 	EFM Treat	      			& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}	& $b4\sym{$s4} & $b4c\sym{$s4c}		\\
+texdoc write 	EFM Drama	      			& $b1\sym{$s1}  	& $b1c\sym{$s1c} 	& $b2\sym{$s2} 	& $b2c\sym{$s2c} & $b3\sym{$s3} & $b3c\sym{$s3c}	& $b4\sym{$s4} & $b4c\sym{$s4c}		\\
 texdoc write    Standard Error 				& $se1				& $se1c				& $se2    		& $se2c  		& $se3 			& $se3c				& $se4 			& $se4c			\\
 texdoc write 	\hline
 texdoc write 	RI \$p\$-value 				& $p1				& $p1c 				& $p2			& $p2c			& $p3  			& $p3c				& $p4  			& $p4c				\\
