@@ -1,0 +1,102 @@
+/* Basics ______________________________________________________________________
+
+Project: Wellspring Tanzania, Radio Distribution
+Purpose: Analysis
+Author: dylan groves, dylanwgroves@gmail.com
+Date: 2021/04/26
+________________________________________________________________________________*/
+
+
+/* Introduction ________________________________________________________________*/
+	
+	clear all	
+	clear matrix
+	clear mata
+	set more off
+	global c_date = c(current_date)
+
+/* Run Prelim File _____________________________________________________________	
+
+	do "${code}/pfm_.master/00_setup/pfm_paths_master.do"
+	do "${code}/pfm_ne/pfm_ne_prelim.do"
+*/
+
+/* Load Data ___________________________________________________________________*/	
+
+	import excel "${as_tables}/pfm_as_balance.xlsx", sheet("lasso_vars") firstrow clear
+	
+
+/* Sort Data ___________________________________________________________________*/
+
+sort pval
+destring treatmean treatsd controlmean controlsd coef pval ripval min max N, replace
+
+/* Load pval ___________________________________________________________________*/
+
+	count
+	local count = `r(N)'
+	
+	forval i = 1/`count' {
+
+		local var_`i' = variablelabel[`i']
+		local t_mean_`i' = strofreal(treatmean[`i'], "%6.3f")
+		local c_mean_`i' = strofreal(controlmean[`i'], "%6.3f")
+		local pval_`i' = strofreal(ripval[`i'], "%6.3f")
+		local n_`i' = strofreal(N[`i'], "%6.0fc")
+	
+	}
+
+/* Load pval ___________________________________________________________________*/
+
+
+texdoc init "${as_clean_tables}/pfm_as_tables_balance.tex", replace nolog
+
+texdoc write 	{
+texdoc write 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+texdoc write 	\begin{tabular}{l *{4}{d{3.3}} }
+texdoc write 	\hline
+texdoc write    \multicolumn{1}{c}{\text{Variable}} & \multicolumn{1}{c}{\text{Treatment}} 	& \multicolumn{1}{c}{\text{Comparison}} 	& \multicolumn{1}{c}{\text{RI $p$ -value}} & \multicolumn{1}{c}{\text{Observations}} \\
+texdoc write 	\hline
+texdoc write 	\text{`var_7'}	       		&	`t_mean_7'				& `c_mean_7'				& `pval_7'				& `n_7'				\\
+texdoc write 	\text{`var_8'}	       		&	`t_mean_8'				& `c_mean_8'				& `pval_8'				& `n_8'				\\
+texdoc write 	\text{`var_9'} 	      		&	`t_mean_9'				& `c_mean_9'				& `pval_9'				& `n_9'				\\
+texdoc write 	\text{`var_10'}       		&	`t_mean_10'				& `c_mean_10'				& `pval_10'				& `n_10'			\\
+texdoc write 	\text{`var_11'}       		&	`t_mean_11'				& `c_mean_11'				& `pval_11'				& `n_11'			\\
+texdoc write 	\text{`var_12'}       		&	`t_mean_12'				& `c_mean_12'				& `pval_12'				& `n_12'			\\
+texdoc write 	\text{`var_13'}       		&	`t_mean_13'				& `c_mean_13'				& `pval_13'				& `n_13'			\\
+texdoc write 	\text{`var_14'}       		&	`t_mean_14'				& `c_mean_14'				& `pval_14'				& `n_14'			\\
+texdoc write 	\text{`var_15'}       		&	`t_mean_15'				& `c_mean_15'				& `pval_15'				& `n_15'			\\
+texdoc write 	\text{`var_16'}       		&	`t_mean_16'				& `c_mean_16'				& `pval_16'				& `n_16'			\\
+texdoc write 	\text{`var_17'}	       		&	`t_mean_17'				& `c_mean_17'				& `pval_17'				& `n_17'			\\
+texdoc write 	\text{`var_18'}	       		&	`t_mean_18'				& `c_mean_18'				& `pval_18'				& `n_18'			\\
+texdoc write 	\text{`var_19'}	       		&	`t_mean_19'				& `c_mean_19'				& `pval_19'				& `n_19'			\\
+texdoc write 	\text{`var_20'}	       		&	`t_mean_20'				& `c_mean_20'				& `pval_20'				& `n_20'			\\
+texdoc write 	\text{`var_21'}	       		&	`t_mean_21'				& `c_mean_21'				& `pval_21'				& `n_21'			\\
+texdoc write 	\text{`var_22'}	       		&	`t_mean_22'				& `c_mean_22'				& `pval_22'				& `n_22'			\\
+texdoc write 	\text{`var_23'}	       		&	`t_mean_23'				& `c_mean_23'				& `pval_23'				& `n_23'			\\
+texdoc write 	\text{`var_24'}	       		&	`t_mean_24'				& `c_mean_24'				& `pval_24'				& `n_24'			\\
+texdoc write 	\text{`var_25'}	       		&	`t_mean_25'				& `c_mean_25'				& `pval_25'				& `n_25'			\\
+texdoc write 	\text{`var_26'}	       		&	`t_mean_26'				& `c_mean_26'				& `pval_26'				& `n_26'			\\
+texdoc write 	\text{`var_27'}	       		&	`t_mean_27'				& `c_mean_27'				& `pval_27'				& `n_27'			\\
+texdoc write 	\text{`var_28'}	       		&	`t_mean_28'				& `c_mean_28'				& `pval_28'				& `n_28'			\\
+texdoc write 	\text{`var_29'}	       		&	`t_mean_29'				& `c_mean_29'				& `pval_29'				& `n_29'			\\
+texdoc write 	\hline
+texdoc write 	\end{tabular}
+texdoc write 	}
+
+texdoc close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
